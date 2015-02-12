@@ -21,7 +21,8 @@ build/Release
 
 # Dependency directory
 # Deployed apps should consider commenting this line out:
-# see https://npmjs.org/doc/faq.html#Should-I-check-my-node_modules-folder-into-git
+# See https://docs.npmjs.com/misc/faq#should-i-check-my-node_modules-folder-into-git
+# or http://www.futurealoof.com/posts/nodemodules-in-git.html
 node_modules
 
 # WebStorm

@@ -1,6 +1,6 @@
 'use strict';
 
-var app = angular.module('MyDocDB', [
+var app = angular.module('CBbread', [
     'ui.router',
     'ui.bootstrap',
     'ngGrid'

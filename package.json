@@ -1,21 +1,19 @@
 {
-  "name": "myazdocdb",
+  "name": "cb-bread",
   "version": "0.0.0",
-  "description": "Microsoft Azure DocumentDB Management Website",
+  "private": true,
+  "description": "Couchbase Browse/Read/Edit/Add/Delete (adapted from myazdocdb = Microsoft Azure DocumentDB Management Website)",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/shaunxu/myazdocdb.git"
-  },
   "keywords": [
     "documentdb",
-    "azure"
+    "azure",
+    "couchbase"
   ],
-  "author": "Shaun Xu",
+  "author": "Shaun Xu, Rick Rutt",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/shaunxu/myazdocdb/issues"

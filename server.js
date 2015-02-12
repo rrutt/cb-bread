@@ -1,21 +1,28 @@
 (function () {
     'use strict';
 
+    var util = require('util');
+
     var path = require('path');
     var argv = require('optimist').usage('Usage: $0 [--port] [--debug] [--proxy]')
-        .default('port', process.env.port || 80)
+        .default('port', process.env.port || 8008)
         .default('debug', true)
         .default('proxy', null)
         .argv;
 
     var log4js = require('log4js');
-    var logger = log4js.getLogger('MYDOCDB');
+    var logger = log4js.getLogger('cb-bread');
     if (argv['debug'] === true) {
         logger.setLevel('DEBUG');
     }
     else {
         logger.setLevel('INFO');
     }
+
+    process.on('uncaughtException', function (err) {
+        console.trace("Uncaught Exception");
+        logger.error("uncaughtException\n" + util.inspect(err) + "\n=== Stack trace ===\n" + err.stack);
+    });
 
     logger.debug('config - port: ' + argv['port']);
     logger.debug('config - debug: ' + argv['debug']);
@@ -73,6 +80,6 @@
     api.initialize(app, logger);
 
     app.listen(argv['port']);
-    logger.info('http://0.0.0.0:' + argv['port'] + '/');
-    process.title = 'My DocumentDB';
+    logger.info('http://localhost:' + argv['port'] + '/');
+    process.title = 'cb-bread';
 })();
