@@ -1,6 +1,6 @@
 {
   "name": "cb-bread",
-  "version": "0.0.0",
+  "version": "0.1.0-20150212",
   "private": true,
   "description": "Couchbase Browse/Read/Edit/Add/Delete (adapted from myazdocdb = Microsoft Azure DocumentDB Management Website)",
   "main": "server.js",

@@ -11,6 +11,13 @@
         $scope.credits = [];
 
         $scope.credits.push({
+            title: 'My DocumentDB',
+            link: 'https://github.com/shaunxu/myazdocdb',
+            description: 'DocumentDB is a fully-managed, scalable, NoSQL document database service in Microsoft Azure. It provides rich query and indexing capabilities over a schema-free JSON data model. It also provides configurable and reliable performance, native JavaScript transactional processing, and is built for the cloud with elastic scale.',
+            license: 'https://github.com/shaunxu/myazdocdb/blob/master/LICENSE'
+        });
+
+        $scope.credits.push({
             title: 'jQuery',
             link: 'http://jquery.com/',
             description: 'jQuery is a fast, small, and feature-rich JavaScript library.',
