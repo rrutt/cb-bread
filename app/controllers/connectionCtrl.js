@@ -3,12 +3,12 @@
 
     app.controller('ConnectionCtrl', function ($scope, $state, $alert, credentials) {
         var connect = function () {
-            credentials.set($scope.host, $scope.key);
+            credentials.set($scope.host, $scope.user, $scope.password);
             if (credentials.isConnected() === true) {
                 refresh();
             }
             else {
-                $alert('Please specify host and key.');
+                $alert('Please specify host, user, and password.');
             }
         };
 
@@ -20,7 +20,8 @@
 
         var refresh = function () {
             $scope.host = credentials.host;
-            $scope.key = credentials.key;
+            $scope.user = credentials.user;
+            $scope.password = credentials.password;
             $scope.isConnected = credentials.isConnected();
             $scope.connect = connect;
             $scope.disconnect = disconnect;

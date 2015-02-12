@@ -83,17 +83,20 @@ app.factory('credentials', function () {
     return {
         host: '',
         key: '',
-        set: function (host, key) {
+        set: function (host, user, password) {
             this.host = host;
-            this.key = key;
+            this.user = user;
+            this.password = password;
         },
         reset: function () {
             this.host = '';
-            this.key = '';
+            this.user = '';
+            this.password = '';
         },
         isConnected: function () {
             return this.host && this.host.length > 0 &&
-                   this.key && this.key.length > 0;
+                   this.user && this.user.length > 0 &&
+                   this.password && this.password.length > 0;
         }
     };
 });
@@ -108,8 +111,9 @@ app.factory('api', function ($http, credentials) {
                 url: self.path + url,
                 data: params || {},
                 headers: {
-                    'x-docdb-host': credentials.host,
-                    'x-docdb-key': credentials.key
+                    'x-couchbase-host': credentials.host,
+                    'x-couchbase-user': credentials.user,
+                    'x-couchbase-password': credentials.password
                 }
             };
             $http(opts)

@@ -5,12 +5,12 @@
 
     app.controller('DatabaseIndexCtrl', function ($rootScope, $state, $scope, $alert, $modal, api) {
         var refresh = function () {
-            api.request(controllerName, 'list', null, function (error, dbs) {
+            api.request(controllerName, 'list', null, function (error, buckets) {
                 if (error) {
                     $alert(JSON.stringify(error, null, 2));
                 }
                 else {
-                    $scope.databases = dbs;
+                    $scope.databases = buckets;
                 }
             });
         };

@@ -1,7 +1,9 @@
 (function () {
     'use strict';
 
-    var DocumentDBClient = require('documentdb').DocumentClient;
+    var util = require('util');
+
+    var cbWrapper = require('./couchbase/couchbaseWrapper');
 
     exports.initialize = function (app, logger) {
         var _validate = function (controller, params, callback) {
@@ -20,7 +22,7 @@
             var message = {
                 controllerName: controllerName,
                 actionName: actionName,
-                params: params,
+                params: params
             };
             if (error) {
                 message.error = error;
@@ -35,9 +37,11 @@
         };
 
         app.use(function (req, res) {
-            var host = req.headers['x-docdb-host'];
-            var key = req.headers['x-docdb-key'];
-            if (host && key) {
+            var host = req.headers['x-couchbase-host'];
+            var user = req.headers['x-couchbase-user'];
+            var password = req.headers['x-couchbase-password'];
+            if (host && user && password) {
+                cbWrapper.initialize(logger, host, user, password);
                 var segments = req.path.split('/').filter(function (segment) {
                     return segment.length > 0;
                 });
@@ -56,7 +60,7 @@
                                 }
                                 else {
                                     // perform the action
-                                    var client = new DocumentDBClient(host, { masterKey: key });
+                                    var client = cbWrapper;
                                     controller[actionName](client, params, function (error, result) {
                                         if (error) {
                                             _logAndSendErrorOrResult(controllerName, actionName, params, error, null, res);
@@ -82,7 +86,7 @@
                 }
             }
             else {
-                _logAndSendErrorOrResult(null, null, null, 'Miss host or key in request [' + req.path + ']', null, res);
+                _logAndSendErrorOrResult(null, null, null, 'Miss host, user, or password in request [' + req.path + ']', null, res);
             }
         });
     };

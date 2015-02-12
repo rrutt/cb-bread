@@ -3,7 +3,7 @@
 
     var _logger = null;
 
-    var _select = function (client, params, callback) {
+    var _list = function (client, params, callback) {
         var id = params.id;
         var databaseLink = params.databaseLink;
         var query = 'SELECT * FROM ROOT' + (id ? ' r WHERE r.id = "' + id + '"' : '');
@@ -21,7 +21,7 @@
         var id = params.id;
         var databaseLink = params.databaseLink;
         if (id && id.length > 0) {
-            _select(client, params, function (error, cols) {
+            _list(client, params, function (error, cols) {
                 if (error) {
                     return callback(error, null);
                 }
@@ -63,7 +63,7 @@
         var id = params.id;
         var databaseLink = params.databaseLink;
         if (id && id.length > 0) {
-            _select(client, params, function (error, cols) {
+            _list(client, params, function (error, cols) {
                 if (error) {
                     return callback(error);
                 }
@@ -91,7 +91,7 @@
         _logger = logger;
 
         return {
-            list: _select,
+            list: _list,
             create: _create,
             remove: _remove,
             removeDirect: _removeDirect,

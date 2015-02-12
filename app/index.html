@@ -35,7 +35,7 @@
                             <a data-ui-sref="credits">Credits</a>
                         </li>
                         <li>
-                            <a href="https://github.com/shaunxu/myazdocdb" target="_blank">Source Code</a>
+                            <a href="https://github.com/rrutt/cb-bread" target="_blank">Source Code</a>
                         </li>
                         <li>
                             <a href="http://blog.shaunxu.me/archive/2014/09/17/quotmy-documentdbquot---a-simple-web-based-documentdb-management-tool.aspx" target="_blank">Help</a>
@@ -46,10 +46,14 @@
                             <input type="text" placeholder="Host" class="form-control" data-ng-model="host">
                         </div>
                         <div class="form-group" data-ng-show="!isConnected">
-                            <input type="text" placeholder="Key" class="form-control" data-ng-model="key">
+                            <input type="text" placeholder="User" class="form-control" data-ng-model="user">
+                        </div>
+                        <div class="form-group" data-ng-show="!isConnected">
+                            <input type="password" placeholder="Password" class="form-control" data-ng-model="password">
                         </div>
                         <div class="form-group" data-ng-show="isConnected">
                             <input type="text" readonly class="form-control" data-ng-model="host">
+                            <input type="text" readonly class="form-control" data-ng-model="user">
                         </div>
                         <button type="button" class="btn btn-success" data-ng-show="!isConnected" data-ng-click="connect()">Connect</button>
                         <button type="button" class="btn btn-success" data-ng-show="isConnected" data-ng-click="disconnect()">Disconnect</button>

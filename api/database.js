@@ -3,15 +3,13 @@
 
     var _logger = null;
 
-    var _select = function (client, params, callback) {
-        var id = params.id;
-        var query = 'SELECT * FROM ROOT' + (id ? ' r WHERE r.id = "' + id + '"' : '');
-        client.queryDatabases(query).toArray(function (error, dbs) {
+    var _list = function (client, params, callback) {
+        client.listBuckets(function (error, buckets) {
             if (error) {
                 return callback(error, null);
             }
             else {
-                return callback(null, dbs);
+                return callback(null, buckets);
             }
         });
     };
@@ -19,13 +17,13 @@
     var _create = function (client, params, callback) {
         var id = params.id;
         if (id && id.length > 0) {
-            _select(client, { id: id }, function (error, dbs) {
+            _list(client, { id: id }, function (error, buckets) {
                 if (error) {
                     return callback(error, null);
                 }
                 else {
-                    if (dbs && dbs.length > 0) {
-                        return callback('Database with id [' + id + '] exists.', null);
+                    if (buckets && buckets.length > 0) {
+                        return callback('Bucket with id [' + id + '] exists.', null);
                     }
                     else {
                         client.createDatabase({ id: id }, function (error, db) {
@@ -41,13 +39,13 @@
             });
         }
         else {
-            callback('Database id was null or empty.', null);
+            callback('Bucket id was null or empty.', null);
         }
     };
 
     var _removeDirect = function (client, params, callback) {
         var resourceId = params.resourceId;
-        var selfLink = params.selfLink || ('dbs/' + resourceId);
+        var selfLink = params.selfLink || ('buckets/' + resourceId);
         client.deleteDatabase(selfLink, function (error) {
             if (error) {
                 return callback(error);
@@ -61,27 +59,27 @@
     var _remove = function (client, params, callback) {
         var id = params.id;
         if (id && id.length > 0) {
-            _select(client, { id: id }, function (error, dbs) {
+            _list(client, { id: id }, function (error, buckets) {
                 if (error) {
                     return callback(error);
                 }
                 else {
-                    if (dbs && dbs.length > 0) {
-                        if (dbs.length > 1) {
-                            return callback('Multiple databases with same id [' + id + '].');
+                    if (buckets && buckets.length > 0) {
+                        if (buckets.length > 1) {
+                            return callback('Multiple buckets with same id [' + id + '].');
                         }
                         else {
-                            _removeDirect(client, { selfLink: dbs[0]['_self'] }, callback);
+                            _removeDirect(client, { selfLink: buckets[0]['_self'] }, callback);
                         }
                     }
                     else {
-                        return callback('Database with id [' + id + '] does not exist.');
+                        return callback('Bucket with id [' + id + '] does not exist.');
                     }
                 }
             });
         }
         else {
-            return callback('Database id was null or empty.');
+            return callback('Bucket id was null or empty.');
         }
     };
 
@@ -89,7 +87,7 @@
         _logger = logger;
 
         return {
-            list: _select,
+            list: _list,
             create: _create,
             remove: _remove,
             removeDirect: _removeDirect

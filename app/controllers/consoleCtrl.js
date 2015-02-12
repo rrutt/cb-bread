@@ -33,18 +33,18 @@
 
         // retrieve all databases and collections' self link
         // and push them into $scope.options for selection
-        api.request('database', 'list', null, function (error, dbs) {
+        api.request('database', 'list', null, function (error, buckets) {
             if (error) {
                 $alert(error);
             }
             else {
-                dbs.forEach(function (db) {
+                buckets.forEach(function (bucket) {
                     $scope.options.collections.links.push({
-                        id: db.id,
-                        self: db._self,
-                        text: db.id
+                        id: bucket.id,
+                        self: bucket._self,
+                        text: bucket.id
                     });
-                    api.request('collection', 'list', { databaseLink: db._self }, function (error, cols) {
+                    api.request('collection', 'list', { databaseLink: bucket._self }, function (error, cols) {
                         if (error) {
                             $alert(error);
                         }
