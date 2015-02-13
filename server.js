@@ -7,23 +7,25 @@
 
     // http://stackoverflow.com/questions/15889826/trying-to-use-optimist-api-help-to-print-usage
     var optimist = require('optimist')
-        .usage('Usage: $0 [--debug] [--port=8008] [--proxy=server:nnnn]')
+        .usage('Usage: $0 [--host=(host)] [--user=(user)] [--password=(password)] [--debug] [--responses] [--listen=8008] [--proxy=server:nnnn]')
         .describe('?', 'Display the usage.')
         .alias('?', 'help')
+        .describe('h', 'Set Couchbase host.')
+        .alias('h', 'host')
+        .describe('u', 'Set Couchbase user.')
+        .alias('u', 'user')
+        .describe('p', 'Set Couchbase password.')
+        .alias('p', 'password')
         .describe('d', 'Enable debug level log messages.')
         .alias('d', 'debug')
         .describe('r', 'Log responses from server api requests.')
         .alias('r', 'responses')
-        .describe('p', 'Set the HTTP listener port.')
-        .alias('p', 'port')
-        .default('p', process.env.port || 8008)
-        .describe('h', 'Set default Couchbase host.')
-        .alias('h', 'host')
-        .describe('u', 'Set default Couchbase user.')
-        .alias('u', 'user')
+        .describe('l', 'Set the HTTP listen port.')
+        .default('l', process.env.port || 8008)
+        .alias('l', 'listen')
         .describe('x', 'Enable a request proxy server and port number.')
-        .alias('x', 'proxy')
-        .default('x', null);
+        .default('x', null)
+        .alias('x', 'proxy');
     var argv = optimist.argv;
     if (argv.help) {
         optimist.showHelp();
@@ -41,11 +43,11 @@
 
     process.on('uncaughtException', function (err) {
         console.trace("Uncaught Exception");
-        logger.error("uncaughtException\n" + util.inspect(err) + "\n=== Stack trace ===\n" + err.stack);
+        logger.error("process.on uncaughtException\n" + util.inspect(err) + "\n=== Stack trace ===\n" + err.stack);
     });
 
     logger.debug('config - debug: ' + argv.debug);
-    logger.debug('config - port: ' + argv['port']);
+    logger.debug('config - port: ' + argv.listen);
     logger.debug('config - proxy: ' + argv.proxy);
 
     if (argv.proxy) {
@@ -92,14 +94,21 @@
             next();
         }
     });
+
     // static file serve
     app.use(express.static(__dirname + '/app'));
+
+    // http://expressjs.com/guide/error-handling.html
+    app.use(function(err, req, res, next){
+        logger.error("app.use error\n" + util.inspect(err) + "\n=== Stack trace ===\n" + err.stack);
+        res.status(500).send("Server error. Are your credentials correct?");
+    });
 
     // launch api
     var api = require('./api');
     api.initialize(app, argv, logger);
 
-    app.listen(argv.port);
-    logger.info('http://localhost:' + argv.port + '/');
+    app.listen(argv.listen);
+    logger.info('http://localhost:' + argv.listen + '/');
     process.title = 'cb-bread';
 })();

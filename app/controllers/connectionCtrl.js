@@ -38,6 +38,9 @@
                         if ((!$scope.user) || ($scope.user.length == 0)) {
                             $scope.user = config.user;
                         }
+                        if ((!$scope.password) || ($scope.password.length == 0)) {
+                            $scope.password = config.password;
+                        }
                     }
                 });
             }

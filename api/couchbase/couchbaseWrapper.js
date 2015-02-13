@@ -7,41 +7,61 @@
 
     var cbCluster = null;
     var cbClusterManager = null;
+    var cbHost = null;
+    var cbUser = null;
     var cbPassword = null;
     var cbLogger = null;
 
-    var mockBucketNames = ['FirstTestBucket', 'SecondTestBucket', 'ThirdTestBucket'];
+    var credentialsComplete = function(host, user, password) {
+        return (host && host.length > 0) &&
+            (user && user.length > 0) &&
+            (password && password.length > 0);
+    };
+    exports.credentialsComplete = credentialsComplete;
 
     exports.initialize = function(logger, host, user, password) {
-        if (cbClusterManager) {
-            logger.debug("couchbaseWrapper.initialize was already called.");
-        } else {
-            logger.debug("couchbaseWrapper.initialize host %s as user %s", host, user);
-
-            cbLogger = logger;
-
+        if (credentialsComplete(host, user, password))
+        {
             var hostAndPort = host + ':8091';
-            cbCluster = new cb.Cluster(hostAndPort);
-            cbClusterManager = cbCluster.manager(user, password);
-            cbPassword = password;
+            if (cbClusterManager && (host === cbHost) && (user === cbUser) && (password === cbPassword)) {
+                logger.debug("couchbaseWrapper.initialize was already called for %s as user %s", hostAndPort, user);
+            } else {
+                logger.info("couchbaseWrapper.initialize %s as user %s", hostAndPort, user);
+
+                cbLogger = logger;
+
+                cbCluster = new cb.Cluster(hostAndPort);
+                cbClusterManager = cbCluster.manager(user, password);
+                cbHost = host;
+                cbUser = user;
+                cbPassword = password;
+            }
+        } else {
+            logger.debug("couchbaseWrapper.initialize bypassed for null credentials");
         }
     };
 
     exports.listBuckets = function(callback) {
-        cbClusterManager.listBuckets(function(err, bucketInfoList) {
-            if (err) {
-                cbLogger.error("couchbaseWrapper.listBuckets error: ", util.inspect(err));
-            } else {
+        cbLogger.debug("couchbaseWrapper.listBuckets cbClusterManager = ", util.inspect(cbClusterManager, false, null, true));
+        try {
+            cbClusterManager.listBuckets(function(err, bucketInfoList) {
+                if (err) {
+                    cbLogger.error("couchbaseWrapper.listBuckets error: ", util.inspect(err));
+                } else {
 //                cbLogger.debug("couchbaseWrapper.listBuckets bucketInfoList = %s", util.inspect(bucketInfoList));
-                var bucketList = [];
-                bucketInfoList.forEach(function(bucketInfo) {
-                    var bucket = { id: bucketInfo['name'], text: bucketInfo['name'] };
-                    bucketList.push(bucket);
-                });
-                cbLogger.debug("couchbaseWrapper.listBuckets bucketList = %s", util.inspect(bucketList));
-                return callback(null, bucketList);
-            }
-        });
+                    var bucketList = [];
+                    bucketInfoList.forEach(function(bucketInfo) {
+                        var bucket = { id: bucketInfo['name'], text: bucketInfo['name'] };
+                        bucketList.push(bucket);
+                    });
+                    cbLogger.debug("couchbaseWrapper.listBuckets bucketList = %s", util.inspect(bucketList));
+                    return callback(null, bucketList);
+                }
+            });
+        } catch (e) {
+            cbLogger.error("couchbaseWrapper.listBuckets exception: ", util.inspect(e));
+            return callback(e);
+        }
     };
 
     exports.listViews = function(bucketName, callback) {
@@ -53,7 +73,7 @@
         });
 
         var cbBucketManager = cbBucket.manager();
-//        cbLogger.debug("couchbaseWrapper.listViews cbBucketManager = ", util.inspect(cbBucketManager));
+        cbLogger.debug("couchbaseWrapper.listViews cbBucketManager = ", util.inspect(cbBucketManager, false, null, true));
         cbBucketManager.getDesignDocuments(function(err, ddocs) {
             if (err) {
                 cbLogger.error("couchbaseWrapper.listViews cbBucketManager.getDesignDocuments for bucket '%s' threw error: ", bucketName, util.inspect(err));

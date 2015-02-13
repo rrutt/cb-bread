@@ -9,7 +9,7 @@
                     $alert(JSON.stringify(error, null, 2));
                 }
                 else {
-                    $rootScope.packageJson = config.packageJson;
+                    $scope.packageJson = config.packageJson;
 //                    $alert("ServerDataCtrl.refresh complete");
                 }
             });

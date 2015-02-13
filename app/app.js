@@ -122,13 +122,14 @@ app.factory('credentials', function () {
             this.password = '';
         },
         isConfigured: function () {
-            return this.host && this.host.length > 0 &&
-                   this.user && this.user.length > 0;
+            return (this.host && this.host.length > 0) ||
+                (this.user && this.user.length > 0) ||
+                (this.password && this.password.length > 0);
         },
         isConnected: function () {
-            return this.host && this.host.length > 0 &&
-                this.user && this.user.length > 0 &&
-                this.password && this.password.length > 0;
+            return (this.host && this.host.length > 0) &&
+                (this.user && this.user.length > 0) &&
+                (this.password && this.password.length > 0);
         }
     };
 });

@@ -52,7 +52,7 @@
                         var host = req.headers['x-couchbase-host'];
                         var user = req.headers['x-couchbase-user'];
                         var password = req.headers['x-couchbase-password'];
-                        if (controller.allowsAnonymous || (host && user && password)) {
+                        if (controller.allowsAnonymous || cbWrapper.credentialsComplete(host, user, password)) {
                             cbWrapper.initialize(logger, host, user, password);
                             var params = req.body || {};
                             // perform validate if defined inside controller
