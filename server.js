@@ -17,6 +17,10 @@
         .describe('p', 'Set the HTTP listener port.')
         .alias('p', 'port')
         .default('p', process.env.port || 8008)
+        .describe('h', 'Set default Couchbase host.')
+        .alias('h', 'host')
+        .describe('u', 'Set default Couchbase user.')
+        .alias('u', 'user')
         .describe('x', 'Enable a request proxy server and port number.')
         .alias('x', 'proxy')
         .default('x', null);

@@ -79,10 +79,38 @@ app.directive("loadingIndicator", function () {
 app.value('$', $);
 app.value('$alert', alert);
 
+app.factory('serverConfig', function ($alert, api) {
+    var controllerName = 'serverdata';
+
+    return {
+        serverConfig: null,
+        getConfig: function(callback) {
+            var self = this;
+            if (this.serverConfig) {
+//                $alert("serverConfig.getConfig returned from cache");
+                return callback(null, this.serverConfig);
+            } else {
+                api.request(controllerName, 'config', null, function (error, config) {
+                    if (error) {
+                        $alert(JSON.stringify(error, null, 2));
+                        return callback(error);
+                    }
+                    else {
+                        self.serverConfig = config;
+//                        $alert("serverConfig.getConfig loaded from server");
+                        return callback(null, config);
+                    }
+                });
+            }
+        }
+    };
+});
+
 app.factory('credentials', function () {
     return {
         host: '',
-        key: '',
+        user: '',
+        password: '',
         set: function (host, user, password) {
             this.host = host;
             this.user = user;
@@ -93,10 +121,14 @@ app.factory('credentials', function () {
             this.user = '';
             this.password = '';
         },
+        isConfigured: function () {
+            return this.host && this.host.length > 0 &&
+                   this.user && this.user.length > 0;
+        },
         isConnected: function () {
             return this.host && this.host.length > 0 &&
-                   this.user && this.user.length > 0 &&
-                   this.password && this.password.length > 0;
+                this.user && this.user.length > 0 &&
+                this.password && this.password.length > 0;
         }
     };
 });

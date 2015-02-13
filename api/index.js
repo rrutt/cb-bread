@@ -46,7 +46,7 @@
             if (segments.length >= 3) {
                 var controllerName = segments[1];
                 var actionName = segments[2];
-                var controller = require('./' + controllerName + '.js')(logger);
+                var controller = require('./' + controllerName + '.js')(logger, argv);
                 if (controller) {
                     if (controller[actionName]) {
                         var host = req.headers['x-couchbase-host'];

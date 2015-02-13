@@ -2,7 +2,7 @@
 <html data-ng-app="CBbread">
     <head lang="en">
         <meta charset="UTF-8">
-        <title data-ng-controller="ServerDataCtrl">{{serverConfig.packageJson.name}}</title>
+        <title data-ng-controller="ServerDataCtrl">{{packageJson.name}}</title>
 
         <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.css" />
         <link rel="stylesheet" href="lib/angular-ui/ng-grid.css" />
@@ -43,13 +43,13 @@
                     </ul>
                     <form class="navbar-form navbar-right" role="form">
                         <div class="form-group" data-ng-show="!isConnected">
-                            <input type="text" placeholder="Host" class="form-control" data-ng-model="host">
+                            <input type="text" placeholder="(host)" class="form-control" data-ng-model="host" value="{{credentials.host}}">
                         </div>
                         <div class="form-group" data-ng-show="!isConnected">
-                            <input type="text" placeholder="User" class="form-control" data-ng-model="user">
+                            <input type="text" placeholder="(user)" class="form-control" data-ng-model="user" value="{{credentials.user}}">
                         </div>
                         <div class="form-group" data-ng-show="!isConnected">
-                            <input type="password" placeholder="Password" class="form-control" data-ng-model="password">
+                            <input type="password" placeholder="(password)" class="form-control" data-ng-model="password" value="{{credentials.password}}">
                         </div>
                         <div class="form-group" data-ng-show="isConnected">
                             <input type="text" readonly class="form-control" data-ng-model="host">
@@ -79,7 +79,7 @@
             <div data-ui-view></div>
 
             <footer data-ng-controller="ServerDataCtrl">
-                <p>Version: {{serverConfig.packageJson.version}} {{serverConfig.packageJson.copyright}}</p>
+                <p>Version: {{packageJson.version}} {{packageJson.copyright}}</p>
             </footer>
         </div>
 
@@ -93,6 +93,7 @@
         <script type="text/javascript" src="lib/jsoneditor/jsoneditor.js"></script>
 
         <script type="text/javascript" src="app.js"></script>
+        <script type="text/javascript" src="controllers/serverdataCtrl.js"></script>
         <script type="text/javascript" src="controllers/breadcrumbCtrl.js"></script>
         <script type="text/javascript" src="controllers/connectionCtrl.js"></script>
         <script type="text/javascript" src="controllers/dashboardCtrl.js"></script>
@@ -101,6 +102,5 @@
         <script type="text/javascript" src="controllers/databaseCtrl.js"></script>
         <script type="text/javascript" src="controllers/collectionCtrl.js"></script>
         <script type="text/javascript" src="controllers/documentCtrl.js"></script>
-        <script type="text/javascript" src="controllers/serverdataCtrl.js"></script>
     </body>
 </html>

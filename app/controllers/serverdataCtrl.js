@@ -1,16 +1,16 @@
 (function () {
     'use strict';
 
-    var controllerName = 'serverdata';
-
-    app.controller('ServerDataCtrl', function ($scope, $alert, api) {
+    app.controller('ServerDataCtrl', function ($scope, $alert, serverConfig) {
         var refresh = function () {
-            api.request(controllerName, 'config', null, function (error, serverConfig) {
+//            $alert("ServerDataCtrl.refresh called");
+            serverConfig.getConfig(function (error, config) {
                 if (error) {
                     $alert(JSON.stringify(error, null, 2));
                 }
                 else {
-                    $scope.serverConfig = serverConfig;
+                    $rootScope.packageJson = config.packageJson;
+//                    $alert("ServerDataCtrl.refresh complete");
                 }
             });
         };

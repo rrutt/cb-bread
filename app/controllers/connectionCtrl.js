@@ -1,7 +1,7 @@
 (function () {
     'use strict';
 
-    app.controller('ConnectionCtrl', function ($scope, $state, $alert, credentials) {
+    app.controller('ConnectionCtrl', function ($scope, $state, $alert, credentials, serverConfig) {
         var connect = function () {
             credentials.set($scope.host, $scope.user, $scope.password);
             if (credentials.isConnected() === true) {
@@ -25,6 +25,22 @@
             $scope.isConnected = credentials.isConnected();
             $scope.connect = connect;
             $scope.disconnect = disconnect;
+
+            if (!credentials.isConfigured()) {
+//                $alert("ConnectionCtrl.refresh call serverConfig.getConfig");
+                serverConfig.getConfig(function (error, config) {
+                    if (error) {
+                        $alert(JSON.stringify(error, null, 2));
+                    } else {
+                        if ((!$scope.host) || ($scope.host.length == 0)) {
+                            $scope.host = config.host;
+                        }
+                        if ((!$scope.user) || ($scope.user.length == 0)) {
+                            $scope.user = config.user;
+                        }
+                    }
+                });
+            }
         };
 
         refresh();
