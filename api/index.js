@@ -37,21 +37,21 @@
         };
 
         app.use(function (req, res) {
-            var host = req.headers['x-couchbase-host'];
-            var user = req.headers['x-couchbase-user'];
-            var password = req.headers['x-couchbase-password'];
-            if (host && user && password) {
-                cbWrapper.initialize(logger, host, user, password);
-                var segments = req.path.split('/').filter(function (segment) {
-                    return segment.length > 0;
-                });
-                // api request format: api/[controller name]/[action name]
-                if (segments.length >= 3) {
-                    var controllerName = segments[1];
-                    var actionName = segments[2];
-                    var controller = require('./' + controllerName + '.js')(logger);
-                    if (controller) {
-                        if (controller[actionName]) {
+            // api request format: api/[controller name]/[action name]
+            var segments = req.path.split('/').filter(function (segment) {
+                return segment.length > 0;
+            });
+            if (segments.length >= 3) {
+                var controllerName = segments[1];
+                var actionName = segments[2];
+                var controller = require('./' + controllerName + '.js')(logger);
+                if (controller) {
+                    if (controller[actionName]) {
+                        var host = req.headers['x-couchbase-host'];
+                        var user = req.headers['x-couchbase-user'];
+                        var password = req.headers['x-couchbase-password'];
+                        if (controller.allowsAnonymous || (host && user && password)) {
+                            cbWrapper.initialize(logger, host, user, password);
                             var params = req.body || {};
                             // perform validate if defined inside controller
                             _validate(controller, params, function (error) {
@@ -74,19 +74,19 @@
                             });
                         }
                         else {
-                            _logAndSendErrorOrResult(controllerName, actionName, null, 'Cannot find action [' + actionName + '] in controller [' + controllerName + '] from request path [' + req.path + ']', null, res);
+                            _logAndSendErrorOrResult(null, null, null, 'Missing host, user, or password in request [' + req.path + ']', null, res);
                         }
                     }
                     else {
-                        _logAndSendErrorOrResult(controllerName, null, null, 'Cannot find controller [' + controllerName + '] from request path [' + req.path + ']', null, res);
+                        _logAndSendErrorOrResult(controllerName, actionName, null, 'Cannot find action [' + actionName + '] in controller [' + controllerName + '] from request path [' + req.path + ']', null, res);
                     }
                 }
                 else {
-                    _logAndSendErrorOrResult(null, null, null, 'Invalid api request [' + req.path + ']', null, res);
+                    _logAndSendErrorOrResult(controllerName, null, null, 'Cannot find controller [' + controllerName + '] from request path [' + req.path + ']', null, res);
                 }
             }
             else {
-                _logAndSendErrorOrResult(null, null, null, 'Miss host, user, or password in request [' + req.path + ']', null, res);
+                _logAndSendErrorOrResult(null, null, null, 'Invalid api request [' + req.path + ']', null, res);
             }
         });
     };

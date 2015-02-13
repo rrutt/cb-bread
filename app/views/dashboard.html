@@ -1,10 +1,11 @@
-<h1>License for cb-bread: Couchbase Browse/Read/Edit/Add/Delete</h1>
-<div class="jumbotron">
+<div data-ng-controller="ServerDataCtrl">
+  <h1>License for {{serverConfig.packageJson.name}}: {{serverConfig.packageJson.description}}</h1>
+  <div class="jumbotron">
     <div class="container">
         <p>
             The MIT License (MIT)
         </p>
-        <p>&copy; 2015 Rick Rutt - Version: 0.1.0-20150212 (Portions &copy; 2014 Shaun Xu)</p>
+        <p>{{serverConfig.packageJson.copyright}}</p>
         <p>
             Permission is hereby granted, free of charge, to any person obtaining a copy
             of this software and associated documentation files (the "Software"), to deal
@@ -27,4 +28,5 @@
             SOFTWARE.
         </p>
     </div>
+  </div>
 </div>

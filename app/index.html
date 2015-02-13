@@ -2,7 +2,7 @@
 <html data-ng-app="CBbread">
     <head lang="en">
         <meta charset="UTF-8">
-        <title>cb-bread</title>
+        <title data-ng-controller="ServerDataCtrl">{{serverConfig.packageJson.name}}</title>
 
         <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.css" />
         <link rel="stylesheet" href="lib/angular-ui/ng-grid.css" />
@@ -23,7 +23,7 @@
                         <b>cb-bread</b>
                     </a>
                 </div>
-                <div class="navbar-collapse collapse"  data-ng-controller="ConnectionCtrl">
+                <div class="navbar-collapse collapse" data-ng-controller="ConnectionCtrl">
                     <ul class="nav navbar-nav">
                         <li data-ng-if="isConnected">
                             <a data-ui-sref="database">Explorer</a>
@@ -78,8 +78,8 @@
 
             <div data-ui-view></div>
 
-            <footer>
-                <p>&copy; 2015 Rick Rutt - Version: 0.1.0-20150212 (Portions &copy; 2014 Shaun Xu)</p>
+            <footer data-ng-controller="ServerDataCtrl">
+                <p>Version: {{serverConfig.packageJson.version}} {{serverConfig.packageJson.copyright}}</p>
             </footer>
         </div>
 
@@ -101,5 +101,6 @@
         <script type="text/javascript" src="controllers/databaseCtrl.js"></script>
         <script type="text/javascript" src="controllers/collectionCtrl.js"></script>
         <script type="text/javascript" src="controllers/documentCtrl.js"></script>
+        <script type="text/javascript" src="controllers/serverdataCtrl.js"></script>
     </body>
 </html>

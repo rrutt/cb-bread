@@ -1,17 +1,19 @@
 {
   "name": "cb-bread",
-  "version": "0.1.0-20150212",
+  "version": "0.1.0-20150213",
+  "copyright": "© 2015 Rick Rutt (Portions © 2014 Shaun Xu)",
+  "description": "Couchbase Browse/Read/Edit/Add/Delete",
   "private": true,
-  "description": "Couchbase Browse/Read/Edit/Add/Delete (adapted from myazdocdb = Microsoft Azure DocumentDB Management Website)",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node server.js",
+    "debug": "node server.js --debug",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
-    "documentdb",
-    "azure",
-    "couchbase"
+    "angularjs",
+    "couchbase",
+    "json"
   ],
   "author": "Rick Rutt, Shaun Xu",
   "license": "MIT",
