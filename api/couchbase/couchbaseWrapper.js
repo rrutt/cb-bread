@@ -23,22 +23,58 @@
             var hostAndPort = host + ':8091';
             cbCluster = new cb.Cluster(hostAndPort);
             cbClusterManager = cbCluster.manager(user, password);
+            cbPassword = password;
         }
     };
 
     exports.listBuckets = function(callback) {
-        cbClusterManager.listBuckets(function(err, cbBucketList) {
+        cbClusterManager.listBuckets(function(err, bucketInfoList) {
             if (err) {
                 cbLogger.error("couchbaseWrapper.listBuckets error: ", util.inspect(err));
             } else {
-//                cbLogger.debug("couchbaseWrapper.listBuckets cbBucketList = %s", util.inspect(cbBucketList));
+//                cbLogger.debug("couchbaseWrapper.listBuckets bucketInfoList = %s", util.inspect(bucketInfoList));
                 var bucketList = [];
-                cbBucketList.forEach(function(cbBucket) {
-                    var bucket = { id: cbBucket['name'], self: cbBucket['uri'], text: cbBucket['name'] };
+                bucketInfoList.forEach(function(bucketInfo) {
+                    var bucket = { id: bucketInfo['name'], text: bucketInfo['name'] };
                     bucketList.push(bucket);
                 });
                 cbLogger.debug("couchbaseWrapper.listBuckets bucketList = %s", util.inspect(bucketList));
                 return callback(null, bucketList);
+            }
+        });
+    };
+
+    exports.listViews = function(bucketName, callback) {
+        var cbBucket = cbCluster.openBucket(bucketName, cbPassword, function(err) {
+            if (err) {
+                cbLogger.error("couchbaseWrapper.listViews cbCluster.openBucket for bucket '%s' threw error: ", bucketName, util.inspect(err));
+                throw err;
+            }
+        });
+
+        var cbBucketManager = cbBucket.manager();
+//        cbLogger.debug("couchbaseWrapper.listViews cbBucketManager = ", util.inspect(cbBucketManager));
+        cbBucketManager.getDesignDocuments(function(err, ddocs) {
+            if (err) {
+                cbLogger.error("couchbaseWrapper.listViews cbBucketManager.getDesignDocuments for bucket '%s' threw error: ", bucketName, util.inspect(err));
+            } else {
+                cbLogger.debug("couchbaseWrapper.listViews ddocs = %s", util.inspect(ddocs));
+                var viewList = [];
+                for (var ddocName in ddocs) {
+                    if (ddocs.hasOwnProperty(ddocName)) {
+                        var ddoc = ddocs[ddocName];
+                        var ddocViews = ddoc.views;
+                        for (var viewName in ddocViews) {
+                            if (ddocViews.hasOwnProperty(viewName)) {
+                                var ddocViewName = ddocName + '/' + viewName;
+                                var view = { id: ddocViewName, text: ddocViewName };
+                                viewList.push(view);
+                            }
+                        }
+                    }
+                }
+                cbLogger.debug("couchbaseWrapper.listViews viewList = %s", util.inspect(viewList));
+                return callback(null, viewList);
             }
         });
     };

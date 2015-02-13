@@ -23,7 +23,7 @@
     exports.listBuckets = function(callback) {
         var mockBuckets = [];
         mockBucketNames.forEach(function(bucketName) {
-            var bucket = { id: bucketName, self: bucketName, text: bucketName };
+            var bucket = { id: bucketName, text: bucketName };
             mockBuckets.push(bucket);
         });
         return callback(null, mockBuckets);

@@ -15,7 +15,7 @@
     <tr data-ng-repeat="collection in collections">
         <td>{{$index + 1}}</td>
         <td>
-            <a data-ui-sref="document({ did: db.id, dl: db.link, cid: collection.id, cl: collection._self })">{{collection.id}}</a>
+            <a data-ui-sref="document({ did: bucket.id, dl: bucket.link, cid: collection.id, cl: collection._self })">{{collection.id}}</a>
         </td>
         <td>{{collection._self}}</td>
         <td>{{collection._ts}}</td>

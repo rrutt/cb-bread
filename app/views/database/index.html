@@ -2,26 +2,14 @@
     <thead>
         <tr>
             <th>#</th>
-            <th>ID</th>
-            <th>Self</th>
-            <th>Timestamp</th>
-            <th>ETag</th>
-            <th>
-                <button type="button" class="btn btn-success btn-xs btn-block" data-ng-click="create()">Create</button>
-            </th>
+            <th>Bucket Name</th>
         </tr>
     </thead>
     <tbody>
-        <tr data-ng-repeat="database in databases">
+        <tr data-ng-repeat="bucket in buckets">
             <td>{{$index + 1}}</td>
             <td>
-                <a data-ui-sref="collection({ did: database.id, dl: database._self })">{{database.id}}</a>
-            </td>
-            <td>{{database._self}}</td>
-            <td>{{database._ts}}</td>
-            <td>{{database._etag}}</td>
-            <td>
-                <button type="button" class="btn btn-danger btn-xs btn-block" data-ng-click="delete(database.id, database._self)">Delete</button>
+                <a data-ui-sref="collection({ did: bucket.id, dl: buckets.id })">{{bucket.id}}</a>
             </td>
         </tr>
     </tbody>

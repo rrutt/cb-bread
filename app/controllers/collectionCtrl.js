@@ -5,112 +5,29 @@
 
     app.controller('CollectionIndexCtrl', function ($rootScope, $scope, $state, $stateParams, $alert, $modal, api) {
         var refresh = function () {
-            api.request(controllerName, 'list', { databaseLink: $scope.db.link }, function (error, cols) {
-                if (error) {
-                    $alert(JSON.stringify(error, null, 2));
+            api.request(controllerName, 'list', { id: $scope.bucket.id }, function (err, views) {
+                if (err) {
+                    $alert(JSON.stringify(err, null, 2));
                 }
                 else {
-                    $scope.collections = cols;
+                    $scope.collections = views;
                 }
             });
         };
 
-        $scope.delete = function (id, selfLink) {
-            var modalInstance = $modal.open({
-                templateUrl: 'views/collection/delete.html',
-                controller: 'CollectionDeleteCtrl',
-                resolve: {
-                    db: function () {
-                        return $scope.db;
-                    },
-                    col: function () {
-                        return {
-                            id: id,
-                            link: selfLink
-                        }
-                    }
-                }
-            });
-            modalInstance.result.then(function () {
-                refresh();
-            }, function () {});
-        };
-
-        $scope.create = function () {
-            var modalInstance = $modal.open({
-                templateUrl: 'views/collection/create.html',
-                controller: 'CollectionCreateCtrl',
-                resolve: {
-                    db: function () {
-                        return $scope.db;
-                    }
-                }
-            });
-            modalInstance.result.then(function () {
-                refresh();
-            }, function () {});
-        };
-
-        $scope.db = {
-            id: $stateParams.did,
-            link: $stateParams.dl
+        $scope.bucket = {
+            id: $stateParams.did
         };
         $rootScope.breadcrumb.items = [
             {
                 href: $state.href('database', undefined, undefined),
-                text: 'Databases'
+                text: 'Buckets'
             },
             {
-                text: $scope.db.id
+                text: $scope.bucket.id
             }
         ];
 
         refresh();
-    });
-
-    app.controller('CollectionCreateCtrl', function ($scope, $alert, $modalInstance, api, db) {
-        $scope.id = '';
-        $scope.db = db;
-
-        $scope.ok = function (id) {
-            api.request(controllerName, 'create', { id: id, databaseLink: db.link }, function (error, col) {
-                if (error) {
-                    $alert(JSON.stringify(error, null, 2));
-                }
-                else {
-                    $modalInstance.close(col);
-                }
-            });
-        };
-
-        $scope.cancel = function () {
-            $modalInstance.dismiss('cancel');
-        };
-    });
-
-    app.controller('CollectionDeleteCtrl', function ($scope, $alert, $modalInstance, api, db, col) {
-        $scope.id = '';
-        $scope.db = db;
-        $scope.col = col;
-
-        $scope.ok = function (id) {
-            if (id === col.id) {
-                api.request(controllerName, 'remove', { id: id, databaseLink: db.link }, function (error) {
-                    if (error) {
-                        $alert(JSON.stringify(error, null, 2));
-                    }
-                    else {
-                        $modalInstance.close();
-                    }
-                });
-            }
-            else {
-                $alert('The name of the collection you typed was incorrect.');
-            }
-        };
-
-        $scope.cancel = function () {
-            $modalInstance.dismiss('cancel');
-        };
     });
 })();
