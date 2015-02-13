@@ -4,15 +4,29 @@
     var util = require('util');
 
     var path = require('path');
-    var argv = require('optimist').usage('Usage: $0 [--port] [--debug] [--proxy]')
-        .default('port', process.env.port || 8008)
-        .default('debug', true)
-        .default('proxy', null)
-        .argv;
+
+    // http://stackoverflow.com/questions/15889826/trying-to-use-optimist-api-help-to-print-usage
+    var optimist = require('optimist')
+        .usage('Usage: $0 [--debug] [--port=8008] [--proxy=server:nnnn]')
+        .describe('?', 'Display the usage.')
+        .alias('?', 'help')
+        .describe('d', 'Enable debug level log messages.')
+        .alias('d', 'debug')
+        .describe('p', 'Set the HTTP listener port.')
+        .alias('p', 'port')
+        .default('p', process.env.port || 8008)
+        .describe('x', 'Enable a request proxy server and port number.')
+        .alias('x', 'proxy')
+        .default('x', null);
+    var argv = optimist.argv;
+    if (argv.help) {
+        optimist.showHelp();
+        process.exit(0);
+    }
 
     var log4js = require('log4js');
     var logger = log4js.getLogger('cb-bread');
-    if (argv['debug'] === true) {
+    if (argv.debug) {
         logger.setLevel('DEBUG');
     }
     else {
@@ -24,12 +38,12 @@
         logger.error("uncaughtException\n" + util.inspect(err) + "\n=== Stack trace ===\n" + err.stack);
     });
 
+    logger.debug('config - debug: ' + argv.debug);
     logger.debug('config - port: ' + argv['port']);
-    logger.debug('config - debug: ' + argv['debug']);
-    logger.debug('config - proxy: ' + argv['proxy']);
+    logger.debug('config - proxy: ' + argv.proxy);
 
-    if (argv['proxy']) {
-        var array = argv['proxy'].split(':');
+    if (argv.proxy) {
+        var array = argv.proxy.split(':');
         if (array.length === 2) {
             var host = array[0];
             var port = array[1];
@@ -79,7 +93,7 @@
     var api = require('./api');
     api.initialize(app, logger);
 
-    app.listen(argv['port']);
-    logger.info('http://localhost:' + argv['port'] + '/');
+    app.listen(argv.port);
+    logger.info('http://localhost:' + argv.port + '/');
     process.title = 'cb-bread';
 })();

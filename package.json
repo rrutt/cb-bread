@@ -13,10 +13,10 @@
     "azure",
     "couchbase"
   ],
-  "author": "Shaun Xu, Rick Rutt",
+  "author": "Rick Rutt, Shaun Xu",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/shaunxu/myazdocdb/issues"
+    "url": "https://github.com/rrutt/cb-bread/issues"
   },
   "dependencies": {
     "async": "^0.9.0",
