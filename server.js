@@ -12,6 +12,8 @@
         .alias('?', 'help')
         .describe('d', 'Enable debug level log messages.')
         .alias('d', 'debug')
+        .describe('r', 'Log responses from server api requests.')
+        .alias('r', 'responses')
         .describe('p', 'Set the HTTP listener port.')
         .alias('p', 'port')
         .default('p', process.env.port || 8008)
@@ -91,7 +93,7 @@
 
     // launch api
     var api = require('./api');
-    api.initialize(app, logger);
+    api.initialize(app, argv, logger);
 
     app.listen(argv.port);
     logger.info('http://localhost:' + argv.port + '/');

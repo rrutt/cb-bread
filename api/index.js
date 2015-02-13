@@ -5,7 +5,7 @@
 
     var cbWrapper = require('./couchbase/couchbaseWrapper');
 
-    exports.initialize = function (app, logger) {
+    exports.initialize = function (app, argv, logger) {
         var _validate = function (controller, params, callback) {
             var validator = controller['validate'];
             if (validator) {
@@ -31,7 +31,9 @@
             }
             else {
                 message.result = result;
-                logger.debug(message);
+                if (argv.responses) {
+                    logger.warn("Server Response\n%s", util.inspect(message, false, null, true));
+                }
                 res.json(result);
             }
         };
