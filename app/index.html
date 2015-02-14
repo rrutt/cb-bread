@@ -26,7 +26,7 @@
                 <div class="navbar-collapse collapse" data-ng-controller="ConnectionCtrl">
                     <ul class="nav navbar-nav">
                         <li data-ng-if="isConnected">
-                            <a data-ui-sref="database">Explorer</a>
+                            <a data-ui-sref="database">Buckets</a>
                         </li>
                         <li data-ng-if="isConnected">
                             <a data-ui-sref="console">Console</a>
@@ -55,7 +55,7 @@
                             <input type="text" readonly class="form-control" data-ng-model="host">
                             <input type="text" readonly class="form-control" data-ng-model="user">
                         </div>
-                        <button type="button" class="btn btn-success" data-ng-show="!isConnected" data-ng-click="connect()">Connect</button>
+                        <button type="button" class="btn btn-success" data-ng-show="!isConnected" data-ng-click="connect()" data-ui-sref="database">Connect</button>
                         <button type="button" class="btn btn-success" data-ng-show="isConnected" data-ng-click="disconnect()">Disconnect</button>
                     </form>
                 </div>

@@ -2,13 +2,7 @@
     <thead>
     <tr>
         <th>#</th>
-        <th>ID</th>
-        <th>Self</th>
-        <th>Timestamp</th>
-        <th>ETag</th>
-        <th>
-            <button type="button" class="btn btn-success btn-xs btn-block" data-ng-click="create()">Create</button>
-        </th>
+        <th>Design Document/View Name</th>
     </tr>
     </thead>
     <tbody>
@@ -16,12 +10,6 @@
         <td>{{$index + 1}}</td>
         <td>
             <a data-ui-sref="document({ did: bucket.id, dl: bucket.link, cid: collection.id, cl: collection._self })">{{collection.id}}</a>
-        </td>
-        <td>{{collection._self}}</td>
-        <td>{{collection._ts}}</td>
-        <td>{{collection._etag}}</td>
-        <td>
-            <button type="button" class="btn btn-danger btn-xs btn-block" data-ng-click="delete(collection.id, collection._self)">Delete</button>
         </td>
     </tr>
     </tbody>
