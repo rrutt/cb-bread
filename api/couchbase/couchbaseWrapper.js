@@ -80,7 +80,7 @@
                 cbBucket.disconnect();
                 return callback(err);
             } else {
-                cbLogger.debug("couchbaseWrapper.listViews ddocs = %s", util.inspect(ddocs));
+//                cbLogger.debug("couchbaseWrapper.listViews ddocs = %s", util.inspect(ddocs, false, null, true));
                 var viewList = [];
                 for (var ddocName in ddocs) {
                     if (ddocs.hasOwnProperty(ddocName)) {
@@ -88,9 +88,14 @@
                         var ddocViews = ddoc.views;
                         for (var viewName in ddocViews) {
                             if (ddocViews.hasOwnProperty(viewName)) {
+                                var view = ddocViews[viewName];
                                 var ddocViewName = ddocName + '/' + viewName;
-                                var view = { id: ddocViewName, text: ddocViewName };
-                                viewList.push(view);
+                                if (view.reduce) {
+                                    cbLogger.debug("For bucket %s, ignoring map/reduce view %s", bucketName, ddocViewName);
+                                } else {
+                                    var view = { id: ddocViewName, text: ddocViewName };
+                                    viewList.push(view);
+                                }
                             }
                         }
                     }
@@ -153,7 +158,7 @@
                 cbLogger.debug("viewValues = %s", util.inspect(viewValues));
 
                 var resultRows = [];
-                if (docIds.length > 0) {
+                if (docIds && docIds.length > 0) {
                     cbBucket.getMulti(docIds, function (err, rows) {
                         if (err) {
                             cbLogger.error("cbBucket.getMulti returned error: %s", util.inspect(err));
