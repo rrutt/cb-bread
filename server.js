@@ -1,31 +1,55 @@
 (function () {
     'use strict';
 
+    var path = require('path');
     var util = require('util');
 
-    var path = require('path');
-
-    // http://stackoverflow.com/questions/15889826/trying-to-use-optimist-api-help-to-print-usage
-    var optimist = require('optimist')
-        .usage('Usage: $0 [--host=(host)] [--user=(user)] [--password=(password)] [--debug] [--responses] [--listen=8008] [--proxy=server:nnnn]')
-        .describe('?', 'Display the usage.')
-        .alias('?', 'help')
-        .describe('h', 'Set Couchbase host.')
-        .alias('h', 'host')
-        .describe('u', 'Set Couchbase user.')
-        .alias('u', 'user')
-        .describe('p', 'Set Couchbase password.')
-        .alias('p', 'password')
-        .describe('d', 'Enable debug level log messages.')
-        .alias('d', 'debug')
-        .describe('r', 'Log responses from server api requests.')
-        .alias('r', 'responses')
-        .describe('l', 'Set the HTTP listen port.')
-        .default('l', process.env.port || 8008)
-        .alias('l', 'listen')
-        .describe('x', 'Enable a request proxy server and port number.')
-        .default('x', null)
-        .alias('x', 'proxy');
+    var packageJson = require('./package.json');
+    var packageMsg = util.format("\n%s: %s\nVersion %s Copyright %s\n\n", packageJson.name, packageJson.description, packageJson.version, packageJson.copyright);
+    var epilogMsg = util.format("For more information see %s/README.md\n\nReport issues at %s", packageJson.repository.url, packageJson.bugs.url)
+  
+    // https://github.com/chevex/yargs
+    var optimist = require('yargs')
+        .usage(packageMsg + 'Usage: node server [--host=(host)] [--user=(user)] [--password=(password)] [--debug] [--responses] [--listen=8008] [--proxy=my.proxy:8888]')
+        .example("node server", "Listens on port 8008 with minimal logging. Requires user to enter Couchbase host, user and password.\n")
+        .example("node server -h localhost -u admin", "Listens on port 8008 with minimal logging. Defaults to Couchbase on 'localhost' as user 'admin'. Requires user to enter Couchbase password.\n")
+        .example("node server -u admin -p demo01 -l 8080", "Listens on port 8080 with minimal logging. Defaults to Couchbase user 'admin' with password 'demo01'. Requires user to enter Couchbase host name.\n")
+        .option('?', {
+            alias : 'help',
+            describe: 'Display the usage.'
+        })
+        .version(packageJson.version, 'v', "Show version number.").alias('v', 'version')
+        .option('h', {
+            alias : 'host',
+            describe: 'Set Couchbase host.'
+        })
+        .option('u', {
+            alias : 'user',
+            describe: 'Set Couchbase user.'
+        })
+        .option('p', {
+            alias : 'password',
+            describe: 'Set Couchbase password.'
+        })
+        .option('d', {
+            alias : 'debug',
+            describe: 'Enable debug level log messages.'
+        })
+        .option('r', {
+            alias : 'responses',
+            describe: 'Log responses from server API requests.'
+        })
+        .option('l', {
+            alias : 'listen',
+            describe: 'Set the HTTP listen port.',
+            default: process.env.port || 8008
+        })
+        .option('x', {
+            alias : 'proxy',
+            describe: 'Enable a request proxy server and port.',
+            default: null
+        })
+        .epilog(epilogMsg);
     var argv = optimist.argv;
     if (argv.help) {
         optimist.showHelp();

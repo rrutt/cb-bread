@@ -1,0 +1,29 @@
+
+cb-bread: Couchbase Browse/Read/Edit/Add/Delete
+Version 0.1.0-20150214 Copyright © 2015 Rick Rutt (Portions © 2014 Shaun Xu)
+
+Usage: node server [--host=(host)] [--user=(user)] [--password=(password)] [--debug] [--responses] [--listen=8008] [--proxy=my.proxy:8888]
+
+Options:
+  -?, --help       Display the usage.                     
+  -v, --version    Show version number.                   
+  -h, --host       Set Couchbase host.                    
+  -u, --user       Set Couchbase user.                    
+  -p, --password   Set Couchbase password.                
+  -d, --debug      Enable debug level log messages.       
+  -r, --responses  Log responses from server API requests.
+  -l, --listen     Set the HTTP listen port.                [default: 8008]
+  -x, --proxy      Enable a request proxy server and port.  [default: null]
+
+Examples:
+  node server                               Listens on port 8008 with minimal logging. Requires user to enter Couchbase host, user and password.
+                                             
+  node server -h localhost -u admin         Listens on port 8008 with minimal logging. Defaults to Couchbase on 'localhost' as user 'admin'. Requires user to enter Couchbase password.
+      
+  node server -u admin -p demo01 -l 8080    Listens on port 8080 with minimal logging. Defaults to Couchbase user 'admin' with password 'demo01'. Requires user to enter Couchbase host name.
+
+
+For more information see https://github.com/rrutt/cb-bread/README.md
+
+Report issues at https://github.com/rrutt/cb-bread/issues
+
