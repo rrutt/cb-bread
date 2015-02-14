@@ -26,7 +26,21 @@
             });
         };
         
+        $scope.prevPage = function () {
+            $scope.skipCount = $scope.skipCount - $scope.pageSize;
+            if ($scope.skipCount < 0) {
+                $scope.skipCount = 0;
+            }
+            refresh();
+        };
+        
+        $scope.nextPage = function () {
+            $scope.skipCount = $scope.skipCount + $scope.pageSize;
+            refresh();
+        };
+        
         $scope.requeryServer = function () {
+            $scope.skipCount = 0;
             refresh();
         };
 

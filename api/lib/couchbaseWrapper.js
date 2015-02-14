@@ -133,7 +133,7 @@
             .skip(skipCount)
             .limit(pageSize);
         if (keyPrefix && keyPrefix.length > 0) {
-            cbQuery = cbQuery.range(keyPrefix, keyPrefix + 'z');
+            cbQuery = cbQuery.range(keyPrefix, 'z');
         }
             
         cbBucket.query(cbQuery, function(err, viewRows) {
