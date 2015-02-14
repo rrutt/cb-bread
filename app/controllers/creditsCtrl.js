@@ -9,6 +9,8 @@
         ];
 
         $scope.credits = [];
+        
+        // TODO: Add more links: body-parser, compression, couchbase, express, log4js, yargs.
 
         $scope.credits.push({
             title: 'My DocumentDB',

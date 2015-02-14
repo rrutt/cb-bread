@@ -11,6 +11,7 @@
     var cbUser = null;
     var cbPassword = null;
     var cbLogger = null;
+    var cbBucketPasswords = {};
 
     var credentialsComplete = function(host, user, password) {
         return (host && host.length > 0) &&
@@ -42,7 +43,7 @@
     };
 
     exports.listBuckets = function(callback) {
-        // TODO: Cache buckets and SASL passwords in a local hash map.
+        cbBucketPasswords = {};
         
 //        cbLogger.debug("couchbaseWrapper.listBuckets cbClusterManager = ", util.inspect(cbClusterManager, false, null, true));
         cbClusterManager.listBuckets(function(err, bucketInfoList) {
@@ -53,8 +54,11 @@
 //                cbLogger.debug("couchbaseWrapper.listBuckets bucketInfoList = %s", util.inspect(bucketInfoList));
                 var bucketList = [];
                 bucketInfoList.forEach(function(bucketInfo) {
-                    var bucket = { id: bucketInfo['name'], text: bucketInfo['name'] };
+                    var bucketName = bucketInfo.name;
+                    var bucketPassword = bucketInfo.saslPassword;
+                    var bucket = { id: bucketName };
                     bucketList.push(bucket);
+                    cbBucketPasswords[bucketName] = bucketPassword;
                 });
                 cbLogger.debug("couchbaseWrapper.listBuckets bucketList = %s", util.inspect(bucketList));
                 return callback(null, bucketList);
@@ -63,9 +67,9 @@
     };
 
     exports.listViews = function(bucketName, callback) {
-        // TODO: Use cached bucket password.
+        var bucketPassword = cbBucketPasswords[bucketName];
         
-        var cbBucket = cbCluster.openBucket(bucketName, cbPassword, function(err) {
+        var cbBucket = cbCluster.openBucket(bucketName, bucketPassword, function(err) {
             if (err) {
                 cbLogger.error("couchbaseWrapper.listViews cbCluster.openBucket for bucket '%s' threw error: ", bucketName, util.inspect(err));
                 throw err;
@@ -108,9 +112,9 @@
     };
     
     exports.listDocuments = function(bucketName, designDocViewName, keyPrefix, skipCount, pageSize, callback) {
-        // TODO: Use cached bucket password.
+        var bucketPassword = cbBucketPasswords[bucketName];
         
-        var cbBucket = cbCluster.openBucket(bucketName, cbPassword, function(err) {
+        var cbBucket = cbCluster.openBucket(bucketName, bucketPassword, function(err) {
             if (err) {
                 cbLogger.error("couchbaseWrapper.listViews cbCluster.openBucket for bucket '%s' threw error: ", bucketName, util.inspect(err));
                 throw err;

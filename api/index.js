@@ -3,7 +3,7 @@
 
     var util = require('util');
 
-    var cbWrapper = require('./couchbase/couchbaseWrapper');
+    var cbWrapper = require('./lib/couchbaseWrapper');
 
     exports.initialize = function (app, argv, logger) {
         var _validate = function (controller, params, callback) {
