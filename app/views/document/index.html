@@ -2,10 +2,9 @@
     <thead>
         <tr>
             <th>#</th>
-            <th>ID</th>
-            <th>Resource ID</th>
-            <th>Timestamp</th>
-            <th>ETag</th>
+            <th>View Key</th>
+            <th>Document ID</th>
+            <th>CAS</th>
             <th colspan="2">
                 <button type="button" class="btn btn-success btn-xs btn-block" data-ng-click="createOrUpdate(undefined)">Create</button>
             </th>
@@ -21,12 +20,9 @@
                     <span class="glyphicon glyphicon-chevron-down"></span>
                 </a>
             </td>
-            <td>
-                {{document.id}}
-            </td>
-            <td>{{document._rid}}</td>
-            <td>{{document._ts}}</td>
-            <td>{{document._etag}}</td>
+            <td>{{document.key}}</td>
+            <td>{{document.id}}</td>
+            <td>{{document.cas}}</td>
             <td>
                 <button type="button" class="btn btn-primary btn-xs btn-block" data-ng-click="createOrUpdate(document)">Edit</button>
             </td>

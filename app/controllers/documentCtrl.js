@@ -16,15 +16,12 @@
                         console.log("DocumentIndexCtrl.refresh row = " + JSON.stringify(row));
                         var model = {
                             expanded: false,
+                            key: JSON.stringify(row.key),
                             id: row.id,
-                            _self: row.id,
-                            _ts: JSON.stringify(row.cas),
-                            _etag: JSON.stringify(row.key),
-                            _rid: row.id,
-                            _attachments: null
+                            cas: JSON.stringify(row.cas),
                         };
                         model.body = row.doc;
-                        model.bodyString = JSON.stringify(row.doc, null, 99);
+                        model.bodyString = JSON.stringify(row.doc, null, 2);
                         $scope.documents.push(model);
                     });
                 }
