@@ -5,15 +5,13 @@
 
     app.controller('DocumentIndexCtrl', function ($rootScope, $scope, $state, $stateParams, $alert, $modal, api) {
         var refresh = function () {
-            api.request(controllerName, 'list', { bucketId: $scope.view.bucketId, viewId: $scope.view.viewId }, function (error, resultRows) {
+            api.request(controllerName, 'list', { bucketId: $scope.view.bucketId, viewId: $scope.view.viewId, keyPrefix: $scope.keyPrefix, skipCount: $scope.skipCount, pageSize: $scope.pageSize }, function (error, resultRows) {
                 if (error) {
                     $alert(JSON.stringify(error, null, 2));
                 }
                 else {
                     $scope.documents = [];
-                    console.log("DocumentIndexCtrl.refresh resultRows = " + JSON.stringify(resultRows));
                     resultRows.forEach(function (row) {
-                        console.log("DocumentIndexCtrl.refresh row = " + JSON.stringify(row));
                         var model = {
                             expanded: false,
                             key: JSON.stringify(row.key),
@@ -26,6 +24,10 @@
                     });
                 }
             });
+        };
+        
+        $scope.requeryServer = function () {
+            refresh();
         };
 
         $scope.delete = function (doc) {
@@ -82,6 +84,10 @@
                 text: $scope.view.viewId
             }
         ];
+        
+        $scope.keyPrefix = '';
+        $scope.skipCount = 0;
+        $scope.pageSize = 10;
 
         refresh();
     });

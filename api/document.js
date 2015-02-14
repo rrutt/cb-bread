@@ -4,13 +4,12 @@
     var _logger = null;
 
     var _list = function (client, params, callback) {
-        var id = params.id;
         var bucketName = params.bucketId;
-        var designDocViewName = params.viewId;
+        var designDocViewName = params.viewId;        
+        var keyPrefix = params.keyPrefix;
+        var skipCount = params.skipCount;
+        var pageSize = params.pageSize;
         
-        var keyPrefix = null;  // TODO: Add to params.
-        var skipCount = 0;  // TODO: Add to params.
-        var pageSize = 3;  // TODO: Add to params.
         client.listDocuments(bucketName, designDocViewName, keyPrefix, skipCount, pageSize, function (error, data) {
             if (error) {
                 return callback(error, null);
