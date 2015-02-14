@@ -70,8 +70,10 @@
         logger.error("process.on uncaughtException\n" + util.inspect(err) + "\n=== Stack trace ===\n" + err.stack);
     });
 
+    logger.info("Run as 'node server -?' for command-line options.");
     logger.debug('config - debug: ' + argv.debug);
-    logger.debug('config - port: ' + argv.listen);
+    logger.debug('config - responses: ' + argv.responses);
+    logger.debug('config - listen: ' + argv.listen);
     logger.debug('config - proxy: ' + argv.proxy);
 
     if (argv.proxy) {

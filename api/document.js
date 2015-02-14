@@ -3,16 +3,20 @@
 
     var _logger = null;
 
-    var _select = function (client, params, callback) {
+    var _list = function (client, params, callback) {
         var id = params.id;
-        var collectionId = params.collectionId;
-        var query = 'SELECT * FROM ROOT' + (id ? ' r WHERE r.id = "' + id + '"' : '');
-        client.queryDocuments(collectionId, query).toArray(function (error, docs) {
+        var bucketName = params.bucketId;
+        var designDocViewName = params.viewId;
+        
+        var keyPrefix = null;  // TODO: Add to params.
+        var skipCount = 0;  // TODO: Add to params.
+        var pageSize = 3;  // TODO: Add to params.
+        client.listDocuments(bucketName, designDocViewName, keyPrefix, skipCount, pageSize, function (error, data) {
             if (error) {
                 return callback(error, null);
             }
             else {
-                return callback(null, docs);
+                return callback(null, data);
             }
         });
     };
@@ -132,16 +136,16 @@
         _logger = logger;
 
         return {
-            list: _select,
+            list: _list,
             create: _create,
             update: _update,
             remove: _remove,
             validate: function (params, callback) {
-                if (params.collectionId && params.collectionId.length > 0) {
+                if ((params.bucketId && params.bucketId.length > 0) && (params.viewId && params.viewId.length > 0)) {
                     return callback(null);
                 }
                 else {
-                    return callback('Miss collection link in request: ' + JSON.stringify(params, null, 2));
+                    return callback('Missing bucketId and/or viewId in request: ' + JSON.stringify(params, null, 2));
                 }
             }
         };

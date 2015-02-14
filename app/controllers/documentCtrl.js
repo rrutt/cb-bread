@@ -5,29 +5,26 @@
 
     app.controller('DocumentIndexCtrl', function ($rootScope, $scope, $state, $stateParams, $alert, $modal, api) {
         var refresh = function () {
-            api.request(controllerName, 'list', { bucketId: $scope.view.bucketId, viewId: $scope.view.viewId }, function (error, docs) {
+            api.request(controllerName, 'list', { bucketId: $scope.view.bucketId, viewId: $scope.view.viewId }, function (error, resultRows) {
                 if (error) {
                     $alert(JSON.stringify(error, null, 2));
                 }
                 else {
                     $scope.documents = [];
-                    docs.forEach(function (doc) {
+                    console.log("DocumentIndexCtrl.refresh resultRows = " + JSON.stringify(resultRows));
+                    resultRows.forEach(function (row) {
+                        console.log("DocumentIndexCtrl.refresh row = " + JSON.stringify(row));
                         var model = {
                             expanded: false,
-                            id: doc.id,
-                            _self: doc._self,
-                            _ts: doc._ts,
-                            _etag: doc._etag,
-                            _rid: doc._rid,
-                            _attachments: doc._attachments
+                            id: row.id,
+                            _self: row.id,
+                            _ts: JSON.stringify(row.cas),
+                            _etag: JSON.stringify(row.key),
+                            _rid: row.id,
+                            _attachments: null
                         };
-                        delete doc._self;
-                        delete doc._ts;
-                        delete doc._etag;
-                        delete doc._rid;
-                        delete doc._attachments;
-                        model.body = doc;
-                        model.bodyString = JSON.stringify(doc, null, 2);
+                        model.body = row.doc;
+                        model.bodyString = JSON.stringify(row.doc, null, 99);
                         $scope.documents.push(model);
                     });
                 }
