@@ -9,7 +9,7 @@
         <tr data-ng-repeat="bucket in buckets">
             <td>{{$index + 1}}</td>
             <td>
-                <a data-ui-sref="collection({ did: bucket.id, dl: buckets.id })">{{bucket.id}}</a>
+                <a data-ui-sref="collection({ did: bucket.id })">{{bucket.id}}</a>
             </td>
         </tr>
     </tbody>

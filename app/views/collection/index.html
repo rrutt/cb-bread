@@ -6,10 +6,10 @@
     </tr>
     </thead>
     <tbody>
-    <tr data-ng-repeat="collection in collections">
+    <tr data-ng-repeat="view in views">
         <td>{{$index + 1}}</td>
         <td>
-            <a data-ui-sref="document({ did: bucket.id, dl: bucket.link, cid: collection.id, cl: collection._self })">{{collection.id}}</a>
+            <a data-ui-sref="document({ did: bucket.id, cid: view.id })">{{view.id}}</a>
         </td>
     </tr>
     </tbody>

@@ -10,7 +10,7 @@
                     $alert(JSON.stringify(err, null, 2));
                 }
                 else {
-                    $scope.collections = views;
+                    $scope.views = views;
                 }
             });
         };
@@ -18,6 +18,7 @@
         $scope.bucket = {
             id: $stateParams.did
         };
+        
         $rootScope.breadcrumb.items = [
             {
                 href: $state.href('database', undefined, undefined),

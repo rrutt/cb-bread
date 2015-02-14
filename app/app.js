@@ -34,13 +34,13 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $u
     });
 
     $stateProvider.state('collection', {
-        url: '/collections/?did&dl',
+        url: '/collections/?did',
         templateUrl: '/views/collection/index.html',
         controller: 'CollectionIndexCtrl'
     });
 
     $stateProvider.state('document', {
-        url: '/documents/?did&dl&cid&cl',
+        url: '/documents/?did&cid',
         templateUrl: '/views/document/index.html',
         controller: 'DocumentIndexCtrl'
     });

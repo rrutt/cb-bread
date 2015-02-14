@@ -5,7 +5,7 @@
 
     app.controller('DocumentIndexCtrl', function ($rootScope, $scope, $state, $stateParams, $alert, $modal, api) {
         var refresh = function () {
-            api.request(controllerName, 'list', { collectionLink: $scope.col.collectionLink }, function (error, docs) {
+            api.request(controllerName, 'list', { bucketId: $scope.view.bucketId, viewId: $scope.view.viewId }, function (error, docs) {
                 if (error) {
                     $alert(JSON.stringify(error, null, 2));
                 }
@@ -70,23 +70,22 @@
             }, function () {});
         };
 
-        $scope.col = {
-            databaseId: $stateParams.did,
-            databaseLink: $stateParams.dl,
-            collectionId: $stateParams.cid,
-            collectionLink: $stateParams.cl
+        $scope.view = {
+            bucketId: $stateParams.did,
+            viewId: $stateParams.cid
         };
+        
         $rootScope.breadcrumb.items = [
             {
                 href: $state.href('database', undefined, undefined),
-                text: 'Databases'
+                text: 'Buckets'
             },
             {
-                href: $state.href('collection', { did: $scope.col.databaseId, dl: $scope.col.databaseLink}),
-                text: $scope.col.databaseId
+                href: $state.href('collection', { did: $scope.view.bucketId }),
+                text: $scope.view.bucketId
             },
             {
-                text: $scope.col.collectionId
+                text: $scope.view.viewId
             }
         ];
 
@@ -114,7 +113,7 @@
             // set body and id again in case user didn't put anything
             doc.id = id;
             // invoke api to create or update document
-            api.request(controllerName, $scope.isUpdate ? 'update' : 'create', { body: doc, collectionLink: col.collectionLink }, function (error, doc) {
+            api.request(controllerName, $scope.isUpdate ? 'update' : 'create', { body: doc, collectionId: col.collectionId }, function (error, doc) {
                 if (error) {
                     $alert(error);
                 }
@@ -136,7 +135,7 @@
 
         $scope.ok = function (id) {
             if (id === doc.id) {
-                api.request(controllerName, 'remove', { id: id, collectionLink: col.collectionLink }, function (error) {
+                api.request(controllerName, 'remove', { id: id, collectionId: col.collectionId }, function (error) {
                     if (error) {
                         $alert(JSON.stringify(error, null, 2));
                     }
