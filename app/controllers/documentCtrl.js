@@ -12,9 +12,14 @@
                 else {
                     $scope.documents = [];
                     resultRows.forEach(function (row) {
+                        var viewValue = '';
+                        if (row.value) {
+                            viewValue = JSON.stringify(row.value);
+                        }
                         var model = {
                             expanded: false,
                             key: JSON.stringify(row.key),
+                            value: viewValue,
                             id: row.id,
                             cas: JSON.stringify(row.cas),
                         };
@@ -99,7 +104,6 @@
             }
         ];
 
-        console.log("DocumentIndexCtrl call serverConfig.getConfig");
         serverConfig.getConfig(function (error, config) {
             if (error) {
                 $alert(JSON.stringify(error, null, 2));

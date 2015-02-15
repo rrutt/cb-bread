@@ -19,6 +19,7 @@
         <tr>
             <th>#</th>
             <th>View Key</th>
+            <th>View Value</th>
             <th>Document ID</th>
             <th>CAS</th>
             <th colspan="2">
@@ -29,6 +30,7 @@
     <tbody data-ng-repeat="document in documents">
         <tr>
             <td>
+                {{$index + skipCount + 1}}
                 <a href="javascript:void(0)" data-ng-show="document.expanded === true" data-ng-click="document.expanded = false">
                     <span class="glyphicon glyphicon-chevron-up"></span>
                 </a>
@@ -37,6 +39,7 @@
                 </a>
             </td>
             <td>{{document.key}}</td>
+            <td>{{document.value}}</td>
             <td>{{document.id}}</td>
             <td>{{document.cas}}</td>
             <td>
