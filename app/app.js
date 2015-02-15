@@ -87,7 +87,6 @@ app.factory('serverConfig', function ($alert, api) {
         getConfig: function(callback) {
             var self = this;
             if (this.serverConfig) {
-//                $alert("serverConfig.getConfig returned from cache");
                 return callback(null, this.serverConfig);
             } else {
                 api.request(controllerName, 'config', null, function (error, config) {
@@ -97,7 +96,6 @@ app.factory('serverConfig', function ($alert, api) {
                     }
                     else {
                         self.serverConfig = config;
-//                        $alert("serverConfig.getConfig loaded from server");
                         return callback(null, config);
                     }
                 });

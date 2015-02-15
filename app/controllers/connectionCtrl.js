@@ -27,19 +27,18 @@
             $scope.disconnect = disconnect;
 
             if (!credentials.isConfigured()) {
-//                $alert("ConnectionCtrl.refresh call serverConfig.getConfig");
                 serverConfig.getConfig(function (error, config) {
                     if (error) {
                         $alert(JSON.stringify(error, null, 2));
                     } else {
                         if ((!$scope.host) || ($scope.host.length == 0)) {
-                            $scope.host = config.host;
+                            $scope.host = config.argv.host;
                         }
                         if ((!$scope.user) || ($scope.user.length == 0)) {
-                            $scope.user = config.user;
+                            $scope.user = config.argv.user;
                         }
                         if ((!$scope.password) || ($scope.password.length == 0)) {
-                            $scope.password = config.password;
+                            $scope.password = config.argv.password;
                         }
                     }
                 });

@@ -47,6 +47,8 @@ Use **Control-C** once or twice in the command prompt window to stop the Node.js
 
     node server --help
 
+You can also view the resulting usage text as [help.txt](https://github.com/rrutt/cb-bread/blob/dev/help.txt)
+
 ### Adapted from:
 
 ["My DocumentDB" - A Simple Web-based DocumentDB Management Tool](http://blog.shaunxu.me/archive/2014/09/17/quotmy-documentdbquot---a-simple-web-based-documentdb-management-tool.aspx) by Shaun Xu.

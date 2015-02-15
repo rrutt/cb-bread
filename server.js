@@ -14,6 +14,7 @@
         .example("node server", "Listens on port 8008 with minimal logging. Requires user to enter Couchbase host, user and password.\n")
         .example("node server -h localhost -u admin", "Listens on port 8008 with minimal logging. Defaults to Couchbase on 'localhost' as user 'admin'. Requires user to enter Couchbase password.\n")
         .example("node server -u admin -p demo01 -l 8080", "Listens on port 8080 with minimal logging. Defaults to Couchbase user 'admin' with password 'demo01'. Requires user to enter Couchbase host name.\n")
+        .example("node server --proxy=my.proxy:8888", "Listens on port 8008 and uses the designated network proxy.\n")
         .option('?', {
             alias : 'help',
             describe: 'Display the usage.'
@@ -31,13 +32,10 @@
             alias : 'password',
             describe: 'Set Couchbase password.'
         })
-        .option('d', {
-            alias : 'debug',
-            describe: 'Enable debug level log messages.'
-        })
-        .option('r', {
-            alias : 'responses',
-            describe: 'Log responses from server API requests.'
+        .option('s', {
+            alias : 'pagesize',
+            describe: 'Set the initial document viewer page size.   [min 1, max 500]',
+            default: 10
         })
         .option('l', {
             alias : 'listen',
@@ -46,8 +44,15 @@
         })
         .option('x', {
             alias : 'proxy',
-            describe: 'Enable a request proxy server and port.',
-            default: null
+            describe: 'Enable a request proxy server and port.'
+        })
+        .option('d', {
+            alias : 'debug',
+            describe: 'Enable debug level log messages.'
+        })
+        .option('r', {
+            alias : 'responses',
+            describe: 'Log responses from server API requests.'
         })
         .epilog(epilogMsg);
     var argv = optimist.argv;

@@ -3,7 +3,7 @@
 
     var controllerName = 'document';
 
-    app.controller('DocumentIndexCtrl', function ($rootScope, $scope, $state, $stateParams, $alert, $modal, api) {
+    app.controller('DocumentIndexCtrl', function ($rootScope, $scope, $state, $stateParams, $alert, $modal, api, serverConfig) {
         var refresh = function () {
             api.request(controllerName, 'list', { bucketId: $scope.view.bucketId, viewId: $scope.view.viewId, keyPrefix: $scope.keyPrefix, skipCount: $scope.skipCount, pageSize: $scope.pageSize }, function (error, resultRows) {
                 if (error) {
@@ -98,12 +98,18 @@
                 text: $scope.view.viewId
             }
         ];
-        
-        $scope.keyPrefix = '';
-        $scope.skipCount = 0;
-        $scope.pageSize = 10;
 
-        refresh();
+        console.log("DocumentIndexCtrl call serverConfig.getConfig");
+        serverConfig.getConfig(function (error, config) {
+            if (error) {
+                $alert(JSON.stringify(error, null, 2));
+            } else {
+                $scope.keyPrefix = '';
+                $scope.skipCount = 0;
+                $scope.pageSize = config.argv.pagesize;        
+                refresh();
+            }
+        });
     });
 
     app.controller('DocumentCreateOrUpdateCtrl', function ($scope, $, $alert, $modalInstance, api, view, doc) {
