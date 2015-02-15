@@ -9,8 +9,6 @@
         ];
 
         $scope.credits = [];
-        
-        // TODO: Add more links: body-parser, compression, couchbase, express, log4js, yargs.
 
         $scope.credits.push({
             title: 'My DocumentDB',
@@ -19,6 +17,62 @@
             license: 'https://github.com/shaunxu/myazdocdb/blob/master/LICENSE'
         });
 
+        $scope.credits.push({
+            title: 'JSONEditor',
+            link: 'https://github.com/josdejong/jsoneditor',
+            description: 'A web-based tool to view, edit and format JSON.',
+            license: 'https://github.com/josdejong/jsoneditor/blob/master/LICENSE'
+        });
+
+        $scope.credits.push({
+            title: 'Couchbase Node.js SDK 2.0',
+            link: 'http://docs.couchbase.com/developer/node-2.0/introduction.html',
+            description: 'Couchbase Server is a NoSQL document database for interactive web applications. It has a flexible data model, is easily scalable, provides consistent high performance and is always on, meaning it is can serve application data 24 hours, 7 days a week.',
+            license: 'https://github.com/couchbase/couchnode/blob/master/LICENSE'
+        });
+
+        $scope.credits.push({
+            title: 'Node.js',
+            link: 'http://nodejs.org/',
+            description: "Node.js is a platform built on Chrome's JavaScript runtime for easily building fast, scalable network applications. Node.js uses an event-driven, non-blocking I/O model that makes it lightweight and efficient, perfect for data-intensive real-time applications that run across distributed devices.",
+            license: 'https://raw.githubusercontent.com/joyent/node/v0.12.0/LICENSE'
+        });
+
+        $scope.credits.push({
+            title: 'Express',
+            link: 'http://expressjs.com/',
+            description: 'Fast, unopinionated, minimalist web framework for Node.js',
+            license: 'https://github.com/strongloop/express/blob/master/LICENSE'
+        });
+
+        $scope.credits.push({
+            title: 'body-parser',
+            link: 'https://www.npmjs.com/package/body-parser',
+            description: 'Node.js body parsing middleware.',
+            license: 'https://github.com/expressjs/body-parser/blob/master/LICENSE'
+        });
+
+        $scope.credits.push({
+            title: 'yargs',
+            link: 'https://www.npmjs.com/package/yargs',
+            description: "Yargs be a node.js library fer hearties tryin' ter parse optstrings. With yargs, ye be havin' a map that leads straight to yer treasure! Treasure of course, being a simple option hash.",
+            license: 'https://github.com/chevex/yargs/blob/master/LICENSE'
+        });
+        
+        $scope.credits.push({
+            title: 'compression',
+            link: 'https://www.npmjs.com/package/compression',
+            description: 'Node.js compression middleware.',
+            license: 'https://github.com/expressjs/compression/blob/master/LICENSE'
+        });
+
+        $scope.credits.push({
+            title: 'log4js',
+            link: 'https://www.npmjs.com/package/log4js',
+            description: 'This is a conversion of the log4js framework to work with node.',
+            license: 'http://www.apache.org/licenses/LICENSE-2.0'
+        });
+        
         $scope.credits.push({
             title: 'jQuery',
             link: 'http://jquery.com/',
@@ -66,13 +120,6 @@
             link: 'http://angular-ui.github.io/ng-grid/',
             description: 'Angular Data Grid written in AngularJS and jQuery by the AngularUI Team.',
             license: 'https://github.com/angular-ui/ng-grid/blob/master/LICENSE.md'
-        });
-
-        $scope.credits.push({
-            title: 'JSONEditor',
-            link: 'https://github.com/josdejong/jsoneditor',
-            description: 'A web-based tool to view, edit and format JSON.',
-            license: 'https://github.com/josdejong/jsoneditor/blob/master/LICENSE'
         });
     });
 })();
