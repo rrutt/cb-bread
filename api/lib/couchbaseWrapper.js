@@ -112,13 +112,6 @@
     exports.listDocuments = function(bucketName, designDocViewName, keyPrefix, skipCount, pageSize, callback) {
         var bucketPassword = cbBucketPasswords[bucketName];
         
-        var cbBucket = cbCluster.openBucket(bucketName, bucketPassword, function(err) {
-            if (err) {
-                cbLogger.error("couchbaseWrapper.listViews cbCluster.openBucket for bucket '%s' threw error: ", bucketName, util.inspect(err));
-                throw err;
-            }
-        });
-        
         var designDocViewNameElements = designDocViewName.split('/');
         var designDocName = designDocViewNameElements[0];
         var viewName = designDocViewNameElements[1];
@@ -135,13 +128,23 @@
             var endKey = 'z';
             cbLogger.debug("couchbaseWrapper.listDocuments keyPrefix = %s", keyPrefix);
             if (keyPrefix.substring(0, 1) === '[') {
-                keyPrefix = JSON.parse(keyPrefix);
+                try {
+                    keyPrefix = JSON.parse(keyPrefix);
+                } catch (e) {
+                    return callback("Key Prefix must be a valid JSON value or array.");
+                }
                 endKey = ['z'];
                 cbLogger.debug("couchbaseWrapper.listDocuments adjusted keyPrefix = %s", util.inspect(keyPrefix));
             }
             cbQuery = cbQuery.range(keyPrefix, endKey);
         }
-            
+        
+        var cbBucket = cbCluster.openBucket(bucketName, bucketPassword, function(err) {
+            if (err) {
+                cbLogger.error("couchbaseWrapper.listViews cbCluster.openBucket for bucket '%s' threw error: ", bucketName, util.inspect(err));
+                throw err;
+            }
+        });
         cbBucket.query(cbQuery, function(err, viewRows) {
             if (err) {
                 cbLogger.error("cbBucket.query (host=%s bucket=%s designDoc=%s view=%s) returned err: %s", cbHost, bucketName, designDocName, viewName, util.inspect(err));
