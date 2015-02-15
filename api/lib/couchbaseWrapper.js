@@ -96,12 +96,8 @@
                             if (ddocViews.hasOwnProperty(viewName)) {
                                 var view = ddocViews[viewName];
                                 var ddocViewName = ddocName + '/' + viewName;
-                                if (view.reduce) {
-                                    cbLogger.debug("For bucket %s, ignoring map/reduce view %s", bucketName, ddocViewName);
-                                } else {
-                                    var view = { id: ddocViewName, text: ddocViewName };
-                                    viewList.push(view);
-                                }
+                                var view = { id: ddocViewName, text: ddocViewName };
+                                viewList.push(view);
                             }
                         }
                     }
@@ -130,6 +126,7 @@
         var cbViewQuery = cb.ViewQuery;
         var cbQuery = cbViewQuery
             .from(designDocName, viewName)
+            .reduce(false)
             .full_set(true)
             .stale(cbViewQuery.Update.BEFORE)  // Options are BEFORE, NONE, AFTER.
             .skip(skipCount)
