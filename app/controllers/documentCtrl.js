@@ -49,8 +49,8 @@
                 templateUrl: 'views/document/delete.html',
                 controller: 'DocumentDeleteCtrl',
                 resolve: {
-                    col: function () {
-                        return $scope.col;
+                    view: function () {
+                        return $scope.view;
                     },
                     doc: function () {
                         return doc;
@@ -67,8 +67,8 @@
                 templateUrl: 'views/document/create-update.html',
                 controller: 'DocumentCreateOrUpdateCtrl',
                 resolve: {
-                    col: function () {
-                        return $scope.col;
+                    view: function () {
+                        return $scope.view;
                     },
                     doc: function () {
                         return doc;
@@ -106,16 +106,16 @@
         refresh();
     });
 
-    app.controller('DocumentCreateOrUpdateCtrl', function ($scope, $, $alert, $modalInstance, api, col, doc) {
+    app.controller('DocumentCreateOrUpdateCtrl', function ($scope, $, $alert, $modalInstance, api, view, doc) {
         $scope.doc = doc || {};
         $scope.raw = JSON.stringify($scope.doc, null, 2);
-        $scope.col = col;
+        $scope.view = view;
         $scope.isUpdate = $scope.doc && $scope.doc.id;
 
         $scope.designMode = true;
-        $scope.changeMode = function (isDeignMode) {
-            $scope.designMode = isDeignMode;
-            if (isDeignMode === true) {
+        $scope.changeMode = function (isDesignMode) {
+            $scope.designMode = isDesignMode;
+            if (isDesignMode === true) {
                 $scope.doc.body = JSON.parse($scope.doc.bodyString);
             }
             else {
@@ -123,11 +123,9 @@
             }
         };
 
-        $scope.ok = function (id, doc) {
-            // set body and id again in case user didn't put anything
-            doc.id = id;
+        $scope.ok = function (id, body) {
             // invoke api to create or update document
-            api.request(controllerName, $scope.isUpdate ? 'update' : 'create', { body: doc, collectionId: col.collectionId }, function (error, doc) {
+            api.request(controllerName, 'createOrReplace', { bucketId: $scope.view.bucketId, docId: id, docBody: body }, function (error, doc) {
                 if (error) {
                     $alert(error);
                 }
@@ -142,14 +140,13 @@
         };
     });
 
-    app.controller('DocumentDeleteCtrl', function ($scope, $alert, $modalInstance, api, col, doc) {
-        $scope.id = '';
-        $scope.col = col;
+    app.controller('DocumentDeleteCtrl', function ($scope, $alert, $modalInstance, api, view, doc) {
+        $scope.view = view;
         $scope.doc = doc;
 
-        $scope.ok = function (id) {
-            if (id === doc.id) {
-                api.request(controllerName, 'remove', { id: id, collectionId: col.collectionId }, function (error) {
+        $scope.ok = function (confirmationDocId) {
+            if (confirmationDocId === doc.id) {
+                api.request(controllerName, 'delete', { bucketId: $scope.view.bucketId, docId: doc.id }, function (error) {
                     if (error) {
                         $alert(JSON.stringify(error, null, 2));
                     }
@@ -159,7 +156,7 @@
                 });
             }
             else {
-                $alert('The name of the document you typed was incorrect.');
+                $alert('The confirmation Document ID you typed was incorrect.');
             }
         };
 

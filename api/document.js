@@ -20,114 +20,40 @@
         });
     };
 
-    var _create = function (client, params, callback) {
-        var body = params.body || {};
-        var collectionId = params.collectionId;
-        if (body.id && body.id.length > 0) {
-            _select(client, { id: body.id, collectionId: collectionId }, function (error, cols) {
+    var _createOrReplace = function (client, params, callback) {
+        var bucketName = params.bucketId;
+        var docId = params.docId;
+        var docBody = params.docBody || {};
+        if (docId && docId.length > 0) {
+            client.createOrReplaceDocument(bucketName, docId, docBody, function (error, result) {
                 if (error) {
                     return callback(error, null);
                 }
                 else {
-                    if (cols && cols.length > 0) {
-                        return callback('Document with id [' + body.id + '] exists in collection [' + collectionId + '] .', null);
-                    }
-                    else {
-                        client.createDocument(collectionId, body, function (error, doc) {
-                            if (error) {
-                                return callback(error, null);
-                            }
-                            else {
-                                return callback(null, doc);
-                            }
-                        });
-                    }
+                    return callback(null, result);
                 }
             });
         }
         else {
-            return callback('Document id was null or empty.', null);
+            return callback('Document ID was null or empty.', null);
         }
     };
 
-    var _removeDirect = function (client, params, callback) {
-        var selfLink = params.selfLink;
-        client.deleteDocument(selfLink, function (error) {
-            if (error) {
-                return callback(error);
-            }
-            else {
-                return callback(null);
-            }
-        });
-    };
-
-    var _remove = function (client, params, callback) {
-        var id = params.id;
-        var collectionId = params.collectionId;
-        if (id && id.length > 0) {
-            _select(client, params, function (error, docs) {
+    var _delete = function (client, params, callback) {
+        var bucketName = params.bucketId;
+        var docId = params.docId;
+        if (docId && docId.length > 0) {
+            client.deleteDocument(bucketName, docId, function (error, result) {
                 if (error) {
-                    return callback(error);
+                    return callback(error, null);
                 }
                 else {
-                    if (docs && docs.length > 0) {
-                        if (docs.length > 1) {
-                            return callback('Multiple documents with same id [' + id + '] in collection [' + collectionId + '].');
-                        }
-                        else {
-                            _removeDirect(client, { selfLink: docs[0]['_self'] }, callback);
-                        }
-                    }
-                    else {
-                        return callback('Document with id [' + id + '] does not exist in collection [' + collectionId + '].');
-                    }
+                    return callback(null, result);
                 }
             });
         }
         else {
-            return callback('Document id was null or empty.');
-        }
-    };
-
-    var _updateDirect = function (client, params, callback) {
-        var selfLink = params.selfLink;
-        var body = params.body;
-        client.replaceDocument(selfLink, body, function (error, doc) {
-            if (error) {
-                return callback(error, null);
-            }
-            else {
-                return callback(null, doc);
-            }
-        });
-    };
-
-    var _update = function (client, params, callback) {
-        var body = params.body || {};
-        var collectionId = params.collectionId;
-        if (body.id && body.id.length > 0) {
-            _select(client, { id: body.id, collectionId: collectionId }, function (error, docs) {
-                if (error) {
-                    return callback(error);
-                }
-                else {
-                    if (docs && docs.length > 0) {
-                        if (docs.length > 1) {
-                            return callback('Multiple documents with same id [' + body.id + '] in collection [' + collectionId + '].');
-                        }
-                        else {
-                            _updateDirect(client, { selfLink: docs[0]['_self'], body: body }, callback);
-                        }
-                    }
-                    else {
-                        return callback('Document with id [' + body.id + '] does not exist in collection [' + collectionId + '].');
-                    }
-                }
-            });
-        }
-        else {
-            return callback('Document id was null or empty.');
+            return callback('Document ID was null or empty.', null);
         }
     };
 
@@ -136,15 +62,21 @@
 
         return {
             list: _list,
-            create: _create,
-            update: _update,
-            remove: _remove,
+            createOrReplace: _createOrReplace,
+            delete: _delete,
             validate: function (params, callback) {
-                if ((params.bucketId && params.bucketId.length > 0) && (params.viewId && params.viewId.length > 0)) {
+                var validBucketParams =
+                    (params.bucketId && params.bucketId.length > 0) &&
+                    (params.viewId && params.viewId.length > 0);
+                var validDocParams = 
+                    (params.bucketId && params.bucketId.length > 0) &&
+                    (params.docId && params.docId.length > 0);
+                    
+                if (validBucketParams || validDocParams) {
                     return callback(null);
                 }
                 else {
-                    return callback('Missing bucketId and/or viewId in request: ' + JSON.stringify(params, null, 2));
+                    return callback('Invalid parameters in document request: ' + JSON.stringify(params, null, 2));
                 }
             }
         };

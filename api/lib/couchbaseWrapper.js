@@ -3,7 +3,9 @@
 
     var util = require('util');
 
-    var cb = require('couchbase');  // http://docs.couchbase.com/developer/node-2.0/hello-couchbase.html
+    // http://docs.couchbase.com/developer/node-2.0/introduction.html
+    // http://docs.couchbase.com/developer/node-2.0/hello-couchbase.html
+    var cb = require('couchbase');
 
     var cbCluster = null;
     var cbClusterManager = null;
@@ -187,5 +189,47 @@
                 }
             }
         });
-    };    
+    };
+    
+    exports.createOrReplaceDocument = function(bucketName, docId, docBody, callback) {
+        var bucketPassword = cbBucketPasswords[bucketName];
+        
+        var cbBucket = cbCluster.openBucket(bucketName, bucketPassword, function(err) {
+            if (err) {
+                cbLogger.error("couchbaseWrapper.createOrReplaceDocument cbCluster.openBucket for bucket '%s' threw error: ", bucketName, util.inspect(err));
+                throw err;
+            }
+        });
+        
+        cbBucket.upsert(docId, docBody, function(err, result) {
+            if (err) {
+                cbLogger.error("couchbaseWrapper.createOrReplaceDocument cbBucket.upsert for bucket '%s' and docId '%s' threw error: ", bucketName, docId, util.inspect(err));
+                throw err;
+            }
+            
+            cbLogger.debug("couchbaseWrapper.createOrReplaceDocument cbBucket.upsert for bucket '%s' and docId '%s' result: ", bucketName, docId, util.inspect(result));
+            return callback(null, result);
+        });
+    };
+    
+    exports.deleteDocument = function(bucketName, docId, callback) {
+        var bucketPassword = cbBucketPasswords[bucketName];
+        
+        var cbBucket = cbCluster.openBucket(bucketName, bucketPassword, function(err) {
+            if (err) {
+                cbLogger.error("couchbaseWrapper.deleteDocument cbCluster.openBucket for bucket '%s' threw error: ", bucketName, util.inspect(err));
+                throw err;
+            }
+        });
+        
+        cbBucket.remove(docId, function(err, result) {
+            if (err) {
+                cbLogger.error("couchbaseWrapper.deleteDocument cbBucket.remove for bucket '%s' and docId '%s' threw error: ", bucketName, docId, util.inspect(err));
+                throw err;
+            }
+            
+            cbLogger.debug("couchbaseWrapper.deleteDocument cbBucket.remove for bucket '%s' and docId '%s' result: ", bucketName, docId, util.inspect(result));
+            return callback(null, result);
+        });
+    };
 })();

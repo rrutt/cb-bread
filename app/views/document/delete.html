@@ -1,5 +1,5 @@
 <div class="modal-header">
-    <h3 class="modal-title">Delete document in collection '{{col.collectionId}}'</h3>
+    <h3 class="modal-title">Delete document '{{doc.id}}' in bucket '{{view.bucketId}}'?</h3>
 </div>
 <div class="modal-body">
     <div class="panel panel-danger">
@@ -8,8 +8,8 @@
         </div>
         <div class="panel-body">
             <p>
-                This action <b>CANNOT</b> be undone. <br />
-                This will permanently delete the <b>{{doc.id}}</b> document, remove all attachments associations.
+                This action <b><em>CANNOT</em></b> be undone.<br />
+                This will permanently delete the <b>{{doc.id}}</b> document.
             </p>
             <p>
                 <b>Content</b>
@@ -18,18 +18,18 @@
                 <pre>{{doc.bodyString}}</pre>
             </p>
             <p>
-                Please type in the name of the database to confirm.
+                Please retype (or copy/paste) the Document ID to confirm.
             </p>
         </div>
     </div>
     <form role="form">
         <div class="form-group">
-            <label for="collectionId">ID</label>
-            <input type="text" autofocus class="form-control" id="collectionId" placeholder="ID" data-ng-model="id">
+            <label for="confirmationDocId">Confirmation Password</label>
+            <input type="text" autofocus class="form-control" id="confirmationDocId" placeholder="(Document ID)" data-ng-model="confirmationDocId">
         </div>
     </form>
 </div>
 <div class="modal-footer">
-    <button type="button" class="btn btn-danger" data-ng-click="ok(id, doc.link)">Delete</button>
+    <button type="button" class="btn btn-danger" data-ng-click="ok(confirmationDocId)">Delete</button>
     <button type="button" class="btn btn-default" data-ng-click="cancel()">Cancel</button>
 </div>
