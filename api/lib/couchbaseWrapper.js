@@ -135,7 +135,14 @@
             .skip(skipCount)
             .limit(pageSize);
         if (keyPrefix && keyPrefix.length > 0) {
-            cbQuery = cbQuery.range(keyPrefix, 'z');
+            var endKey = 'z';
+            cbLogger.debug("couchbaseWrapper.listDocuments keyPrefix = %s", keyPrefix);
+            if (keyPrefix.substring(0, 1) === '[') {
+                keyPrefix = JSON.parse(keyPrefix);
+                endKey = ['z'];
+                cbLogger.debug("couchbaseWrapper.listDocuments adjusted keyPrefix = %s", util.inspect(keyPrefix));
+            }
+            cbQuery = cbQuery.range(keyPrefix, endKey);
         }
             
         cbBucket.query(cbQuery, function(err, viewRows) {
