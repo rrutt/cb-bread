@@ -1,18 +1,13 @@
 <div class="navbar-form navbar-right" role="form">
-    <button type="button" class="btn" data-ng-click="requeryServer()">Requery</button>
     <span class="form-group">
+        <button type="button" class="btn" data-ng-click="requeryServer()">Requery</button>
         <label for="keyPrefix">&nbsp;&nbsp;Key Prefix:&nbsp;</label>
-        <input id="keyPrefix" type="text" size="50" data-ng-model="keyPrefix">
+        <input class="form-control" id="keyPrefix" type="text" size="50" data-ng-model="keyPrefix">
+        <label for="pageSize">&nbsp;&nbsp;Skip Count: {{skipCount}}&nbsp;&nbsp;Page Size:&nbsp;</label>
+        <input class="form-control" id="pageSize" type="number" min="1" max="500" step="10" size="2" data-ng-model="pageSize">
+        <button type="button" class="btn" data-ng-show="skipCount > 0" data-ng-click="prevPage()">Prev</button>
+        <button type="button" class="btn" data-ng-click="nextPage()">Next</button>
     </span>
-    <span class="form-group">
-        <label>&nbsp;&nbsp;Skip Count: {{skipCount}}&nbsp;&nbsp;</label>
-    </span>
-    <span class="form-group">
-        <label for="pageSize">&nbsp;&nbsp;Page Size:&nbsp;</label>
-        <input id="pageSize" type="number" min="1" max="500" step="10" size="3" data-ng-model="pageSize">
-    </span>
-    <button type="button" class="btn" data-ng-show="skipCount > 0" data-ng-click="prevPage()">Prev</button>
-    <button type="button" class="btn" data-ng-click="nextPage()">Next</button>
 </div>
 <table class="table table-striped">
     <thead>
