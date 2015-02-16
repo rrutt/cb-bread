@@ -8,6 +8,8 @@ This application is intended to be run on your local workstation, so you can pro
 
 This application can connect to any Couchbase server visible to your workstation's network connect.
 
+I wrote a blog article about my experience creating this application: [If You Build It, They Will Fork It](https://rickrutt.wordpress.com/2015/02/15/if-you-build-it-they-will-fork-it/).
+
 ### Pre-requisites:
 
 You need a Git source code control client: [Git client downloads](http://git-scm.com/downloads).
