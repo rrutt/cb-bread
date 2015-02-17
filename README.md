@@ -17,6 +17,9 @@ Windows users may prefer [PortableGit](https://github.com/msysgit/msysgit/releas
 
 You also need Node.js: [Node.js downloads](http://nodejs.org/download/).
 
+In order to let the Node/npm installer compile the Couchbase Node SDK, you need Python 2.7.x (where "x" is any point release): [Download Python](https://www.python.org/downloads/)
+**_Note for Windows:_** You will need to add **C:\Python27** to your **PATH** variable, and possibly logout and login again for this change to take effect.
+
 ### To download cb-bread:
 
 Open a **git-bash** command prompt window, which provides Unix/Linux shell command support.
