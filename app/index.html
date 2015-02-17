@@ -45,16 +45,12 @@
                     </ul>
                     <form class="navbar-form navbar-right" role="form">
                         <div class="form-group" data-ng-show="!isConnected">
-                            <input type="text" placeholder="(host)" class="form-control" data-ng-model="host" value="{{credentials.host}}">
-                        </div>
-                        <div class="form-group" data-ng-show="!isConnected">
+                            <input type="text" size="55" placeholder="(host)" class="form-control" data-ng-model="host" value="{{credentials.host}}">
                             <input type="text" placeholder="(user)" class="form-control" data-ng-model="user" value="{{credentials.user}}">
-                        </div>
-                        <div class="form-group" data-ng-show="!isConnected">
                             <input type="password" placeholder="(password)" class="form-control" data-ng-model="password" value="{{credentials.password}}">
                         </div>
                         <div class="form-group" data-ng-show="isConnected">
-                            <input type="text" readonly class="form-control" data-ng-model="host">
+                            <input type="text" size="55" readonly class="form-control" data-ng-model="host">
                             <input type="text" readonly class="form-control" data-ng-model="user">
                         </div>
                         <button type="button" class="btn btn-success" data-ng-show="!isConnected" data-ng-click="connect()" data-ui-sref="database">Connect</button>
