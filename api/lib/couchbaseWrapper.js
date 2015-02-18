@@ -115,15 +115,18 @@
         var designDocViewNameElements = designDocViewName.split('/');
         var designDocName = designDocViewNameElements[0];
         var viewName = designDocViewNameElements[1];
-        
+
         var cbViewQuery = cb.ViewQuery;
+        var sortOrder = cbViewQuery.Order.ASCENDING;
+        var queryLimit = pageSize;
         var cbQuery = cbViewQuery
             .from(designDocName, viewName)
             .reduce(false)
             .full_set(true)
             .stale(cbViewQuery.Update.BEFORE)  // Options are BEFORE, NONE, AFTER.
             .skip(skipCount)
-            .limit(pageSize);
+            .limit(queryLimit)
+            .order(sortOrder);
         if (keyPrefix && keyPrefix.length > 0) {
             var endKey = 'z';
             cbLogger.debug("couchbaseWrapper.listDocuments keyPrefix = %s", keyPrefix);

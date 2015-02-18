@@ -21,7 +21,7 @@
                             key: JSON.stringify(row.key),
                             value: viewValue,
                             id: row.id,
-                            cas: JSON.stringify(row.cas),
+                            cas: JSON.stringify(row.cas)
                         };
                         model.body = row.doc;
                         model.bodyString = JSON.stringify(row.doc, null, 2);

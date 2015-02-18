@@ -9,55 +9,55 @@
     var epilogMsg = util.format("For more information see %s/README.md\n\nReport issues at %s", packageJson.repository.url, packageJson.bugs.url)
   
     // https://github.com/chevex/yargs
-    var optimist = require('yargs')
+    var yargs = require('yargs')
         .usage(packageMsg + 'Usage: node server [--host=(host)] [--user=(user)] [--password=(password)] [--debug] [--responses] [--listen=8008] [--proxy=my.proxy:8888]')
         .example("node server", "Listens on port 8008 with minimal logging. Requires user to enter Couchbase host, user and password.\n")
         .example("node server -h localhost -u admin", "Listens on port 8008 with minimal logging. Defaults to Couchbase on 'localhost' as user 'admin'. Requires user to enter Couchbase password.\n")
         .example("node server -u admin -p demo01 -l 8080", "Listens on port 8080 with minimal logging. Defaults to Couchbase user 'admin' with password 'demo01'. Requires user to enter Couchbase host name.\n")
         .example("node server --proxy=my.proxy:8888", "Listens on port 8008 and uses the designated network proxy.\n")
         .option('?', {
-            alias : 'help',
+            alias: 'help',
             describe: 'Display the usage.'
         })
         .version(packageJson.version, 'v', "Show version number.").alias('v', 'version')
         .option('h', {
-            alias : 'host',
+            alias: 'host',
             describe: 'Set Couchbase host.'
         })
         .option('u', {
-            alias : 'user',
+            alias: 'user',
             describe: 'Set Couchbase user.'
         })
         .option('p', {
-            alias : 'password',
+            alias: 'password',
             describe: 'Set Couchbase password.'
         })
         .option('s', {
-            alias : 'pagesize',
-            describe: 'Set the initial document viewer page size.   [min 1, max 500]',
+            alias: 'pagesize',
+            describe: 'Set document viewer page size.\n[min 1, max 500]',
             default: 10
         })
         .option('l', {
-            alias : 'listen',
-            describe: 'Set the HTTP listen port.',
+            alias: 'listen',
+            describe: 'Set HTTP listen port.',
             default: process.env.port || 8008
         })
         .option('x', {
-            alias : 'proxy',
+            alias: 'proxy',
             describe: 'Enable a request proxy server and port.'
         })
         .option('d', {
-            alias : 'debug',
+            alias: 'debug',
             describe: 'Enable debug level log messages.'
         })
         .option('r', {
-            alias : 'responses',
+            alias: 'responses',
             describe: 'Log responses from server API requests.'
         })
         .epilog(epilogMsg);
-    var argv = optimist.argv;
+    var argv = yargs.argv;
     if (argv.help) {
-        optimist.showHelp();
+        yargs.showHelp();
         process.exit(0);
     }
 
