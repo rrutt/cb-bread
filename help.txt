@@ -1,20 +1,20 @@
 
 cb-bread: Couchbase Browse/Read/Edit/Add/Delete
-Version 0.1.0-20150215 Copyright © 2015 Rick Rutt (Portions © 2014 Shaun Xu)
+Version 0.1.2-20150218 Copyright © 2015 Rick Rutt (Portions © 2014 Shaun Xu)
 
 Usage: node server [--host=(host)] [--user=(user)] [--password=(password)] [--debug] [--responses] [--listen=8008] [--proxy=my.proxy:8888]
 
 Options:
-  -?, --help       Display the usage.                                           
-  -v, --version    Show version number.                                         
-  -h, --host       Set Couchbase host.                                          
-  -u, --user       Set Couchbase user.                                          
-  -p, --password   Set Couchbase password.                                      
-  -s, --pagesize   Set the initial document viewer page size.   [min 1, max 500]  [default: 10]
-  -l, --listen     Set the HTTP listen port.                                      [default: 8008]
-  -x, --proxy      Enable a request proxy server and port.                      
-  -d, --debug      Enable debug level log messages.                             
-  -r, --responses  Log responses from server API requests.                      
+  -?, --help       Display the usage.                             
+  -v, --version    Show version number.                           
+  -h, --host       Set Couchbase host.                            
+  -u, --user       Set Couchbase user.                            
+  -p, --password   Set Couchbase password.                        
+  -s, --pagesize   Set document viewer page size. [min 1, max 500]  [default: 10]
+  -l, --listen     Set HTTP listen port.                            [default: 8008]
+  -x, --proxy      Enable a request proxy server and port.        
+  -d, --debug      Enable debug level log messages.               
+  -r, --responses  Log responses from server API requests.        
 
 Examples:
   node server                               Listens on port 8008 with minimal logging. Requires user to enter Couchbase host, user and password.

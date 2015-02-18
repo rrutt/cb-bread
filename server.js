@@ -34,7 +34,7 @@
         })
         .option('s', {
             alias: 'pagesize',
-            describe: 'Set document viewer page size.\n[min 1, max 500]',
+            describe: 'Set document viewer page size. [min 1, max 500]',
             default: 10
         })
         .option('l', {
