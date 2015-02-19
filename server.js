@@ -7,7 +7,9 @@
     var packageJson = require('./package.json');
     var packageMsg = util.format("\n%s: %s\nVersion %s Copyright %s\n\n", packageJson.name, packageJson.description, packageJson.version, packageJson.copyright);
     var epilogMsg = util.format("For more information see %s/README.md\n\nReport issues at %s", packageJson.repository.url, packageJson.bugs.url)
-  
+
+    var defaultPageSize = 10;
+
     // https://github.com/chevex/yargs
     var yargs = require('yargs')
         .usage(packageMsg + 'Usage: node server [--host=(host)] [--user=(user)] [--password=(password)] [--debug] [--responses] [--listen=8008] [--proxy=my.proxy:8888]')
@@ -34,8 +36,8 @@
         })
         .option('s', {
             alias: 'pagesize',
-            describe: 'Set document viewer page size. [min 1, max 500]',
-            default: 10
+            describe: 'Set document viewer page size. Negative means reverse sort. [min -500, max 500]',
+            default: defaultPageSize
         })
         .option('l', {
             alias: 'listen',
@@ -76,10 +78,13 @@
     });
 
     logger.info("Run as 'node server -?' for command-line options.");
-    logger.debug('config - debug: ' + argv.debug);
     logger.debug('config - responses: ' + argv.responses);
     logger.debug('config - listen: ' + argv.listen);
     logger.debug('config - proxy: ' + argv.proxy);
+
+    if (argv.pagesize === 0) {
+        argv.pagesize = defaultPageSize;
+    }
 
     if (argv.proxy) {
         var array = argv.proxy.split(':');

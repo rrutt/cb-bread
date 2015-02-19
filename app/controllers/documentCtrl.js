@@ -4,6 +4,14 @@
     var controllerName = 'document';
 
     app.controller('DocumentIndexCtrl', function ($rootScope, $scope, $state, $stateParams, $alert, $modal, api, serverConfig) {
+        var configPageSize = null;
+
+        var preventZeroPageSize = function() {
+            if ($scope.pageSize === 0) {
+                $scope.pageSize = configPageSize;
+            }
+        };
+
         var refresh = function () {
             api.request(controllerName, 'list', { bucketId: $scope.view.bucketId, viewId: $scope.view.viewId, keyPrefix: $scope.keyPrefix, skipCount: $scope.skipCount, pageSize: $scope.pageSize }, function (error, resultRows) {
                 if (error) {
@@ -32,7 +40,12 @@
         };
         
         $scope.prevPage = function () {
-            $scope.skipCount = $scope.skipCount - $scope.pageSize;
+            preventZeroPageSize();
+            if ($scope.pageSize > 0) {
+                $scope.skipCount = $scope.skipCount - $scope.pageSize;
+            } else {
+                $scope.skipCount = $scope.skipCount + $scope.pageSize;
+            }
             if ($scope.skipCount < 0) {
                 $scope.skipCount = 0;
             }
@@ -40,11 +53,18 @@
         };
         
         $scope.nextPage = function () {
+            preventZeroPageSize();
+            if ($scope.pageSize > 0) {
+                $scope.skipCount = $scope.skipCount + $scope.pageSize;
+            } else {
+                $scope.skipCount = $scope.skipCount - $scope.pageSize;
+            }
             $scope.skipCount = $scope.skipCount + $scope.pageSize;
             refresh();
         };
         
         $scope.requeryServer = function () {
+            preventZeroPageSize();
             $scope.skipCount = 0;
             refresh();
         };
@@ -108,9 +128,11 @@
             if (error) {
                 $alert(JSON.stringify(error, null, 2));
             } else {
+                configPageSize = config.argv.pagesize;
+
                 $scope.keyPrefix = '';
                 $scope.skipCount = 0;
-                $scope.pageSize = config.argv.pagesize;        
+                $scope.pageSize = configPageSize;
                 refresh();
             }
         });

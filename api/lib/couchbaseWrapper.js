@@ -119,6 +119,14 @@
         var cbViewQuery = cb.ViewQuery;
         var sortOrder = cbViewQuery.Order.ASCENDING;
         var queryLimit = pageSize;
+        var endKeyText = 'z';
+
+        if (pageSize < 0) {
+            var sortOrder = cbViewQuery.Order.DESCENDING;
+            var queryLimit = (- pageSize);
+            var endKeyText = '';
+        }
+
         var cbQuery = cbViewQuery
             .from(designDocName, viewName)
             .reduce(false)
@@ -127,8 +135,9 @@
             .skip(skipCount)
             .limit(queryLimit)
             .order(sortOrder);
+
         if (keyPrefix && keyPrefix.length > 0) {
-            var endKey = 'z';
+            var endKey = endKeyText;
             cbLogger.debug("couchbaseWrapper.listDocuments keyPrefix = %s", keyPrefix);
             if (keyPrefix.substring(0, 1) === '[') {
                 try {
@@ -136,7 +145,7 @@
                 } catch (e) {
                     return callback("Key Prefix must be a valid JSON value or array.");
                 }
-                endKey = ['z'];
+                endKey = [endKeyText];
                 cbLogger.debug("couchbaseWrapper.listDocuments adjusted keyPrefix = %s", util.inspect(keyPrefix));
             }
             cbQuery = cbQuery.range(keyPrefix, endKey);
