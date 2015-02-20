@@ -59,7 +59,6 @@
             } else {
                 $scope.skipCount = $scope.skipCount - $scope.pageSize;
             }
-            $scope.skipCount = $scope.skipCount + $scope.pageSize;
             refresh();
         };
         

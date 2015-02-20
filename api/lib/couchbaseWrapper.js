@@ -148,7 +148,7 @@
                 endKey = [endKeyText];
                 cbLogger.debug("couchbaseWrapper.listDocuments adjusted keyPrefix = %s", util.inspect(keyPrefix));
             }
-            cbQuery = cbQuery.range(keyPrefix, endKey);
+            cbQuery = cbQuery.range(keyPrefix, endKey, true);
         }
         
         var cbBucket = cbCluster.openBucket(bucketName, bucketPassword, function(err) {
@@ -156,57 +156,52 @@
                 cbLogger.error("couchbaseWrapper.listViews cbCluster.openBucket for bucket '%s' threw error: ", bucketName, util.inspect(err));
                 throw err;
             }
-        });
-        cbBucket.query(cbQuery, function(err, viewRows) {
-            if (err) {
-                cbLogger.error("cbBucket.query (host=%s bucket=%s designDoc=%s view=%s) returned err: %s", cbHost, bucketName, designDocName, viewName, util.inspect(err));
-                cbBucket.disconnect();
-                return callback(err);
-            } else {
-//                cbLogger.debug("cbBucket.query (host=%s bucket=%s designDoc=%s view=%s) returned viewRows: %s", cbHost, bucketName, designDocName, viewName, util.inspect(viewRows));
 
-                var docIds = [];
-                var viewKeys = {};
-                var viewValues = {};
-                viewRows.forEach(function (viewRow) {
-//                    cbLogger.debug("viewRow = %s", util.inspect(viewRow));
-
-                    var docId = viewRow.id;
-                    docIds.push(docId);
-
-                    viewKeys[docId] = viewRow.key;
-                    viewValues[docId] = viewRow.value;
-                });
-
-                cbLogger.debug("docIds = %s", util.inspect(docIds));
-                cbLogger.debug("viewKeys = %s", util.inspect(viewKeys));
-                cbLogger.debug("viewValues = %s", util.inspect(viewValues));
-
-                var resultRows = [];
-                if (docIds && docIds.length > 0) {
-                    cbBucket.getMulti(docIds, function (err, rows) {
-                        if (err) {
-                            cbLogger.error("cbBucket.getMulti returned error: %s", util.inspect(err));
-                            cbBucket.disconnect();
-                            return callback(err);
-                        } else {
-//                            cbLogger.debug("cbBucket.getMulti returned: %s", util.inspect(rows));
-                            docIds.forEach(function (docId) {
-                                var row = rows[docId];
-                                resultRows.push({key: viewKeys[docId], value: viewValues[docId], id: docId, cas: row.cas, doc: row.value, error: row.error});
-                            });
-
-                            cbBucket.disconnect();
-//                            cbLogger.debug("couchbaseWrapper.listDocuments returning: %s", util.inspect(resultRows));
-                            return callback(null, resultRows);
-                        }
-                    });
-                } else {
+            cbBucket.query(cbQuery, function (err, viewRows) {
+                if (err) {
+                    cbLogger.error("cbBucket.query (host=%s bucket=%s designDoc=%s view=%s) returned err: %s", cbHost, bucketName, designDocName, viewName, util.inspect(err));
                     cbBucket.disconnect();
-//                    cbLogger.debug("couchbaseWrapper.listDocuments returning: %s", util.inspect(resultRows));
-                    return callback(null, resultRows);
+                    return callback(err);
+                } else {
+
+                    var docIds = [];
+                    var viewKeys = {};
+                    var viewValues = {};
+                    viewRows.forEach(function (viewRow) {
+                        var docId = viewRow.id;
+                        docIds.push(docId);
+
+                        viewKeys[docId] = viewRow.key;
+                        viewValues[docId] = viewRow.value;
+                    });
+
+                    cbLogger.debug("docIds = %s", util.inspect(docIds));
+                    cbLogger.debug("viewKeys = %s", util.inspect(viewKeys));
+                    cbLogger.debug("viewValues = %s", util.inspect(viewValues));
+
+                    var resultRows = [];
+                    if (docIds && docIds.length > 0) {
+                        cbBucket.getMulti(docIds, function (err, rows) {
+                            if (err) {
+                                cbLogger.error("cbBucket.getMulti returned error: %s", util.inspect(err));
+                                cbBucket.disconnect();
+                                return callback(err);
+                            } else {
+                                docIds.forEach(function (docId) {
+                                    var row = rows[docId];
+                                    resultRows.push({key: viewKeys[docId], value: viewValues[docId], id: docId, cas: row.cas, doc: row.value, error: row.error});
+                                });
+
+                                cbBucket.disconnect();
+                                return callback(null, resultRows);
+                            }
+                        });
+                    } else {
+                        cbBucket.disconnect();
+                        return callback(null, resultRows);
+                    }
                 }
-            }
+            });
         });
     };
     
