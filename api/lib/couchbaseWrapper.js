@@ -152,11 +152,13 @@
         var sortOrder = cbViewQuery.Order.ASCENDING;
         var queryLimit = pageSize;
         var endKeyText = 'z';
+        var endNumber = 1.7976931348623157e+308;
 
         if (pageSize < 0) {
-            var sortOrder = cbViewQuery.Order.DESCENDING;
-            var queryLimit = (- pageSize);
-            var endKeyText = '';
+            sortOrder = cbViewQuery.Order.DESCENDING;
+            queryLimit = (- pageSize);
+            endKeyText = '';
+            endNumber = -endNumber;
         }
 
         var cbQuery = cbViewQuery
@@ -184,7 +186,7 @@
                 if (isNaN(keyPrefix)) {
                     return callback("When preceded by = the Key Prefix must be a valid number.");
                 }
-                endKey = endKeyText;
+                endKey = endNumber;
                 cbLogger.debug("couchbaseWrapper.listDocuments adjusted keyPrefix = %s", util.inspect(keyPrefix));
             }
             cbQuery = cbQuery.range(keyPrefix, endKey, true);
