@@ -7,8 +7,9 @@
 
     var _list = function (client, params, callback) {
         _logger.debug("collection._list params = %s", util.inspect(params));
-        var id = params.id;
-        client.listViews(id, function (error, views) {
+        var host = params.host;
+        var bucketId = params.bucketId;
+        client.listViews(host, bucketId, function (error, views) {
             if (error) {
                 return callback(error, null);
             }

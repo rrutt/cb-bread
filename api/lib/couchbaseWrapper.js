@@ -7,13 +7,8 @@
     // http://docs.couchbase.com/developer/node-2.0/hello-couchbase.html
     var cb = require('couchbase');
 
-    var cbCluster = null;
-    var cbClusterManager = null;
-    var cbHost = null;
-    var cbUser = null;
-    var cbPassword = null;
     var cbLogger = null;
-    var cbBucketPasswords = {};
+    var cbHostInfoCache = {};
 
     var credentialsComplete = function(host, user, password) {
         return (host && host.length > 0) &&
@@ -24,43 +19,62 @@
 
     exports.initialize = function(logger, host, user, password) {
         cbLogger = logger;
-        if (credentialsComplete(host, user, password))        
-        {
-            var hostAndPort = host + ':8091';
-            if (cbClusterManager && (host === cbHost) && (user === cbUser) && (password === cbPassword)) {
-                cbLogger.debug("couchbaseWrapper.initialize was already called for %s as user %s", hostAndPort, user);
-            } else {
-                cbLogger.info("couchbaseWrapper.initialize %s as user %s", hostAndPort, user);
+        if (credentialsComplete(host, user, password)) {
+            var needToInitialize = true;
+            var cachedHostInfo = cbHostInfoCache[host];
+            if (cachedHostInfo) {
+                var cluster = cachedHostInfo.cluster;
+                var clusterManager = cachedHostInfo.clusterManager;
+                var cachedUser = cachedHostInfo.user;
+                var cachedPassword = cachedHostInfo.password;
+                if (cluster && clusterManager && (user === cachedUser) && (password === cachedPassword)) {
+                    cbLogger.debug("couchbaseWrapper.initialize using cached info for %s as user %s", host, user);
+                    needToInitialize = false;
+                }
+            }
 
+            if (needToInitialize) {
+                cbLogger.info("couchbaseWrapper.initialize %s as user %s", host, user);
 
-                cbCluster = new cb.Cluster(hostAndPort);
-                cbClusterManager = cbCluster.manager(user, password);
-                cbHost = host;
-                cbUser = user;
-                cbPassword = password;
+                var cluster = new cb.Cluster(host);
+                var clusterManager = cluster.manager(user, password);
+                var hostInfo = {
+                    cluster: cluster,
+                    clusterManager: clusterManager,
+                    user: user,
+                    password: password,
+                    bucketPasswords: {}
+                };
+                cbHostInfoCache[host] = hostInfo;
             }
         } else {
             cbLogger.debug("couchbaseWrapper.initialize bypassed for null credentials");
         }
     };
 
-    exports.listBuckets = function(callback) {
-        cbBucketPasswords = {};
-        
-//        cbLogger.debug("couchbaseWrapper.listBuckets cbClusterManager = ", util.inspect(cbClusterManager, false, null, true));
-        cbClusterManager.listBuckets(function(err, bucketInfoList) {
+    exports.listBuckets = function(host, callback) {
+        var cachedHostInfo = cbHostInfoCache[host];
+        if (!cachedHostInfo) {
+            var errMsg = util.format("couchbaseWrapper.listBuckets could not locate host %s in cbHostInfoCache.", host);
+            cbLogger.error(errMsg)
+            throw new Error(errMsg);
+        }
+
+        var clusterManager = cachedHostInfo.clusterManager;
+        var bucketPasswords = cachedHostInfo.bucketPasswords;
+
+        clusterManager.listBuckets(function(err, bucketInfoList) {
             if (err) {
                 cbLogger.error("couchbaseWrapper.listBuckets error: ", util.inspect(err));
                 return callback(err);
             } else {
-//                cbLogger.debug("couchbaseWrapper.listBuckets bucketInfoList = %s", util.inspect(bucketInfoList));
                 var bucketList = [];
                 bucketInfoList.forEach(function(bucketInfo) {
                     var bucketName = bucketInfo.name;
                     var bucketPassword = bucketInfo.saslPassword;
                     var bucket = { id: bucketName };
                     bucketList.push(bucket);
-                    cbBucketPasswords[bucketName] = bucketPassword;
+                    bucketPasswords[bucketName] = bucketPassword;
                 });
                 cbLogger.debug("couchbaseWrapper.listBuckets bucketList = %s", util.inspect(bucketList));
                 return callback(null, bucketList);
@@ -68,10 +82,19 @@
         });
     };
 
-    exports.listViews = function(bucketName, callback) {
-        var bucketPassword = cbBucketPasswords[bucketName];
+    exports.listViews = function(host, bucketName, callback) {
+        var cachedHostInfo = cbHostInfoCache[host];
+        if (!cachedHostInfo) {
+            var errMsg = util.format("couchbaseWrapper.listViews could not locate host %s in cbHostInfoCache.", host);
+            cbLogger.error(errMsg)
+            throw new Error(errMsg);
+        }
+
+        var cluster = cachedHostInfo.cluster;
+        var bucketPasswords = cachedHostInfo.bucketPasswords;
+        var bucketPassword = bucketPasswords[bucketName];
         
-        var cbBucket = cbCluster.openBucket(bucketName, bucketPassword, function(err) {
+        var cbBucket = cluster.openBucket(bucketName, bucketPassword, function(err) {
             if (err) {
                 cbLogger.error("couchbaseWrapper.listViews cbCluster.openBucket for bucket '%s' threw error: ", bucketName, util.inspect(err));
                 throw err;
@@ -109,9 +132,18 @@
         });
     };
     
-    exports.listDocuments = function(bucketName, designDocViewName, keyPrefix, skipCount, pageSize, callback) {
-        var bucketPassword = cbBucketPasswords[bucketName];
-        
+    exports.listDocuments = function(host, bucketName, designDocViewName, keyPrefix, skipCount, pageSize, callback) {
+        var cachedHostInfo = cbHostInfoCache[host];
+        if (!cachedHostInfo) {
+            var errMsg = util.format("couchbaseWrapper.listDocuments could not locate host %s in cbHostInfoCache.", host);
+            cbLogger.error(errMsg)
+            throw new Error(errMsg);
+        }
+
+        var cluster = cachedHostInfo.cluster;
+        var bucketPasswords = cachedHostInfo.bucketPasswords;
+        var bucketPassword = bucketPasswords[bucketName];
+
         var designDocViewNameElements = designDocViewName.split('/');
         var designDocName = designDocViewNameElements[0];
         var viewName = designDocViewNameElements[1];
@@ -143,15 +175,24 @@
                 try {
                     keyPrefix = JSON.parse(keyPrefix);
                 } catch (e) {
-                    return callback("Key Prefix must be a valid JSON value or array.");
+                    return callback("Key Prefix must be a valid JSON value or array, or a number preceded by =.");
                 }
                 endKey = [endKeyText];
+                cbLogger.debug("couchbaseWrapper.listDocuments adjusted keyPrefix = %s", util.inspect(keyPrefix));
+            } else if (keyPrefix.substring(0, 1) === '=') {
+                keyPrefix = Number(keyPrefix.substring(1));
+                if (isNaN(keyPrefix)) {
+                    return callback("When preceded by = the Key Prefix must be a valid number.");
+                }
+                endKey = endKeyText;
                 cbLogger.debug("couchbaseWrapper.listDocuments adjusted keyPrefix = %s", util.inspect(keyPrefix));
             }
             cbQuery = cbQuery.range(keyPrefix, endKey, true);
         }
-        
-        var cbBucket = cbCluster.openBucket(bucketName, bucketPassword, function(err) {
+
+        cbLogger.debug("cbQuery = %s", util.inspect(cbQuery, false, 2));
+
+        var cbBucket = cluster.openBucket(bucketName, bucketPassword, function(err) {
             if (err) {
                 cbLogger.error("couchbaseWrapper.listViews cbCluster.openBucket for bucket '%s' threw error: ", bucketName, util.inspect(err));
                 throw err;
@@ -159,7 +200,7 @@
 
             cbBucket.query(cbQuery, function (err, viewRows) {
                 if (err) {
-                    cbLogger.error("cbBucket.query (host=%s bucket=%s designDoc=%s view=%s) returned err: %s", cbHost, bucketName, designDocName, viewName, util.inspect(err));
+                    cbLogger.error("cbBucket.query (host=%s bucket=%s designDoc=%s view=%s) returned err: %s", host, bucketName, designDocName, viewName, util.inspect(err));
                     cbBucket.disconnect();
                     return callback(err);
                 } else {
@@ -183,9 +224,11 @@
                     if (docIds && docIds.length > 0) {
                         cbBucket.getMulti(docIds, function (err, rows) {
                             if (err) {
-                                cbLogger.error("cbBucket.getMulti returned error: %s", util.inspect(err));
+                                cbLogger.debug("cbBucket.getMulti returned error: %s", util.inspect(err));
                                 cbBucket.disconnect();
-                                return callback(err);
+                                var suggestedPageSize = Math.abs(pageSize) - err;
+                                var userMsg = util.format("Couchbase server cannot return %d documents for this view; try page size %d.", pageSize, suggestedPageSize);
+                                return callback(userMsg);
                             } else {
                                 docIds.forEach(function (docId) {
                                     var row = rows[docId];
@@ -205,10 +248,19 @@
         });
     };
     
-    exports.createOrReplaceDocument = function(bucketName, docId, docBody, callback) {
-        var bucketPassword = cbBucketPasswords[bucketName];
+    exports.createOrReplaceDocument = function(host, bucketName, docId, docBody, callback) {
+        var cachedHostInfo = cbHostInfoCache[host];
+        if (!cachedHostInfo) {
+            var errMsg = util.format("couchbaseWrapper.createOrReplaceDocument could not locate host %s in cbHostInfoCache.", host);
+            cbLogger.error(errMsg)
+            throw new Error(errMsg);
+        }
+
+        var cluster = cachedHostInfo.cluster;
+        var bucketPasswords = cachedHostInfo.bucketPasswords;
+        var bucketPassword = bucketPasswords[bucketName];
         
-        var cbBucket = cbCluster.openBucket(bucketName, bucketPassword, function(err) {
+        var cbBucket = cluster.openBucket(bucketName, bucketPassword, function(err) {
             if (err) {
                 cbLogger.error("couchbaseWrapper.createOrReplaceDocument cbCluster.openBucket for bucket '%s' threw error: ", bucketName, util.inspect(err));
                 throw err;
@@ -226,10 +278,19 @@
         });
     };
     
-    exports.deleteDocument = function(bucketName, docId, callback) {
-        var bucketPassword = cbBucketPasswords[bucketName];
+    exports.deleteDocument = function(host, bucketName, docId, callback) {
+        var cachedHostInfo = cbHostInfoCache[host];
+        if (!cachedHostInfo) {
+            var errMsg = util.format("couchbaseWrapper.deleteDocument could not locate host %s in cbHostInfoCache.", host);
+            cbLogger.error(errMsg)
+            throw new Error(errMsg);
+        }
+
+        var cluster = cachedHostInfo.cluster;
+        var bucketPasswords = cachedHostInfo.bucketPasswords;
+        var bucketPassword = bucketPasswords[bucketName];
         
-        var cbBucket = cbCluster.openBucket(bucketName, bucketPassword, function(err) {
+        var cbBucket = cluster.openBucket(bucketName, bucketPassword, function(err) {
             if (err) {
                 cbLogger.error("couchbaseWrapper.deleteDocument cbCluster.openBucket for bucket '%s' threw error: ", bucketName, util.inspect(err));
                 throw err;

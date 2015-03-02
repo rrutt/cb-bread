@@ -4,7 +4,8 @@
     var _logger = null;
 
     var _list = function (client, params, callback) {
-        client.listBuckets(function (error, buckets) {
+        var host = params.host;
+        client.listBuckets(host, function (error, buckets) {
             if (error) {
                 return callback(error, null);
             }

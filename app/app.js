@@ -30,19 +30,19 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $u
     $stateProvider.state('database', {
         url: '/databases',
         templateUrl: '/views/database/index.html',
-        controller: 'DatabaseIndexCtrl'
+        controller: 'DatabaseCtrl'
     });
 
     $stateProvider.state('collection', {
         url: '/collections/?did',
         templateUrl: '/views/collection/index.html',
-        controller: 'CollectionIndexCtrl'
+        controller: 'CollectionCtrl'
     });
 
     $stateProvider.state('document', {
         url: '/documents/?did&cid',
         templateUrl: '/views/document/index.html',
-        controller: 'DocumentIndexCtrl'
+        controller: 'DocumentCtrl'
     });
 }]);
 

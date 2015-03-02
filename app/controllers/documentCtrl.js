@@ -3,7 +3,7 @@
 
     var controllerName = 'document';
 
-    app.controller('DocumentIndexCtrl', function ($rootScope, $scope, $state, $stateParams, $alert, $modal, api, serverConfig) {
+    app.controller('DocumentCtrl', function ($rootScope, $scope, $state, $stateParams, $alert, $modal, credentials, api, serverConfig) {
         var configPageSize = null;
 
         var preventZeroPageSize = function() {
@@ -13,7 +13,7 @@
         };
 
         var refresh = function () {
-            api.request(controllerName, 'list', { bucketId: $scope.view.bucketId, viewId: $scope.view.viewId, keyPrefix: $scope.keyPrefix, skipCount: $scope.skipCount, pageSize: $scope.pageSize }, function (error, resultRows) {
+            api.request(controllerName, 'list', { host: credentials.host, bucketId: $scope.view.bucketId, viewId: $scope.view.viewId, keyPrefix: $scope.keyPrefix, skipCount: $scope.skipCount, pageSize: $scope.pageSize }, function (error, resultRows) {
                 if (error) {
                     $alert(JSON.stringify(error, null, 2));
                 }
@@ -137,7 +137,7 @@
         });
     });
 
-    app.controller('DocumentCreateOrUpdateCtrl', function ($scope, $, $alert, $modalInstance, api, view, doc) {
+    app.controller('DocumentCreateOrUpdateCtrl', function ($scope, $, $alert, $modalInstance, credentials, api, view, doc) {
         $scope.doc = doc || {};
         $scope.raw = JSON.stringify($scope.doc, null, 2);
         $scope.view = view;
@@ -156,7 +156,7 @@
 
         $scope.ok = function (id, body) {
             // invoke api to create or update document
-            api.request(controllerName, 'createOrReplace', { bucketId: $scope.view.bucketId, docId: id, docBody: body }, function (error, doc) {
+            api.request(controllerName, 'createOrReplace', { host: credentials.host, bucketId: $scope.view.bucketId, docId: id, docBody: body }, function (error, doc) {
                 if (error) {
                     $alert(error);
                 }
@@ -171,13 +171,13 @@
         };
     });
 
-    app.controller('DocumentDeleteCtrl', function ($scope, $alert, $modalInstance, api, view, doc) {
+    app.controller('DocumentDeleteCtrl', function ($scope, $alert, $modalInstance, credentials, api, view, doc) {
         $scope.view = view;
         $scope.doc = doc;
 
         $scope.ok = function (confirmationDocId) {
             if (confirmationDocId === doc.id) {
-                api.request(controllerName, 'delete', { bucketId: $scope.view.bucketId, docId: doc.id }, function (error) {
+                api.request(controllerName, 'delete', { host: credentials.host, bucketId: $scope.view.bucketId, docId: doc.id }, function (error) {
                     if (error) {
                         $alert(JSON.stringify(error, null, 2));
                     }

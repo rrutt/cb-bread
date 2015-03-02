@@ -3,9 +3,9 @@
 
     var controllerName = 'collection';
 
-    app.controller('CollectionIndexCtrl', function ($rootScope, $scope, $state, $stateParams, $alert, $modal, api) {
+    app.controller('CollectionCtrl', function ($rootScope, $scope, $state, $stateParams, $alert, $modal, credentials, api) {
         var refresh = function () {
-            api.request(controllerName, 'list', { id: $scope.bucket.id }, function (err, views) {
+            api.request(controllerName, 'list', { host: credentials.host, bucketId: $scope.bucket.id }, function (err, views) {
                 if (err) {
                     $alert(JSON.stringify(err, null, 2));
                 }
