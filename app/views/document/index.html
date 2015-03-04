@@ -9,6 +9,7 @@
         <button type="button" class="btn" data-ng-click="nextPage()">Next</button>
     </div>
 </form>
+<div>&nbsp;</div>
 <table class="table table-striped">
     <thead>
         <tr>
@@ -37,10 +38,10 @@
             <td>{{document.value}}</td>
             <td>{{document.id}}</td>
             <td>{{document.cas}}</td>
-            <td>
+            <td style="width: 4em">
                 <button type="button" class="btn btn-primary btn-xs btn-block" data-ng-click="createOrUpdate(document)">Edit</button>
             </td>
-            <td>
+            <td style="width: 5em">
                 <button type="button" class="btn btn-danger btn-xs btn-block" data-ng-click="delete(document)">Delete</button>
             </td>
         </tr>
