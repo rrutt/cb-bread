@@ -46,6 +46,13 @@
         });
 
         $scope.credits.push({
+            title: 'exprjs',
+            link: 'https://www.npmjs.com/package/exprjs',
+            description: 'Expression language for javascript (in javascript). An alternative to eval() supporting javascript syntax for expressiveness and safe execution.',
+            license: 'https://github.com/jleibund/exprjs/blob/master/LICENSE'
+        });
+
+        $scope.credits.push({
             title: 'body-parser',
             link: 'https://www.npmjs.com/package/body-parser',
             description: 'Node.js body parsing middleware.',

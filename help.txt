@@ -1,6 +1,6 @@
 
 cb-bread: Couchbase Browse/Read/Edit/Add/Delete
-Version 0.1.3-20150219 Copyright © 2015 Rick Rutt (Portions © 2014 Shaun Xu)
+Version 0.2.0-20150305 Copyright © 2015 Rick Rutt (Portions © 2014 Shaun Xu)
 
 Usage: node server [--host=(host)] [--user=(user)] [--password=(password)] [--debug] [--responses] [--listen=8008] [--proxy=my.proxy:8888]
 
