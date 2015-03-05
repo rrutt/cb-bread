@@ -156,6 +156,66 @@
         }
         return keep;
     };
+
+    var recursivelyQueryBucket = function(cbBucket, cbQuery, parsedDocFilter, resultRows, skipCount, callback) {
+        cbBucket.query(cbQuery, function (err, viewRows) {
+            if (err) {
+                cbLogger.error("cbBucket.query (host=%s bucket=%s designDoc=%s view=%s) returned err: %s", host, bucketName, designDocName, viewName, util.inspect(err));
+                cbBucket.disconnect();
+                return callback(err);
+            } else {
+                var docIds = [];
+                var viewKeys = {};
+                var viewValues = {};
+                viewRows.forEach(function (viewRow) {
+                    var docId = viewRow.id;
+                    docIds.push(docId);
+
+                    viewKeys[docId] = viewRow.key;
+                    viewValues[docId] = viewRow.value;
+                });
+
+                cbLogger.debug("docIds = %s", util.inspect(docIds));
+                cbLogger.debug("viewKeys = %s", util.inspect(viewKeys));
+                cbLogger.debug("viewValues = %s", util.inspect(viewValues));
+
+                if (docIds && docIds.length > 0) {
+                    cbBucket.getMulti(docIds, function (err, rows) {
+                        if (err) {
+                            cbLogger.debug("cbBucket.getMulti returned error: %s", util.inspect(err));
+                            cbBucket.disconnect();
+                            var suggestedPageSize = Math.abs(pageSize) - err;
+                            var userMsg = util.format("Couchbase server cannot return %d documents for this view; try page size %d.", pageSize, suggestedPageSize);
+                            return callback(userMsg);
+                        } else {
+                            var docIndex = skipCount;
+                            docIds.forEach(function (docId) {
+                                docIndex++;
+                                var row = rows[docId];
+                                var resultRow = {index: docIndex, key: viewKeys[docId], value: viewValues[docId], id: docId, cas: row.cas, doc: row.value, error: row.error};
+                                var keep = filterResultRow(resultRow, parsedDocFilter);
+                                if (keep) {
+                                    resultRows.push(resultRow);
+                                }
+                            });
+
+                            if (resultRows.length > 0) {
+                                return callback(null, resultRows);
+                            } else {
+                                var newSkipCount = skipCount + docIds.length;
+                                cbQuery.skip(newSkipCount);
+                                cbLogger.warn("No documents passed docFilter for skipCount = %d, moving to next page.", skipCount);
+                                recursivelyQueryBucket(cbBucket, cbQuery, parsedDocFilter, resultRows, newSkipCount, callback);
+                            }
+                        }
+                    });
+                } else {
+                    cbLogger.warn("No more documents to query.");
+                    return callback(null, resultRows);
+                }
+            }
+        });
+    };
     
     exports.listDocuments = function(host, bucketName, designDocViewName, keyPrefix, skipCount, pageSize, docFilter, callback) {
         var cachedHostInfo = cbHostInfoCache[host];
@@ -238,58 +298,10 @@
                 throw err;
             }
 
-            cbBucket.query(cbQuery, function (err, viewRows) {
-                if (err) {
-                    cbLogger.error("cbBucket.query (host=%s bucket=%s designDoc=%s view=%s) returned err: %s", host, bucketName, designDocName, viewName, util.inspect(err));
-                    cbBucket.disconnect();
-                    return callback(err);
-                } else {
-
-                    var docIds = [];
-                    var viewKeys = {};
-                    var viewValues = {};
-                    viewRows.forEach(function (viewRow) {
-                        var docId = viewRow.id;
-                        docIds.push(docId);
-
-                        viewKeys[docId] = viewRow.key;
-                        viewValues[docId] = viewRow.value;
-                    });
-
-                    cbLogger.debug("docIds = %s", util.inspect(docIds));
-                    cbLogger.debug("viewKeys = %s", util.inspect(viewKeys));
-                    cbLogger.debug("viewValues = %s", util.inspect(viewValues));
-
-                    var resultRows = [];
-                    var docIndex = skipCount;
-                    if (docIds && docIds.length > 0) {
-                        cbBucket.getMulti(docIds, function (err, rows) {
-                            if (err) {
-                                cbLogger.debug("cbBucket.getMulti returned error: %s", util.inspect(err));
-                                cbBucket.disconnect();
-                                var suggestedPageSize = Math.abs(pageSize) - err;
-                                var userMsg = util.format("Couchbase server cannot return %d documents for this view; try page size %d.", pageSize, suggestedPageSize);
-                                return callback(userMsg);
-                            } else {
-                                docIds.forEach(function (docId) {
-                                    docIndex++;
-                                    var row = rows[docId];
-                                    var resultRow = {index: docIndex, key: viewKeys[docId], value: viewValues[docId], id: docId, cas: row.cas, doc: row.value, error: row.error};
-                                    var keep = filterResultRow(resultRow, parsedDocFilter);
-                                    if (keep) {
-                                        resultRows.push(resultRow);
-                                    }
-                                });
-
-                                cbBucket.disconnect();
-                                return callback(null, resultRows);
-                            }
-                        });
-                    } else {
-                        cbBucket.disconnect();
-                        return callback(null, resultRows);
-                    }
-                }
+            var resultRows = [];
+            recursivelyQueryBucket(cbBucket, cbQuery, parsedDocFilter, resultRows, skipCount, function(err, finalResultRows) {
+                cbBucket.disconnect();
+                return callback(err, finalResultRows);
             });
         });
     };
