@@ -8,6 +8,10 @@
         <button type="button" class="btn" data-ng-show="skipCount > 0" data-ng-click="prevPage()">Prev</button>
         <button type="button" class="btn" data-ng-click="nextPage()">Next</button>
     </div>
+    <div class="form-group">
+        <label for="docFilter" title="Enter a Javascript expression against the key, value, id, cas, or doc objects that evaluates to true or false.">&nbsp;&nbsp;Doc Filter:&nbsp;</label>
+        <input class="form-control" id="docFilter" type="text" size="120" data-ng-model="docFilter">
+    </div>
 </form>
 <div>&nbsp;</div>
 <table class="table table-striped">

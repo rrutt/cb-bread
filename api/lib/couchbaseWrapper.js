@@ -1,6 +1,9 @@
 (function () {
     'use strict';
 
+    var exprjs = require('exprjs');
+    var exprjsParser = new exprjs();
+
     var util = require('util');
 
     // http://docs.couchbase.com/developer/node-2.0/introduction.html
@@ -131,8 +134,27 @@
             }
         });
     };
+
+    var filterResultRow = function(resultRow, parsedDocFilter) {
+        if (parsedDocFilter) {
+            cbLogger.debug("filterResultRow: %s", util.inspect(resultRow));
+            var keep = false;
+            try {
+                keep = exprjsParser.run(parsedDocFilter, resultRow);
+                cbLogger.debug("Filter passes for resultRow: %s", util.inspect(resultRow));
+            } catch (err) {
+                resultRow.error = err;
+                cbLogger.debug("Filter fails for resultRow: %s", util.inspect(resultRow));
+            }
+            if (!keep) {
+                resultRow.id = null;
+                resultRow.value = null;
+                resultRow.cas = "(Fails Doc Filter.)";
+            }
+        }
+    };
     
-    exports.listDocuments = function(host, bucketName, designDocViewName, keyPrefix, skipCount, pageSize, callback) {
+    exports.listDocuments = function(host, bucketName, designDocViewName, keyPrefix, skipCount, pageSize, docFilter, callback) {
         var cachedHostInfo = cbHostInfoCache[host];
         if (!cachedHostInfo) {
             var errMsg = util.format("couchbaseWrapper.listDocuments could not locate host %s in cbHostInfoCache.", host);
@@ -194,6 +216,19 @@
 
         cbLogger.debug("cbQuery = %s", util.inspect(cbQuery, false, 2));
 
+        var parsedDocFilter = null;
+        if (docFilter && docFilter.trim().length > 0) {
+            cbLogger.debug("docFilter: %s", docFilter);
+            try {
+                parsedDocFilter = exprjsParser.parse(docFilter);
+            } catch (err) {
+                var charIndex = err.pos;
+                var goodText = docFilter.substring(0, charIndex);
+                var badText = docFilter.substring(charIndex);
+                cbLogger.error("Error in docFilter:\nGood Text: %s\nBad Text: %s\nError: %s", goodText, badText, util.inspect(err));
+            }
+        }
+
         var cbBucket = cluster.openBucket(bucketName, bucketPassword, function(err) {
             if (err) {
                 cbLogger.error("couchbaseWrapper.listViews cbCluster.openBucket for bucket '%s' threw error: ", bucketName, util.inspect(err));
@@ -234,7 +269,9 @@
                             } else {
                                 docIds.forEach(function (docId) {
                                     var row = rows[docId];
-                                    resultRows.push({key: viewKeys[docId], value: viewValues[docId], id: docId, cas: row.cas, doc: row.value, error: row.error});
+                                    var resultRow = {key: viewKeys[docId], value: viewValues[docId], id: docId, cas: row.cas, doc: row.value, error: row.error};
+                                    filterResultRow(resultRow, parsedDocFilter);
+                                    resultRows.push(resultRow);
                                 });
 
                                 cbBucket.disconnect();

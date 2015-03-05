@@ -10,8 +10,9 @@
         var keyPrefix = params.keyPrefix;
         var skipCount = params.skipCount;
         var pageSize = params.pageSize;
-        
-        client.listDocuments(host, bucketName, designDocViewName, keyPrefix, skipCount, pageSize, function (error, data) {
+        var docFilter = params.docFilter;
+
+        client.listDocuments(host, bucketName, designDocViewName, keyPrefix, skipCount, pageSize, docFilter, function (error, data) {
             if (error) {
                 return callback(error, null);
             }
