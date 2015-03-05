@@ -136,22 +136,25 @@
     };
 
     var filterResultRow = function(resultRow, parsedDocFilter) {
+        var keep = true;
         if (parsedDocFilter) {
             cbLogger.debug("filterResultRow: %s", util.inspect(resultRow));
-            var keep = false;
             try {
                 keep = exprjsParser.run(parsedDocFilter, resultRow);
                 cbLogger.debug("Filter passes for resultRow: %s", util.inspect(resultRow));
             } catch (err) {
                 resultRow.error = err;
                 cbLogger.debug("Filter fails for resultRow: %s", util.inspect(resultRow));
+                keep = false;
             }
             if (!keep) {
                 resultRow.id = null;
                 resultRow.value = null;
+                resultRow.doc = null;
                 resultRow.cas = "(Fails Doc Filter.)";
             }
         }
+        return keep;
     };
     
     exports.listDocuments = function(host, bucketName, designDocViewName, keyPrefix, skipCount, pageSize, docFilter, callback) {
@@ -258,6 +261,7 @@
                     cbLogger.debug("viewValues = %s", util.inspect(viewValues));
 
                     var resultRows = [];
+                    var docIndex = skipCount;
                     if (docIds && docIds.length > 0) {
                         cbBucket.getMulti(docIds, function (err, rows) {
                             if (err) {
@@ -268,10 +272,13 @@
                                 return callback(userMsg);
                             } else {
                                 docIds.forEach(function (docId) {
+                                    docIndex++;
                                     var row = rows[docId];
-                                    var resultRow = {key: viewKeys[docId], value: viewValues[docId], id: docId, cas: row.cas, doc: row.value, error: row.error};
-                                    filterResultRow(resultRow, parsedDocFilter);
-                                    resultRows.push(resultRow);
+                                    var resultRow = {index: docIndex, key: viewKeys[docId], value: viewValues[docId], id: docId, cas: row.cas, doc: row.value, error: row.error};
+                                    var keep = filterResultRow(resultRow, parsedDocFilter);
+                                    if (keep) {
+                                        resultRows.push(resultRow);
+                                    }
                                 });
 
                                 cbBucket.disconnect();

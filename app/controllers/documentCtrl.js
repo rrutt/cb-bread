@@ -26,6 +26,7 @@
                         }
                         var model = {
                             expanded: false,
+                            index: row.index,
                             key: JSON.stringify(row.key),
                             value: viewValue,
                             id: row.id,

@@ -4,7 +4,7 @@
         <label for="keyPrefix" title='Enter text, a JSON ["array"], or a number such as =12345 representing a starting point in the sort order.'>&nbsp;&nbsp;Key Prefix:&nbsp;</label>
         <input class="form-control" id="keyPrefix" type="text" size="45" data-ng-model="keyPrefix">
         <label for="pageSize" title="A negative value, such as -10, sorts and pages in descending order.">&nbsp;&nbsp;&nbsp;&nbsp;Skip: {{skipCount}}&nbsp;&nbsp;&nbsp;&nbsp;Page Size:&nbsp;</label>
-        <input class="form-control" id="pageSize" type="number" min="-500" max="500" step="10" data-ng-model="pageSize">
+        <input class="form-control" id="pageSize" type="number" min="-1000" max="1000" step="10" data-ng-model="pageSize">
         <button type="button" class="btn" data-ng-show="skipCount > 0" data-ng-click="prevPage()">Prev</button>
         <button type="button" class="btn" data-ng-click="nextPage()">Next</button>
     </div>
@@ -30,7 +30,7 @@
     <tbody data-ng-repeat="document in documents">
         <tr>
             <td>
-                {{$index + skipCount + 1}}
+                {{document.index}}
                 <a href="javascript:void(0)" data-ng-show="document.expanded === true" data-ng-click="document.expanded = false">
                     <span class="glyphicon glyphicon-chevron-up"></span>
                 </a>
