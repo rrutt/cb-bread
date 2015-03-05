@@ -13,12 +13,14 @@
         };
 
         var refresh = function () {
-            api.request(controllerName, 'list', { host: credentials.host, bucketId: $scope.view.bucketId, viewId: $scope.view.viewId, keyPrefix: $scope.keyPrefix, skipCount: $scope.skipCount, pageSize: $scope.pageSize, docFilter: $scope.docFilter }, function (error, resultRows) {
+            api.request(controllerName, 'list', { host: credentials.host, bucketId: $scope.view.bucketId, viewId: $scope.view.viewId, keyPrefix: $scope.keyPrefix, skipCount: $scope.skipCount, pageSize: $scope.pageSize, docFilter: $scope.docFilter }, function (error, resultSet) {
                 if (error) {
                     $alert(JSON.stringify(error, null, 2));
                 }
                 else {
+                    $scope.nextSkipCount = resultSet.nextSkipCount;
                     $scope.documents = [];
+                    var resultRows = resultSet.resultRows;
                     resultRows.forEach(function (row) {
                         var viewValue = '';
                         if (row.value) {
@@ -50,16 +52,21 @@
             if ($scope.skipCount < 0) {
                 $scope.skipCount = 0;
             }
+            $scope.nextSkipCount = null;
             refresh();
         };
         
         $scope.nextPage = function () {
             preventZeroPageSize();
-            if ($scope.pageSize > 0) {
+            if ($scope.nextSkipCount) {
+//                console.log("Using nextSkipCount = %d", $scope.nextSkipCount);
+                $scope.skipCount = $scope.nextSkipCount;
+            } else if ($scope.pageSize > 0) {
                 $scope.skipCount = $scope.skipCount + $scope.pageSize;
             } else {
                 $scope.skipCount = $scope.skipCount - $scope.pageSize;
             }
+            $scope.nextSkipCount = null;
             refresh();
         };
         

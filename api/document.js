@@ -12,12 +12,12 @@
         var pageSize = params.pageSize;
         var docFilter = params.docFilter;
 
-        client.listDocuments(host, bucketName, designDocViewName, keyPrefix, skipCount, pageSize, docFilter, function (error, data) {
+        client.listDocuments(host, bucketName, designDocViewName, keyPrefix, skipCount, pageSize, docFilter, function (error, resultSet) {
             if (error) {
                 return callback(error, null);
             }
             else {
-                return callback(null, data);
+                return callback(null, resultSet);
             }
         });
     };

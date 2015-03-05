@@ -157,7 +157,7 @@
         return keep;
     };
 
-    var recursivelyQueryBucket = function(cbBucket, cbQuery, parsedDocFilter, resultRows, skipCount, callback) {
+    var recursivelyQueryBucket = function(cbBucket, cbQuery, parsedDocFilter, resultSet, callback) {
         cbBucket.query(cbQuery, function (err, viewRows) {
             if (err) {
                 cbLogger.error("cbBucket.query (host=%s bucket=%s designDoc=%s view=%s) returned err: %s", host, bucketName, designDocName, viewName, util.inspect(err));
@@ -188,30 +188,32 @@
                             var userMsg = util.format("Couchbase server cannot return %d documents for this view; try page size %d.", pageSize, suggestedPageSize);
                             return callback(userMsg);
                         } else {
-                            var docIndex = skipCount;
+                            var docIndex = resultSet.skipCount;
                             docIds.forEach(function (docId) {
                                 docIndex++;
                                 var row = rows[docId];
                                 var resultRow = {index: docIndex, key: viewKeys[docId], value: viewValues[docId], id: docId, cas: row.cas, doc: row.value, error: row.error};
                                 var keep = filterResultRow(resultRow, parsedDocFilter);
                                 if (keep) {
-                                    resultRows.push(resultRow);
+                                    resultSet.resultRows.push(resultRow);
                                 }
                             });
 
-                            if (resultRows.length > 0) {
-                                return callback(null, resultRows);
+                            resultSet.nextSkipCount = resultSet.skipCount + docIds.length;
+                            if (resultSet.resultRows.length > 0) {
+                                return callback(null, resultSet);
                             } else {
-                                var newSkipCount = skipCount + docIds.length;
-                                cbQuery.skip(newSkipCount);
-                                cbLogger.warn("No documents passed docFilter for skipCount = %d, moving to next page.", skipCount);
-                                recursivelyQueryBucket(cbBucket, cbQuery, parsedDocFilter, resultRows, newSkipCount, callback);
+                                cbLogger.warn("No documents passed docFilter for skipCount = %d, moving to next page.", resultSet.skipCount);
+                                resultSet.skipCount = resultSet.nextSkipCount;
+                                cbQuery.skip(resultSet.skipCount);
+                                recursivelyQueryBucket(cbBucket, cbQuery, parsedDocFilter, resultSet, callback);
                             }
                         }
                     });
                 } else {
                     cbLogger.warn("No more documents to query.");
-                    return callback(null, resultRows);
+                    resultSet.nextSkipCount = null;
+                    return callback(null, resultSet);
                 }
             }
         });
@@ -265,14 +267,14 @@
                     return callback("Key Prefix must be a valid JSON value or array, or a number preceded by =.");
                 }
                 endKey = [endKeyText];
-                cbLogger.debug("couchbaseWrapper.listDocuments adjusted keyPrefix = %s", util.inspect(keyPrefix));
+                cbLogger.warn("couchbaseWrapper.listDocuments adjusted keyPrefix = %s", util.inspect(keyPrefix));
             } else if (keyPrefix.substring(0, 1) === '=') {
                 keyPrefix = Number(keyPrefix.substring(1));
                 if (isNaN(keyPrefix)) {
                     return callback("When preceded by = the Key Prefix must be a valid number.");
                 }
                 endKey = endNumber;
-                cbLogger.debug("couchbaseWrapper.listDocuments adjusted keyPrefix = %s", util.inspect(keyPrefix));
+                cbLogger.warn("couchbaseWrapper.listDocuments adjusted keyPrefix = %s", util.inspect(keyPrefix));
             }
             cbQuery = cbQuery.range(keyPrefix, endKey, true);
         }
@@ -298,10 +300,10 @@
                 throw err;
             }
 
-            var resultRows = [];
-            recursivelyQueryBucket(cbBucket, cbQuery, parsedDocFilter, resultRows, skipCount, function(err, finalResultRows) {
+            var resultSet = { skipCount: skipCount, nextSkipCount: null, resultRows: [] };
+            recursivelyQueryBucket(cbBucket, cbQuery, parsedDocFilter, resultSet, function(err, finalResultSet) {
                 cbBucket.disconnect();
-                return callback(err, finalResultRows);
+                return callback(err, finalResultSet);
             });
         });
     };
