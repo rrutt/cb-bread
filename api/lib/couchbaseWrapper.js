@@ -206,7 +206,7 @@
                                 cbLogger.warn("No documents passed docFilter for skipCount = %d, moving to next page.", resultSet.skipCount);
                                 resultSet.skipCount = resultSet.nextSkipCount;
                                 cbQuery.skip(resultSet.skipCount);
-                                recursivelyQueryBucket(cbBucket, cbQuery, parsedDocFilter, resultSet, callback);
+                                return recursivelyQueryBucket(cbBucket, cbQuery, parsedDocFilter, resultSet, callback);
                             }
                         }
                     });
@@ -217,6 +217,55 @@
                 }
             }
         });
+    };
+
+    var configureQueryRangeSync = function(cbQuery, keyPrefix, pageSize) {
+        if (keyPrefix && keyPrefix.length > 0) {
+            cbLogger.debug("couchbaseWrapper.configureQueryRangeSync keyPrefix = %s", keyPrefix);
+
+            var swapKeys = false;
+            var endKeyText = 'z';
+            var endNumberIncrement = 1;
+            var inclusiveEndRange = true;
+
+            if (pageSize < 0) {
+                endNumberIncrement = -1;
+                swapKeys = true;
+            }
+
+            var startKey = keyPrefix;
+            var endKey = null;
+            if (keyPrefix.substring(0, 1) === '[') {
+                try {
+                    startKey = JSON.parse(keyPrefix);
+                    endKey = JSON.parse(keyPrefix);
+                    endKey.push(endKeyText);
+                    cbLogger.info("Array keyPrefix: start = %s, end = %s, endKeyText = %s", util.inspect(startKey), util.inspect(endKey), endKeyText);
+                } catch (e) {
+                    return util.format("Key Prefix must be a valid JSON value or array, or a number preceded by =.");
+                }
+            } else if (keyPrefix.substring(0, 1) === '=') {
+                startKey = Number(keyPrefix.substring(1));
+                if (isNaN(startKey)) {
+                    return errorCallback("When preceded by = the Key Prefix must be a valid number.");
+                }
+                endKey = startKey + endNumberIncrement;
+                inclusiveEndRange = false;
+                swapKeys = false;
+            } else {
+                endKey = startKey.concat(endKeyText);
+            }
+
+            if (swapKeys) {
+                var tempKey = startKey;
+                startKey = endKey;
+                endKey = tempKey;
+            }
+
+            cbQuery.range(startKey, endKey, inclusiveEndRange);
+        }
+
+        return null;  // Success.
     };
     
     exports.listDocuments = function(host, bucketName, designDocViewName, keyPrefix, skipCount, pageSize, docFilter, callback) {
@@ -238,14 +287,10 @@
         var cbViewQuery = cb.ViewQuery;
         var sortOrder = cbViewQuery.Order.ASCENDING;
         var queryLimit = pageSize;
-        var endKeyText = 'z';
-        var endNumber = 1.7976931348623157e+308;
 
         if (pageSize < 0) {
             sortOrder = cbViewQuery.Order.DESCENDING;
             queryLimit = (- pageSize);
-            endKeyText = '';
-            endNumber = -endNumber;
         }
 
         var cbQuery = cbViewQuery
@@ -257,29 +302,12 @@
             .limit(queryLimit)
             .order(sortOrder);
 
-        if (keyPrefix && keyPrefix.length > 0) {
-            var endKey = endKeyText;
-            cbLogger.debug("couchbaseWrapper.listDocuments keyPrefix = %s", keyPrefix);
-            if (keyPrefix.substring(0, 1) === '[') {
-                try {
-                    keyPrefix = JSON.parse(keyPrefix);
-                } catch (e) {
-                    return callback("Key Prefix must be a valid JSON value or array, or a number preceded by =.");
-                }
-                endKey = [endKeyText];
-                cbLogger.warn("couchbaseWrapper.listDocuments adjusted keyPrefix = %s", util.inspect(keyPrefix));
-            } else if (keyPrefix.substring(0, 1) === '=') {
-                keyPrefix = Number(keyPrefix.substring(1));
-                if (isNaN(keyPrefix)) {
-                    return callback("When preceded by = the Key Prefix must be a valid number.");
-                }
-                endKey = endNumber;
-                cbLogger.warn("couchbaseWrapper.listDocuments adjusted keyPrefix = %s", util.inspect(keyPrefix));
-            }
-            cbQuery = cbQuery.range(keyPrefix, endKey, true);
+        var errorMessage = configureQueryRangeSync(cbQuery, keyPrefix, pageSize);
+        if (errorMessage) {
+            cbLogger.error(errorMessage);
+            return callback(errorMessage);
         }
-
-        cbLogger.debug("cbQuery = %s", util.inspect(cbQuery, false, 2));
+        cbLogger.warn("cbQuery = %s", util.inspect(cbQuery, false, 2));
 
         var parsedDocFilter = null;
         if (docFilter && docFilter.trim().length > 0) {
@@ -301,7 +329,7 @@
             }
 
             var resultSet = { skipCount: skipCount, nextSkipCount: null, resultRows: [] };
-            recursivelyQueryBucket(cbBucket, cbQuery, parsedDocFilter, resultSet, function(err, finalResultSet) {
+            return recursivelyQueryBucket(cbBucket, cbQuery, parsedDocFilter, resultSet, function(err, finalResultSet) {
                 cbBucket.disconnect();
                 return callback(err, finalResultSet);
             });

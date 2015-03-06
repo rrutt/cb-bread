@@ -36,7 +36,7 @@
         })
         .option('s', {
             alias: 'pagesize',
-            describe: 'Set document viewer page size. Negative means reverse sort. [min -500, max 500]',
+            describe: 'Set document viewer page size. Negative means reverse sort. [min -1000, max 1000]',
             default: defaultPageSize
         })
         .option('l', {
