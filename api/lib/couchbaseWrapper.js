@@ -160,7 +160,6 @@
     var recursivelyQueryBucket = function(cbBucket, cbQuery, parsedDocFilter, resultSet, callback) {
         cbBucket.query(cbQuery, function (err, viewRows) {
             if (err) {
-                cbLogger.error("cbBucket.query (host=%s bucket=%s designDoc=%s view=%s) returned err: %s", host, bucketName, designDocName, viewName, util.inspect(err));
                 cbBucket.disconnect();
                 return callback(err);
             } else {
@@ -226,13 +225,13 @@
             result.error = "Invalid empty or null Key Prefix value.";
         } else if (startValue.substring(0, 1) === '=') {
             result.startKey = Number(startValue.substring(1));
-            result.inclusive = false;
             if (isNaN(result.startKey)) {
-                result.error = util.format("When preceded by '=' a Key Prefix value must be a valid number: '%s'", startValue);
-            } else if (swapKeys) {
-                result.endKey = result.startKey - 1;
+                result.error = {
+                    message: "When preceded by '=' a Key Prefix value must be a valid number.",
+                    badText: startValue
+                };
             } else {
-                result.endKey = result.startKey + 1;
+                result.endKey = result.startKey;
             }
         } else {
             var endValue = startValue.concat('z');
@@ -342,20 +341,35 @@
                 var charIndex = err.pos;
                 var goodText = docFilter.substring(0, charIndex);
                 var badText = docFilter.substring(charIndex);
-                cbLogger.error("Error in docFilter:\nGood Text: %s\nBad Text: %s\nError: %s", goodText, badText, util.inspect(err));
+                var parseErrorMsg = util.format("Invalid Javascript in Doc Filter: %s", err.message);
+                var parseError = { message: parseErrorMsg, goodText: goodText, badText: badText };
+                cbLogger.error(util.inspect(parseError));
+                return callback(parseError);
             }
         }
 
         var cbBucket = cluster.openBucket(bucketName, bucketPassword, function(err) {
             if (err) {
-                cbLogger.error("couchbaseWrapper.listViews cbCluster.openBucket for bucket '%s' threw error: ", bucketName, util.inspect(err));
+                cbLogger.error("couchbaseWrapper.listDocuments cbCluster.openBucket for bucket '%s' threw error: ", bucketName, util.inspect(err));
                 throw err;
             }
 
             var resultSet = { skipCount: skipCount, nextSkipCount: null, resultRows: [] };
             return recursivelyQueryBucket(cbBucket, cbQuery, parsedDocFilter, resultSet, function(err, finalResultSet) {
                 cbBucket.disconnect();
-                return callback(err, finalResultSet);
+                if (err) {
+                    var queryError = {
+                        message: err.message,
+                        host: host,
+                        bucket: bucketName,
+                        designDoc: designDocName,
+                        view: viewName
+                    }
+                    cbLogger.error("couchbaseWrapper.recursivelyQueryBucket error: %s", util.inspect(queryError));
+                    return callback(queryError);
+                } else {
+                    return callback(null, finalResultSet);
+                }
             });
         });
     };

@@ -21,8 +21,7 @@
         var _logAndSendErrorOrResult = function (controllerName, actionName, params, error, result, res) {
             var message = {
                 controllerName: controllerName,
-                actionName: actionName,
-                params: params
+                actionName: actionName
             };
             if (error) {
                 message.error = error;
@@ -30,6 +29,7 @@
                 res.status(500).send(message);
             }
             else {
+                message.params = params;
                 message.result = result;
                 if (argv.responses) {
                     logger.warn("Server Response\n%s", util.inspect(message, false, null, true));

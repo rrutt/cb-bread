@@ -7,7 +7,7 @@
         var configPageSize = null;
 
         var preventZeroPageSize = function() {
-            if ($scope.pageSize === 0) {
+            if ((!$scope.pageSize) || ($scope.pageSize.length === 0) || ($scope.pageSize === 0)) {
                 $scope.pageSize = configPageSize;
             }
         };
