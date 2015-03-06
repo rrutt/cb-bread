@@ -138,13 +138,12 @@
     var filterResultRow = function(resultRow, parsedDocFilter) {
         var filterResult = true;
         if (parsedDocFilter) {
-            cbLogger.debug("filterResultRow: %s", util.inspect(resultRow));
             try {
                 filterResult = exprjsParser.run(parsedDocFilter, resultRow, util);
-                cbLogger.debug("Filter returned %s for resultRow: %s", JSON.stringify(filterResult), util.inspect(resultRow));
+                cbLogger.debug("Filter returned %s for resultRow: %s", JSON.stringify(filterResult), util.inspect(resultRow.id));
             } catch (err) {
                 resultRow.error = err;
-                cbLogger.debug("Filter threw error '%s' for resultRow: %s", err.message, util.inspect(resultRow));
+                cbLogger.debug("Filter threw error '%s' for resultRow: %s", err.message, util.inspect(resultRow.id));
                 filterResult = false;
             }
             if (!filterResult) {
@@ -157,7 +156,7 @@
         return filterResult;
     };
 
-    var recursivelyQueryBucket = function(cbBucket, cbQuery, parsedDocFilter, resultSet, callback) {
+    var recursivelyQueryBucket = function(cbBucket, cbQuery, pageSize, parsedDocFilter, resultSet, callback) {
         cbBucket.query(cbQuery, function (err, viewRows) {
             if (err) {
                 cbBucket.disconnect();
@@ -185,7 +184,7 @@
                             cbBucket.disconnect();
                             var suggestedPageSize = Math.abs(pageSize) - err;
                             var userMsg = util.format("Couchbase server cannot return %d documents for this view; try page size %d.", pageSize, suggestedPageSize);
-                            return callback(userMsg);
+                            return callback(new Error(userMsg));
                         } else {
                             var docIndex = resultSet.skipCount;
                             docIds.forEach(function (docId) {
@@ -205,7 +204,7 @@
                                 cbLogger.warn("No documents passed docFilter for skipCount = %d, moving to next page.", resultSet.skipCount);
                                 resultSet.skipCount = resultSet.nextSkipCount;
                                 cbQuery.skip(resultSet.skipCount);
-                                return recursivelyQueryBucket(cbBucket, cbQuery, parsedDocFilter, resultSet, callback);
+                                return recursivelyQueryBucket(cbBucket, cbQuery, pageSize, parsedDocFilter, resultSet, callback);
                             }
                         }
                     });
@@ -355,7 +354,7 @@
             }
 
             var resultSet = { skipCount: skipCount, nextSkipCount: null, resultRows: [] };
-            return recursivelyQueryBucket(cbBucket, cbQuery, parsedDocFilter, resultSet, function(err, finalResultSet) {
+            return recursivelyQueryBucket(cbBucket, cbQuery, pageSize, parsedDocFilter, resultSet, function(err, finalResultSet) {
                 cbBucket.disconnect();
                 if (err) {
                     var queryError = {
@@ -365,7 +364,7 @@
                         designDoc: designDocName,
                         view: viewName
                     }
-                    cbLogger.error("couchbaseWrapper.recursivelyQueryBucket error: %s", util.inspect(queryError));
+                    cbLogger.error("couchbaseWrapper.recursivelyQueryBucket error: %s", util.inspect(err));
                     return callback(queryError);
                 } else {
                     return callback(null, finalResultSet);
