@@ -136,25 +136,25 @@
     };
 
     var filterResultRow = function(resultRow, parsedDocFilter) {
-        var keep = true;
+        var filterResult = true;
         if (parsedDocFilter) {
             cbLogger.debug("filterResultRow: %s", util.inspect(resultRow));
             try {
-                keep = exprjsParser.run(parsedDocFilter, resultRow);
-                cbLogger.debug("Filter passes for resultRow: %s", util.inspect(resultRow));
+                filterResult = exprjsParser.run(parsedDocFilter, resultRow, util);
+                cbLogger.debug("Filter returned %s for resultRow: %s", JSON.stringify(filterResult), util.inspect(resultRow));
             } catch (err) {
                 resultRow.error = err;
-                cbLogger.debug("Filter fails for resultRow: %s", util.inspect(resultRow));
-                keep = false;
+                cbLogger.debug("Filter threw error '%s' for resultRow: %s", err.message, util.inspect(resultRow));
+                filterResult = false;
             }
-            if (!keep) {
+            if (!filterResult) {
                 resultRow.id = null;
                 resultRow.value = null;
                 resultRow.doc = null;
                 resultRow.cas = "(Fails Doc Filter.)";
             }
         }
-        return keep;
+        return filterResult;
     };
 
     var recursivelyQueryBucket = function(cbBucket, cbQuery, parsedDocFilter, resultSet, callback) {
