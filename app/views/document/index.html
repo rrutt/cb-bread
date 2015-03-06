@@ -4,16 +4,17 @@
         <label for="keyPrefix" title='Enter text, a JSON ["array"], or a number such as =12345 representing a starting point in the sort order.'>&nbsp;&nbsp;Key Prefix:&nbsp;</label>
         <input class="form-control" id="keyPrefix" type="text" size="45" data-ng-model="keyPrefix">
         <label for="pageSize" title="A negative value, such as -10, sorts and pages in descending order.">&nbsp;&nbsp;&nbsp;&nbsp;Skip: {{skipCount}}&nbsp;&nbsp;&nbsp;&nbsp;Page Size:&nbsp;</label>
-        <input class="form-control" id="pageSize" type="number" min="-1000" max="1000" step="10" data-ng-model="pageSize">
+        <input class="form-control" id="pageSize" type="number" size="3" min="-1000" max="1000" step="10" data-ng-model="pageSize">
         <button type="button" class="btn" data-ng-show="skipCount > 0" data-ng-click="prevPage()">Prev</button>
         <button type="button" class="btn" data-ng-click="nextPage()">Next</button>
     </div>
+    <div style="height: 2px">&nbsp;</div>
     <div class="form-group">
         <label for="docFilter" title="Enter a Javascript expression against the key, value, id, cas, or doc objects that evaluates to true or false.">&nbsp;&nbsp;Doc Filter:&nbsp;</label>
-        <input class="form-control" id="docFilter" type="text" size="120" data-ng-model="docFilter">
+        <input class="form-control" id="docFilter" type="text" size="140" data-ng-model="docFilter">
     </div>
 </form>
-<div>&nbsp;</div>
+<div style="height: 0px">&nbsp;</div>
 <table class="table table-striped">
     <thead>
         <tr>
