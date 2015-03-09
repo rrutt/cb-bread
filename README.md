@@ -27,7 +27,7 @@ Open a web browser to the [rrutt / cb-bread releases](https://github.com/rrutt/c
 
 For the desired release tag (the newest is shown first), download the **zip** or **tar.gz** archive file link to your workstation.
 
-Expand the downloaded archive file, open a Command Prompt or terminal window, and navigate to the root folder of the expanded archive contents.
+Expand the downloaded archive file, open a command prompt or terminal window, and navigate to the root folder of the expanded archive contents.
 
 ### To download cb-bread using Git:
 
@@ -128,7 +128,7 @@ Otherwise click **Cancel**.
 ### Querying for a specific view key:
 
 Type the text **Tony1** in the **Key Prefix** query field in the document list page and press the keyboard Enter key (or click **Requery**).
-Note that no surrounding quotes should be type.
+Note that no surrounding quotes should be typed.
 
 The following single document appears:
 
@@ -178,14 +178,14 @@ Click the **beer-sample** bucket name.
 Click the **beer/brewery_beers** view.
 The first 10 brewery and brewery/beer documents appear.
 
-Type the exact text **["atwater\_block\_brewing"]** into the **Key Prefix** query field, including the square brackets and full quotes (note apostrophes), then press Enter or click **Requery**.
+Type the exact text **["atwater\_block\_brewing"]** into the **Key Prefix** query field, including the square brackets and full quotes (_not_ apostrophes), then press Enter or click **Requery**.
 
 The brewery document for Atwater Block Brewing in Detroit appears, followed by documents for its selection of beers.
 
 You can also enter a partial prefix value, such as **["bell"]**.
 This returns results for Bell's Brewery Inc. and its beers, followed by Bellows Brew Crew and its beers.
 
-You can also enter a compound array **Key Prefix** such as **["bell\_s\_brewery\_inc","bell\_s\_brewery\_inc-batch"]** to restrict the query to items with that pattern at the start of their view key.
+You can enter a compound array **Key Prefix** such as **["bell\_s\_brewery\_inc","bell\_s\_brewery\_inc-batch"]** to restrict the query to items with that pattern at the start of their view key.
 This query returns two Bell's beers "Batch 7000" and "Batch 8000".
 
 ### Querying numeric view keys:
@@ -241,7 +241,7 @@ The expression also has implicit access to several functions from the NodeJS **u
 
 **_Special Note -- Negative numbers:_**
 The Javascript expression parser does _not_ properly handle unary minus for constants, such as **-123**.
-Instead, use this _subtrace from zero_ format for these values: **(0-123)**.
+Instead, use _subtract from zero_ format for these values: **(0-123)**.
 
 ## Doc Filter expression applied to the View Key:
 
@@ -263,7 +263,7 @@ To find all the breweries in Michigan, use this expression:
 
 ### Filtering based on values inside array properties:
 
-The Array.filter or Array.map functions are _not allowed_ since the Javascript expression parser does not allow braces, so inline _lambda_ callback functions cannot be specified.
+The Array.filter or Array.map functions are _not allowed_ since the Javascript expression parser does not allow braces, so inline callback functions cannot be specified.
 
 Instead, use the implicit **inspect** function from the NodeJS 'util' module to convert the entire array to a string and use string functions to check for specific values in the array elements.
 
@@ -289,7 +289,8 @@ This **Doc Filter** finds breweries where we have exact geographic coordinates:
 
 The sample bucket data provided with Couchbase Server has no documents that contain an array of objects, rather than an array of strings.
 
-To demonstrate how to query an array of objects, we simulate this situation with an alternate query for the previous "ROOFTOP" query, treating the **doc.geo** object map as if it were an array:
+To demonstrate how to query an array of objects, we simulate this situation with an alternate query for the previous "ROOFTOP" query, treating the **doc.geo** object map as if it were an array.
+Note the syntax produced by the **inspect** function for a string property and its value:
 
     inspect(doc.geo).indexOf("accuracy: 'ROOFTOP'") >= 0
 
