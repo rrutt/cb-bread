@@ -13,15 +13,23 @@ I wrote a blog article about my experience creating this application: [If You Bu
 
 ### Pre-requisites:
 
-You need a command-line based Git source code control client: [Git client downloads](http://git-scm.com/downloads).
-Windows users may prefer [PortableGit](https://github.com/msysgit/msysgit/releases/).
-
-You also need Node.js: [Node.js downloads](http://nodejs.org/download/).
+You need Node.js: [Node.js downloads](http://nodejs.org/download/).
 
 In order to let the Node/npm installer compile the Couchbase Node SDK, you need Python 2.7.x (where "x" is any point release): [Download Python](https://www.python.org/downloads/)
 **_Note for Windows:_** You will need to add **C:\Python27** to your **PATH** variable, and possibly logout and login again for this change to take effect.
 
-### To download cb-bread:
+If you want to customize the **cb-bread** application, you need a command-line based Git source code control client: [Git client downloads](http://git-scm.com/downloads).
+Windows users may prefer [PortableGit](https://github.com/msysgit/msysgit/releases/).
+
+### To download cb-bread without Git:
+
+Open a web browser to the [rrutt / cb-bread releases](https://github.com/rrutt/cb-bread/releases) page on GitHub.com
+
+For the desired release tag (the newest is shown first), download the **zip** or **tar.gz** archive file link to your workstation.
+
+Expand the downloaded archive file, open a Command Prompt or terminal window, and navigate to the root folder of the expanded archive contents.
+
+### To download cb-bread using Git:
 
 For Windows, open a **git-bash** command prompt window, which provides Unix/Linux bash shell command support.
 For Mac OSX or Linux, open a terminal window. 
