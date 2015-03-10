@@ -79,6 +79,14 @@ BucketManager.prototype.listBuckets = function(callback) {
     var path = 'pools/default/buckets';
 
     var httpReq = this._mgmtRequest(path, 'GET');
+    httpReq.on('error', function(err, resp) {
+        if (err) {
+            var errMsg = util.format("Could not connect to Couchbase host: %s", err.message);
+            return callback(errMsg, null);
+        } else {
+            return callback(null, resp);
+        }
+    });
     httpReq.on('response', _respRead(function(err, resp, data) {
         if (err) {
             return callback(err);
@@ -88,7 +96,7 @@ BucketManager.prototype.listBuckets = function(callback) {
                 var errData = JSON.parse(data);
                 return callback(new Error(errData.reason), null);
             } catch (e) {
-                var errMsg = util.format("Couchbase responded with '%s' -- Are your credentials correct?", e.message);
+                var errMsg = util.format("Couchbase responded '%s' -- Are your credentials correct?", e.message);
                 return callback(errMsg, null);
             }
         }

@@ -78,9 +78,10 @@
 
         bucketManager.listBuckets(function(err, bucketInfoList) {
             if (err) {
-                cbLogger.error("couchbaseWrapper.listBuckets error: ", util.inspect(err));
+                cbLogger.error("couchbaseWrapper.listBuckets error: %s", util.inspect(err));
                 return callback(err);
             } else {
+                cbLogger.debug("bucketManager.listBuckets returned %s", util.inspect(bucketInfoList));
                 var bucketList = [];
                 bucketInfoList.forEach(function(bucketInfo) {
                     var bucketName = bucketInfo.name;
