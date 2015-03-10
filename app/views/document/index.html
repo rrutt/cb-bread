@@ -27,6 +27,12 @@
                 <button type="button" class="btn btn-success btn-xs btn-block" data-ng-click="createOrUpdate(undefined)">Create</button>
             </th>
         </tr>
+        <tr data-ng-show="documents.length === 0 && skipCount === 0">
+            <th colspan="7">No documents match the query criteria.</td>
+        </tr>
+        <tr data-ng-show="documents.length === 0 && skipCount > 0">
+            <th colspan="7">No more documents match the query criteria.</td>
+        </tr>
     </thead>
     <tbody data-ng-repeat="document in documents">
         <tr>

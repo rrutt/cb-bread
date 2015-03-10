@@ -63,6 +63,8 @@
             throw new Error(errMsg);
         }
 
+        cbLogger.debug("couchbaseWrapper.listBuckets for host %s", host);
+
         var clusterManager = cachedHostInfo.clusterManager;
         var bucketPasswords = cachedHostInfo.bucketPasswords;
 
@@ -218,7 +220,7 @@
     };
 
     var configureRangeInfoSync = function(startValue, swapKeys) {
-        var result = { startKey: null, endKey: null, inclusive: true, error: null };
+        var result = { startKey: null, endKey: null, inclusive: true };
 
         if ((!startValue) || (startValue.length === 0)) {
             result.error = "Invalid empty or null Key Prefix value.";
@@ -283,6 +285,7 @@
             if (rangeInfo.error) {
                 return rangeInfo.error;
             } else {
+                cbLogger.info("Query range: %s", util.inspect(rangeInfo));
                 cbQuery.range(rangeInfo.startKey, rangeInfo.endKey, rangeInfo.inclusive);
             }
         }
