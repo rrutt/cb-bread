@@ -1,6 +1,9 @@
 (function () {
     'use strict';
 
+    var url = require('url');
+    var dns = require('dns');
+
     var exprjs = require('exprjs');
     var exprjsParser = new exprjs();
 
@@ -9,6 +12,7 @@
     // http://docs.couchbase.com/developer/node-2.0/introduction.html
     // http://docs.couchbase.com/developer/node-2.0/hello-couchbase.html
     var cb = require('couchbase');
+    var cbBucketManager = require('./couchbaseBucketManager');
 
     var cbLogger = null;
     var cbHostInfoCache = {};
@@ -28,9 +32,10 @@
             if (cachedHostInfo) {
                 var cluster = cachedHostInfo.cluster;
                 var clusterManager = cachedHostInfo.clusterManager;
+                var bucketManager = cachedHostInfo.bucketManager;
                 var cachedUser = cachedHostInfo.user;
                 var cachedPassword = cachedHostInfo.password;
-                if (cluster && clusterManager && (user === cachedUser) && (password === cachedPassword)) {
+                if (cluster && clusterManager && bucketManager && (user === cachedUser) && (password === cachedPassword)) {
                     cbLogger.debug("couchbaseWrapper.initialize using cached info for %s as user %s", host, user);
                     needToInitialize = false;
                 }
@@ -41,9 +46,11 @@
 
                 var cluster = new cb.Cluster(host);
                 var clusterManager = cluster.manager(user, password);
+                var bucketManager = new cbBucketManager(cluster, user, password)
                 var hostInfo = {
                     cluster: cluster,
                     clusterManager: clusterManager,
+                    bucketManager: bucketManager,
                     user: user,
                     password: password,
                     bucketPasswords: {}
@@ -66,9 +73,10 @@
         cbLogger.debug("couchbaseWrapper.listBuckets for host %s", host);
 
         var clusterManager = cachedHostInfo.clusterManager;
+        var bucketManager = cachedHostInfo.bucketManager;
         var bucketPasswords = cachedHostInfo.bucketPasswords;
 
-        clusterManager.listBuckets(function(err, bucketInfoList) {
+        bucketManager.listBuckets(function(err, bucketInfoList) {
             if (err) {
                 cbLogger.error("couchbaseWrapper.listBuckets error: ", util.inspect(err));
                 return callback(err);
