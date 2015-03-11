@@ -7,13 +7,14 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "debug": "node server.js --debug --responses",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: No automated tests provided; manually test via web browser.\" && exit 1"
   },
   "keywords": [
     "angularjs",
     "couchbase",
-    "json"
+    "json",
+    "crud", "create", "read", "update", "delete",
+    "bread", "browse", "edit", "add"
   ],
   "author": "Rick Rutt <RRutt@live.com>",
   "contributors": [{
@@ -22,18 +23,18 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/rrutt/cb-bread"
+    "url": "https://github.com/rrutt/cb-bread.git"
   },
   "bugs": {
     "url": "https://github.com/rrutt/cb-bread/issues"
   },
   "dependencies": {
-    "body-parser": "~1.6.7",
-    "compression": "~1.0.11",
-    "couchbase": "2.0.6",
-    "express": "~4.8.8",
-    "exprjs": "0.0.3",
-    "log4js": "~0.6.22",
-    "yargs": "3.0.4"
+    "body-parser": "1.6.x",
+    "compression": "1.0.x",
+    "couchbase": "2.0.x",
+    "express": "4.8.x",
+    "exprjs": "0.0.x",
+    "log4js": "0.6.x",
+    "yargs": "3.0.x"
   }
 }
