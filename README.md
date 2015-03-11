@@ -3,6 +3,7 @@
 Couchbase Browse/Read/Edit/Add/Delete
 
 This application provides a (hopefully) friendly user interface for, querying, browsing, and editing JSON documents stored in a [Couchbase](http://www.couchbase.com/) NoSQL document database server.
+The acronym BREAD replaces the usual CRUD = Create/Read/Update/Delete purely for aesthetic reasons.
 
 This application is intended to be run on your local workstation, so you can provide Couchbase server connection options on the command line and monitor the server log messages.
 Running the application on your own workstation also relieves the application of some security responsibilities.
