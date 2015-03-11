@@ -35,7 +35,7 @@ function _respRead(callback) {
  * @since 2.0.0
  * @committed
  */
-function BucketManager(cluster, username, password) {
+function ClusterManager(cluster, username, password) {
     this._cluster = cluster;
     this._username = username;
     this._password = password;
@@ -50,7 +50,7 @@ function BucketManager(cluster, username, password) {
  * @private
  * @ignore
  */
-BucketManager.prototype._mgmtRequest = function(path, method, uses_qs) {
+ClusterManager.prototype._mgmtRequest = function(path, method, uses_qs) {
     var clusterHosts = this._cluster.dsnObj.hosts;
     var myHost = clusterHosts[Math.floor(Math.random()*clusterHosts.length)];
     var reqOpts = {
@@ -75,7 +75,7 @@ BucketManager.prototype._mgmtRequest = function(path, method, uses_qs) {
  * @since 2.0.0
  * @committed
  */
-BucketManager.prototype.listBuckets = function(callback) {
+ClusterManager.prototype.listBuckets = function(callback) {
     var path = 'pools/default/buckets';
 
     var httpReq = this._mgmtRequest(path, 'GET');
@@ -111,4 +111,4 @@ BucketManager.prototype.listBuckets = function(callback) {
     httpReq.end();
 };
 
-module.exports = BucketManager;
+module.exports = ClusterManager;
