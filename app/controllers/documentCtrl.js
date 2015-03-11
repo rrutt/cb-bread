@@ -18,6 +18,7 @@
                     $alert(JSON.stringify(error, null, 2));
                 }
                 else {
+                    $scope.prevSkipCount = $scope.skipCount;
                     $scope.nextSkipCount = resultSet.nextSkipCount;
                     $scope.documents = [];
                     var resultRows = resultSet.resultRows;
@@ -72,7 +73,9 @@
         
         $scope.requeryServer = function () {
             preventZeroPageSize();
-            $scope.skipCount = 0;
+            if ($scope.skipCount === $scope.prevSkipCount) {
+                $scope.skipCount = 0;
+            }
             refresh();
         };
 
@@ -139,6 +142,7 @@
 
                 $scope.keyPrefix = '';
                 $scope.skipCount = 0;
+                $scope.prevSkipCount = $scope.skipCount;
                 $scope.pageSize = configPageSize;
                 refresh();
             }

@@ -3,7 +3,7 @@
         <button type="submit" class="btn" data-ng-click="requeryServer()">Requery</button>
         <label for="keyPrefix" title='Enter text or a JSON ["string array"] to restrict results to View Keys that start with the entered value, or a number receded by an equals sign such as =12345 to restrict results to that View Key value.'>&nbsp;&nbsp;Key Prefix:&nbsp;</label>
         <input class="form-control" id="keyPrefix" type="text" size="60" data-ng-model="keyPrefix">
-        <label for="skipCount" title="Number of view result documents to skip.">&nbsp;Skip:&nbsp;</label>
+        <label for="skipCount" title="Number of view result documents to skip. Automatically updated by Next and Prev paging buttons. Optionally type an alternate value and press Enter (or click Requery).">&nbsp;Skip:&nbsp;</label>
         <input class="form-control" id="skipCount" type="number" style="width: 7em" min="0" step="{{pageSize}}" data-ng-model="skipCount">
         <label for="pageSize" title="A negative value, such as -10, sorts and pages in descending order.">&nbsp;Page Size:&nbsp;</label>
         <input class="form-control" id="pageSize" type="number" style="width: 7em" min="-1000" max="1000" step="10" data-ng-model="pageSize">
