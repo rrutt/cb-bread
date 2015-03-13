@@ -56,10 +56,15 @@
             alias: 'responses',
             describe: 'Log responses from server API requests.'
         })
-        .epilog(epilogMsg);
+        .epilog(epilogMsg)
+        .strict();
     var argv = yargs.argv;
     if (argv.help) {
         yargs.showHelp();
+        process.exit(0);
+    } else if (argv._ && (argv._.length > 0)) {
+        yargs.showHelp();
+        console.log("Unknown token: " + argv._);
         process.exit(0);
     }
 
