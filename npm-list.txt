@@ -1,4 +1,4 @@
-cb-bread@0.3.0
+cb-bread@0.3.1
 ├─┬ body-parser@1.6.7
 │ ├── bytes@1.0.0
 │ ├── depd@0.4.4
@@ -20,7 +20,7 @@ cb-bread@0.3.0
 │ │ └── ms@0.6.2
 │ ├── on-headers@1.0.0
 │ └── vary@1.0.0
-├─┬ couchbase@2.0.6
+├─┬ couchbase@2.0.5
 │ ├── bindings@1.2.1
 │ ├── jsonparse@0.0.6
 │ ├── nan@1.5.3
