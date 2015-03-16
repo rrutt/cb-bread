@@ -284,7 +284,7 @@ This **Doc Filter** finds breweries with a specific telephone area code in Michi
 
 This **Doc Filter** finds breweries where we have exact geographic coordinates:
 
-   doc.geo.accuracy === "ROOFTOP"
+    doc.geo.accuracy === "ROOFTOP"
 
 ### Filtering on arrays of objects:
 
