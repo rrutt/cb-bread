@@ -223,28 +223,23 @@
 
     var configureRangeInfoSync = function(startValue, swapKeys) {
         var result = { startKey: null, endKey: null, inclusive: true };
+        var endValue = null;
 
         if ((!startValue) || (startValue.length === 0)) {
             result.error = "Invalid empty or null Key Prefix value.";
-        } else if (startValue.substring(0, 1) === '=') {
-            result.startKey = Number(startValue.substring(1));
-            if (isNaN(result.startKey)) {
-                result.error = {
-                    message: "When preceded by '=' a Key Prefix value must be a valid number.",
-                    badText: startValue
-                };
-            } else {
-                result.endKey = result.startKey;
-            }
+        } else if (startValue.substring) {
+            endValue = startValue.concat('z');
         } else {
-            var endValue = startValue.concat('z');
-            if (swapKeys) {
-                result.startKey = endValue;
-                result.endKey = startValue;
-            } else {
-                result.startKey = startValue;
-                result.endKey = endValue;
-            }
+            endValue = startValue + 1;
+            result.inclusive = false;
+        }
+
+        if (swapKeys) {
+            result.startKey = endValue;
+            result.endKey = startValue;
+        } else {
+            result.startKey = startValue;
+            result.endKey = endValue;
         }
 
         return result;
@@ -278,7 +273,8 @@
                         rangeInfo.endKey = endArray;
                     }
                 } catch (e) {
-                    return util.format("Key Prefix must be a valid JSON value, string array, or a number preceded by =.");
+                    cbLogger.error("Parsing array keyPrefix '%s' threw exception: %s", keyPrefix, util.inspect(e));
+                    return util.format("Key Prefix must be a valid JSON value, array, or a number preceded by =.");
                 }
             } else {
                 rangeInfo = configureRangeInfoSync(keyPrefix, swapKeys);
