@@ -221,14 +221,27 @@
         });
     };
 
-    var configureRangeInfoSync = function(startValue, swapKeys) {
+    var configureRangeInfoSync = function(userStartValue, swapKeys) {
         var result = { startKey: null, endKey: null, inclusive: true };
+        var startValue = userStartValue;
         var endValue = null;
 
-        if ((!startValue) || (startValue.length === 0)) {
+        if ((startValue === null) || (startValue.length === 0)) {
             result.error = "Invalid empty or null Key Prefix value.";
         } else if (startValue.substring) {
             endValue = startValue.concat('z');
+            if (startValue.substring(0, 1) === '=') {
+                startValue = Number(startValue.substring(1));
+                if (isNaN(startValue)) {
+                    result.error = {
+                        message: "When preceded by '=' a Key Prefix value must be a valid number.",
+                        badText: userStartValue
+                    };
+                } else {
+                    endValue = startValue + 1;
+                    result.inclusive = false;
+                }
+            }
         } else {
             endValue = startValue + 1;
             result.inclusive = false;
