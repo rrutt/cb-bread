@@ -221,15 +221,22 @@
         });
     };
 
-    var configureRangeInfoSync = function(userStartValue, swapKeys) {
+    var configureRangeInfoSync = function(userStartValue, sortOrder) {
         var result = { startKey: null, endKey: null, inclusive: true };
         var startValue = userStartValue;
         var endValue = null;
 
+        var swapKeys = false;
+        var nextNumberOffset = 1;
+        if (sortOrder === cb.ViewQuery.Order.DESCENDING) {
+            swapKeys = true;
+            nextNumberOffset = -1;
+        }
+
         if ((startValue === null) || (startValue.length === 0)) {
             result.error = "Invalid empty or null Key Prefix value.";
         } else if (startValue.substring) {
-            endValue = startValue.concat('z');
+            endValue = startValue.concat('zzzzzzzzzz');
             if (startValue.substring(0, 1) === '=') {
                 startValue = Number(startValue.substring(1));
                 if (isNaN(startValue)) {
@@ -238,12 +245,14 @@
                         badText: userStartValue
                     };
                 } else {
-                    endValue = startValue + 1;
+                    endValue = startValue + nextNumberOffset;
+                    swapKeys = false;
                     result.inclusive = false;
                 }
             }
         } else {
-            endValue = startValue + 1;
+            endValue = startValue + nextNumberOffset;
+            swapKeys = false;
             result.inclusive = false;
         }
 
@@ -258,14 +267,9 @@
         return result;
     };
 
-    var configureQueryRangeSync = function(cbQuery, keyPrefix, pageSize) {
+    var configureQueryRangeSync = function(cbQuery, keyPrefix, sortOrder) {
         if (keyPrefix && keyPrefix.length > 0) {
             cbLogger.debug("couchbaseWrapper.configureQueryRangeSync keyPrefix = %s", keyPrefix);
-
-            var swapKeys = false;
-            if (pageSize < 0) {
-                swapKeys = true;
-            }
 
             var rangeInfo = null;
             if (keyPrefix.substring(0, 1) === '[') {
@@ -276,7 +280,7 @@
                         return "Key Prefix cannot be an empty array.";
                     }
                     var lastStartValue = startArray[numValues - 1];
-                    rangeInfo = configureRangeInfoSync(lastStartValue, swapKeys);
+                    rangeInfo = configureRangeInfoSync(lastStartValue, sortOrder);
                     if (!rangeInfo.error) {
                         startArray[numValues - 1] = rangeInfo.startKey;
                         rangeInfo.startKey = startArray;
@@ -290,14 +294,16 @@
                     return util.format("Key Prefix must be a valid JSON value, array, or a number preceded by =.");
                 }
             } else {
-                rangeInfo = configureRangeInfoSync(keyPrefix, swapKeys);
+                rangeInfo = configureRangeInfoSync(keyPrefix, sortOrder);
             }
 
             if (rangeInfo.error) {
                 return rangeInfo.error;
             } else {
                 cbLogger.info("Query range: %s", util.inspect(rangeInfo));
-                cbQuery.range(rangeInfo.startKey, rangeInfo.endKey, rangeInfo.inclusive);
+//                cbQuery.range(rangeInfo.startKey, rangeInfo.endKey, rangeInfo.inclusive);
+                cbQuery.range(rangeInfo.startKey, rangeInfo.endKey);
+                cbQuery.options.inclusive_end = rangeInfo.inclusive;
             }
         }
 
@@ -338,7 +344,7 @@
             .limit(queryLimit)
             .order(sortOrder);
 
-        var errorMessage = configureQueryRangeSync(cbQuery, keyPrefix, pageSize);
+        var errorMessage = configureQueryRangeSync(cbQuery, keyPrefix, sortOrder);
         if (errorMessage) {
             cbLogger.error(errorMessage);
             return callback(errorMessage);
