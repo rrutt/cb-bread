@@ -187,7 +187,7 @@
                             cbLogger.debug("cbBucket.getMulti returned error: %s", util.inspect(err));
                             cbBucket.disconnect();
                             var suggestedPageSize = Math.abs(pageSize) - err;
-                            var userMsg = util.format("Couchbase server cannot return %d documents for this view; try page size %d.", pageSize, suggestedPageSize);
+                            var userMsg = util.format("Couchbase server cannot return %d documents for this view at Skip Count %d. Please try Page Size %d.", pageSize, resultSet.skipCount, suggestedPageSize);
                             return callback(new Error(userMsg));
                         } else {
                             var docIndex = resultSet.skipCount;

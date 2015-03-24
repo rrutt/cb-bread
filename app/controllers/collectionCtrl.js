@@ -7,6 +7,7 @@
         var refresh = function () {
             api.request(controllerName, 'list', { host: credentials.host, bucketId: $scope.bucket.id }, function (err, views) {
                 if (err) {
+                    $rootScope.$broadcast('loading-complete');
                     $alert(JSON.stringify(err, null, 2));
                 }
                 else {

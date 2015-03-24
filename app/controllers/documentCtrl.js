@@ -15,6 +15,7 @@
         var refresh = function () {
             api.request(controllerName, 'list', { host: credentials.host, bucketId: $scope.view.bucketId, viewId: $scope.view.viewId, keyPrefix: $scope.keyPrefix, skipCount: $scope.skipCount, pageSize: $scope.pageSize, docFilter: $scope.docFilter }, function (error, resultSet) {
                 if (error) {
+                    $rootScope.$broadcast('loading-complete');
                     $alert(JSON.stringify(error, null, 2));
                 }
                 else {
@@ -136,6 +137,7 @@
 
         serverConfig.getConfig(function (error, config) {
             if (error) {
+                $rootScope.$broadcast('loading-complete');
                 $alert(JSON.stringify(error, null, 2));
             } else {
                 configPageSize = config.argv.pagesize;
@@ -170,6 +172,7 @@
             // invoke api to create or update document
             api.request(controllerName, 'createOrReplace', { host: credentials.host, bucketId: $scope.view.bucketId, docId: id, docBody: body }, function (error, doc) {
                 if (error) {
+                    $rootScope.$broadcast('loading-complete');
                     $alert(error);
                 }
                 else {
@@ -191,6 +194,7 @@
             if (confirmationDocId === doc.id) {
                 api.request(controllerName, 'delete', { host: credentials.host, bucketId: $scope.view.bucketId, docId: doc.id }, function (error) {
                     if (error) {
+                        $rootScope.$broadcast('loading-complete');
                         $alert(JSON.stringify(error, null, 2));
                     }
                     else {
@@ -199,6 +203,7 @@
                 });
             }
             else {
+                $rootScope.$broadcast('loading-complete');
                 $alert('The confirmation Document ID you typed was incorrect.');
             }
         };

@@ -8,6 +8,7 @@
                 refresh();
             }
             else {
+                $rootScope.$broadcast('loading-complete');
                 $alert('Please specify host, user, and password.');
             }
         };
@@ -29,6 +30,7 @@
             if (!credentials.isConfigured()) {
                 serverConfig.getConfig(function (error, config) {
                     if (error) {
+                        $rootScope.$broadcast('loading-complete');
                         $alert(JSON.stringify(error, null, 2));
                     } else {
                         if ((!$scope.host) || ($scope.host.length == 0)) {

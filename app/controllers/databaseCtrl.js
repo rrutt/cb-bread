@@ -7,6 +7,7 @@
         var refresh = function () {
             api.request(controllerName, 'list', { host: credentials.host }, function (error, buckets) {
                 if (error) {
+                    $rootScope.$broadcast('loading-complete');
                     $alert(JSON.stringify(error, null, 2));
                 }
                 else {

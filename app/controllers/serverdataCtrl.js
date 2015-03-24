@@ -5,6 +5,7 @@
         var refresh = function () {
             serverConfig.getConfig(function (error, config) {
                 if (error) {
+                    $rootScope.$broadcast('loading-complete');
                     $alert(JSON.stringify(error, null, 2));
                 }
                 else {

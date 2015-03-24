@@ -35,6 +35,7 @@
         // and push them into $scope.options for selection
         api.request('database', 'list', null, function (error, buckets) {
             if (error) {
+                $rootScope.$broadcast('loading-complete');
                 $alert(error);
             }
             else {
@@ -46,6 +47,7 @@
                     });
                     api.request('collection', 'list', { databaseLink: bucket._self }, function (error, cols) {
                         if (error) {
+                            $rootScope.$broadcast('loading-complete');
                             $alert(error);
                         }
                         else {
