@@ -252,7 +252,7 @@
                     badText: userStartValue
                 };
             } else {
-                var endNumberString = startNumberString;
+                var endNumberString = startValue.toString();
                 if (endNumberString.indexOf('.') < 0) {
                     endNumberString = endNumberString + '.';
                 }
