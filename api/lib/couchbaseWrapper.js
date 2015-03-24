@@ -225,12 +225,12 @@
         var result = { startKey: null, endKey: null, inclusive: true };
         var startValue = userStartValue;
         var endValue = null;
+        var startNumberString = null;
 
         var swapKeys = false;
         var nextNumberOffset = 1;
         if (sortOrder === cb.ViewQuery.Order.DESCENDING) {
             swapKeys = true;
-            nextNumberOffset = -1;
         }
 
         if ((startValue === null) || (startValue.length === 0)) {
@@ -238,22 +238,27 @@
         } else if (startValue.substring) {
             endValue = startValue.concat('zzzzzzzzzz');
             if (startValue.substring(0, 1) === '=') {
-                startValue = Number(startValue.substring(1));
-                if (isNaN(startValue)) {
-                    result.error = {
-                        message: "When preceded by '=' a Key Prefix value must be a valid number.",
-                        badText: userStartValue
-                    };
-                } else {
-                    endValue = startValue + nextNumberOffset;
-                    swapKeys = false;
-                    result.inclusive = false;
-                }
+                startNumberString = startValue.substring(1);
             }
         } else {
-            endValue = startValue + nextNumberOffset;
-            swapKeys = false;
-            result.inclusive = false;
+            startNumberString = startValue.toString();
+        }
+        
+        if (startNumberString) {
+            startValue = Number(startNumberString);
+            if (isNaN(startValue)) {
+                result.error = {
+                    message: "When preceded by '=' a Key Prefix value must be a valid number.",
+                    badText: userStartValue
+                };
+            } else {
+                var endNumberString = startNumberString;
+                if (endNumberString.indexOf('.') < 0) {
+                    endNumberString = endNumberString + '.';
+                }
+                endNumberString = endNumberString + '9999999999';
+                endValue = Number(endNumberString);
+            }
         }
 
         if (swapKeys) {
@@ -301,9 +306,7 @@
                 return rangeInfo.error;
             } else {
                 cbLogger.info("Query range: %s", util.inspect(rangeInfo));
-//                cbQuery.range(rangeInfo.startKey, rangeInfo.endKey, rangeInfo.inclusive);
-                cbQuery.range(rangeInfo.startKey, rangeInfo.endKey);
-                cbQuery.options.inclusive_end = rangeInfo.inclusive;
+                cbQuery.range(rangeInfo.startKey, rangeInfo.endKey, rangeInfo.inclusive);
             }
         }
 
