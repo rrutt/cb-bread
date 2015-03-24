@@ -233,11 +233,11 @@
             swapKeys = true;
         }
 
-        if ((startValue === null) || (startValue.length === 0)) {
-            result.error = "Invalid empty or null Key Prefix value.";
+        if (startValue === null) {
+            endValue = '';
         } else if (startValue.substring) {
             endValue = startValue.concat('zzzzzzzzzz');
-            if (startValue.substring(0, 1) === '=') {
+            if ((startValue.length > 0) && (startValue.substring(0, 1) === '=')) {
                 startNumberString = startValue.substring(1);
             }
         } else {
