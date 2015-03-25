@@ -142,13 +142,18 @@
     var filterResultRow = function(resultRow, parsedDocFilter) {
         var filterResult = true;
         if (parsedDocFilter) {
-            try {
-                filterResult = exprjsParser.run(parsedDocFilter, resultRow, util);
-                cbLogger.debug("Filter returned %s for resultRow: %s", JSON.stringify(filterResult), util.inspect(resultRow.id));
-            } catch (err) {
-                resultRow.error = err;
-                cbLogger.debug("Filter threw error '%s' for resultRow: %s", err.message, util.inspect(resultRow.id));
-                filterResult = false;
+            if (resultRow.error) {
+                cbLogger.warn("Filter bypassed Document ID '%s': %s", resultRow.id, resultRow.error.message);
+                filterResult = false
+            } else {
+                try {
+                    filterResult = exprjsParser.run(parsedDocFilter, resultRow, util);
+                    cbLogger.debug("Filter returned %s for resultRow: %s", JSON.stringify(filterResult), util.inspect(resultRow.id));
+                } catch (err) {
+                    resultRow.error = err;
+                    cbLogger.debug("Filter threw error '%s' for resultRow: %s", err.message, util.inspect(resultRow.id));
+                    filterResult = false;
+                }
             }
             if (!filterResult) {
                 resultRow.id = null;
@@ -184,32 +189,28 @@
                 if (docIds && docIds.length > 0) {
                     cbBucket.getMulti(docIds, function (err, rows) {
                         if (err) {
-                            cbLogger.debug("cbBucket.getMulti returned error: %s", util.inspect(err));
-                            cbBucket.disconnect();
-                            var suggestedPageSize = Math.abs(pageSize) - err;
-                            var userMsg = util.format("Couchbase server cannot return %d documents for this view at Skip Count %d. Please try Page Size %d.", pageSize, resultSet.skipCount, suggestedPageSize);
-                            return callback(new Error(userMsg));
-                        } else {
-                            var docIndex = resultSet.skipCount;
-                            docIds.forEach(function (docId) {
-                                docIndex++;
-                                var row = rows[docId];
-                                var resultRow = {index: docIndex, key: viewKeys[docId], value: viewValues[docId], id: docId, cas: row.cas, doc: row.value, error: row.error};
-                                var keep = filterResultRow(resultRow, parsedDocFilter);
-                                if (keep) {
-                                    resultSet.resultRows.push(resultRow);
-                                }
-                            });
+                            cbLogger.warn("cbBucket.getMulti returned error count = %s", util.inspect(err));
+                        }
 
-                            resultSet.nextSkipCount = resultSet.skipCount + docIds.length;
-                            if (resultSet.resultRows.length > 0) {
-                                return callback(null, resultSet);
-                            } else {
-                                cbLogger.warn("No documents passed docFilter for skipCount = %d, moving to next page.", resultSet.skipCount);
-                                resultSet.skipCount = resultSet.nextSkipCount;
-                                cbQuery.skip(resultSet.skipCount);
-                                return recursivelyQueryBucket(cbBucket, cbQuery, pageSize, parsedDocFilter, resultSet, callback);
+                        var docIndex = resultSet.skipCount;
+                        docIds.forEach(function (docId) {
+                            docIndex++;
+                            var row = rows[docId];
+                            var resultRow = {index: docIndex, key: viewKeys[docId], value: viewValues[docId], id: docId, cas: row.cas || row.error, doc: row.value, error: row.error};
+                            var keep = filterResultRow(resultRow, parsedDocFilter);
+                            if (keep) {
+                                resultSet.resultRows.push(resultRow);
                             }
+                        });
+
+                        resultSet.nextSkipCount = resultSet.skipCount + docIds.length;
+                        if (resultSet.resultRows.length > 0) {
+                            return callback(null, resultSet);
+                        } else {
+                            cbLogger.warn("No documents passed docFilter for skipCount = %d, moving to next page.", resultSet.skipCount);
+                            resultSet.skipCount = resultSet.nextSkipCount;
+                            cbQuery.skip(resultSet.skipCount);
+                            return recursivelyQueryBucket(cbBucket, cbQuery, pageSize, parsedDocFilter, resultSet, callback);
                         }
                     });
                 } else {

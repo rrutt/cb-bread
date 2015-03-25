@@ -1,6 +1,6 @@
 {
   "name": "cb-bread",
-  "version": "0.5.1+20150324",
+  "version": "0.6.0+20150325",
   "copyright": "© 2015 Rick Rutt (Portions © 2014 Shaun Xu)",
   "description": "Couchbase Browse/Read/Edit/Add/Delete",
   "private": true,
