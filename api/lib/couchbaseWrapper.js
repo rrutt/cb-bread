@@ -176,7 +176,6 @@
             } else {
                 resultSet.message = noDocs + " match the Key Prefix.";
             }
-            resultSet.nextSkipCount = null;
         }
     };
 
@@ -202,6 +201,8 @@
                 cbLogger.debug("viewValues = %s", util.inspect(viewValues));
 
                 if (docIds && docIds.length > 0) {
+                    resultSet.nextSkipCount = resultSet.skipCount + pageSize;
+
                     cbBucket.getMulti(docIds, function (err, rows) {
                         if (err) {
                             cbLogger.warn("cbBucket.getMulti returned error count = %s", util.inspect(err));
@@ -213,29 +214,29 @@
                             docIndex++;
                             var row = rows[docId];
                             var resultRow = {index: docIndex, key: viewKeys[docId], value: viewValues[docId], id: docId, cas: row.cas || row.error, doc: row.value, error: row.error};
-                            var keep = filterResultRow(resultRow, parsedDocFilter);
+                            var keep = (resultSet.resultRows.length < pageSize) && filterResultRow(resultRow, parsedDocFilter);
                             if (keep) {
                                 keptRows++;
                                 resultSet.resultRows.push(resultRow);
+                                resultSet.nextSkipCount = docIndex;
                             }
                         });
 
                         var stopRecursion = false;
-                        if (parsedDocFilter) {
-                            if (resultSet.resultRows.length >= pageSize) {
-                                stopRecursion = true;
-                            } else {
+                        if (resultSet.resultRows.length >= pageSize) {
+                            stopRecursion = true;
+                        } else {
+                            if (parsedDocFilter) {
                                 if (keptRows === 0) {
-                                    cbLogger.warn("No documents passed docFilter for skipCount = %d, moving to next page.", resultSet.skipCount);
+                                    cbLogger.warn("No documents passed the Doc Filter for Skip Count = %d.", resultSet.skipCount);
+                                } else if (keptRows === 1) {
+                                    cbLogger.warn("%d document passed the Doc Filter for Skip Count = %d.", keptRows, resultSet.skipCount);
                                 } else {
-                                    cbLogger.warn("Only %d documents passed docFilter for skipCount = %d, moving to next page.", keptRows, resultSet.skipCount);
+                                    cbLogger.warn("%d documents passed the Doc Filter for Skip Count = %d.", keptRows, resultSet.skipCount);
                                 }
                             }
-                        } else if (resultSet.resultRows.length > 0) {
-                            stopRecursion = true;
                         }
 
-                        resultSet.nextSkipCount = resultSet.skipCount + pageSize;
                         if (stopRecursion) {
                             formatResultSetMessage(resultSet, pageSize, parsedDocFilter);
                             return callback(null, resultSet);
@@ -409,6 +410,7 @@
             }
 
             var resultSet = { skipCount: skipCount, nextSkipCount: null, resultRows: [] };
+            cbLogger.error(">>> DEBUG: Starting listDocuments, resultSet = %s", util.inspect(resultSet));
             return recursivelyQueryBucket(cbBucket, cbQuery, pageSize, parsedDocFilter, resultSet, function(err, finalResultSet) {
                 cbBucket.disconnect();
                 if (err) {
