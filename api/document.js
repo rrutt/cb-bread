@@ -11,8 +11,9 @@
         var skipCount = params.skipCount;
         var pageSize = params.pageSize;
         var docFilter = params.docFilter;
+        var queryTimeoutSeconds = params.queryTimeoutSeconds;
 
-        client.listDocuments(host, bucketName, designDocViewName, keyPrefix, skipCount, pageSize, docFilter, function (error, resultSet) {
+        client.listDocuments(host, bucketName, designDocViewName, keyPrefix, skipCount, pageSize, docFilter, queryTimeoutSeconds, function (error, resultSet) {
             if (error) {
                 return callback(error, null);
             }

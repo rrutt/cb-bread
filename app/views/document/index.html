@@ -19,6 +19,9 @@
 <div style="height: 0px">&nbsp;</div>
 <table class="table table-striped">
     <thead>
+        <tr data-ng-show="resultSetMessage">
+            <th colspan="7">{{resultSetMessage}}</td>
+        </tr>
         <tr>
             <th>#</th>
             <th>View Key</th>
@@ -30,11 +33,6 @@
             </th>
         </tr>
     </thead>
-    <tfoot>
-        <tr data-ng-show="resultSetMessage">
-            <th colspan="7">{{resultSetMessage}}</td>
-        </tr>
-    </tfoot>
     <tbody data-ng-repeat="document in documents">
         <tr>
             <td>

@@ -166,7 +166,7 @@
         return filterResult;
     };
 
-    var formatResultSetMessage = function(resultSet, pageSize, parsedDocFilter) {
+    var formatResultSetMessage = function(resultSet, pageSize, parsedDocFilter, queryTimeoutReached) {
         var endTime = moment();
         var duration = endTime.diff(resultSet.startTime, 'seconds', true); // Include fraction.
         var docCount = resultSet.resultRows.length;
@@ -176,15 +176,19 @@
             resultSet.message = util.format("Found %d documents in %d seconds. ", docCount, duration);
         }
 
-        var noDocs = "No documents";
-        if ((resultSet.skipCount > 0) || (docCount > 0)) {
-            noDocs = "No more documents";
-        }
-        if (docCount < pageSize) {
-            if (parsedDocFilter) {
-                resultSet.message = resultSet.message + noDocs + " match the Key Prefix and Doc Filter criteria.";
-            } else {
-                resultSet.message = resultSet.message + noDocs + " match the Key Prefix.";
+        if (queryTimeoutReached) {
+            resultSet.message = resultSet.message + util.format(" Query timeout of %d seconds was reached. Click Next to scan for more results.", resultSet.queryTimeoutSeconds);
+        } else {
+            var noDocs = "No documents";
+            if ((resultSet.skipCount > 0) || (docCount > 0)) {
+                noDocs = "No more documents";
+            }
+            if (docCount < pageSize) {
+                if (parsedDocFilter) {
+                    resultSet.message = resultSet.message + noDocs + " match the Key Prefix and Doc Filter criteria.";
+                } else {
+                    resultSet.message = resultSet.message + noDocs + " match the Key Prefix.";
+                }
             }
         }
     };
@@ -210,6 +214,8 @@
                 cbLogger.debug("viewKeys = %s", util.inspect(viewKeys));
                 cbLogger.debug("viewValues = %s", util.inspect(viewValues));
 
+                var queryTimeoutReached = false;
+
                 if (docIds && docIds.length > 0) {
                     resultSet.nextSkipCount = resultSet.skipCount + pageSize;
 
@@ -232,13 +238,15 @@
                             }
                         });
 
+                        var currentTime = moment();
+                        var duration = currentTime.diff(resultSet.startTime, 'seconds', true); // Include fraction.
+                        queryTimeoutReached = (duration >= resultSet.queryTimeoutSeconds);
+
                         var stopRecursion = false;
-                        if (resultSet.resultRows.length >= pageSize) {
+                        if (queryTimeoutReached || (resultSet.resultRows.length >= pageSize)) {
                             stopRecursion = true;
                         } else {
                             if (parsedDocFilter) {
-                                var currentTime = moment();
-                                var duration = currentTime.diff(resultSet.startTime, 'seconds', true); // Include fraction.
                                 if (keptRows === 0) {
                                     cbLogger.warn("No documents passed the Doc Filter for Skip Count = %d. (%d seconds)", resultSet.skipCount, duration);
                                 } else if (keptRows === 1) {
@@ -250,7 +258,7 @@
                         }
 
                         if (stopRecursion) {
-                            formatResultSetMessage(resultSet, pageSize, parsedDocFilter);
+                            formatResultSetMessage(resultSet, pageSize, parsedDocFilter, queryTimeoutReached);
                             return callback(null, resultSet);
                         } else {
                             resultSet.skipCount = resultSet.nextSkipCount;
@@ -259,7 +267,7 @@
                         }
                     });
                 } else {
-                    formatResultSetMessage(resultSet, pageSize, parsedDocFilter);
+                    formatResultSetMessage(resultSet, pageSize, parsedDocFilter, queryTimeoutReached);
                     return callback(null, resultSet);
                 }
             }
@@ -358,7 +366,7 @@
         return null;  // Success.
     };
     
-    exports.listDocuments = function(host, bucketName, designDocViewName, keyPrefix, skipCount, pageSize, docFilter, callback) {
+    exports.listDocuments = function(host, bucketName, designDocViewName, keyPrefix, skipCount, pageSize, docFilter, queryTimeoutSeconds, callback) {
         var cachedHostInfo = cbHostInfoCache[host];
         if (!cachedHostInfo) {
             var errMsg = util.format("couchbaseWrapper.listDocuments could not locate host %s in cbHostInfoCache.", host);
@@ -423,6 +431,7 @@
 
             var resultSet = { skipCount: skipCount, nextSkipCount: null, resultRows: [] };
             resultSet.startTime = moment();
+            resultSet.queryTimeoutSeconds = queryTimeoutSeconds;
             return recursivelyQueryBucket(cbBucket, cbQuery, pageSize, parsedDocFilter, resultSet, function(err, finalResultSet) {
                 cbBucket.disconnect();
                 if (err) {

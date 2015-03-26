@@ -9,6 +9,7 @@
     var epilogMsg = util.format("For more information see %s/README.md\n\nReport issues at %s", packageJson.repository.url, packageJson.bugs.url)
 
     var defaultPageSize = 10;
+    var defaultTimeoutSeconds = 60;
 
     // https://github.com/chevex/yargs
     var yargs = require('yargs')
@@ -38,6 +39,11 @@
             alias: 'pagesize',
             describe: 'Set document viewer page size. Negative means reverse sort. [min -1000, max 1000]',
             default: defaultPageSize
+        })
+        .option('t', {
+            alias: 'timeout',
+            describe: 'Maximum time in seconds to scan for document query results.',
+            default: defaultTimeoutSeconds
         })
         .option('l', {
             alias: 'listen',

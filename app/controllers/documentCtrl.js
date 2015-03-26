@@ -13,7 +13,7 @@
         };
 
         var refresh = function () {
-            api.request(controllerName, 'list', { host: credentials.host, bucketId: $scope.view.bucketId, viewId: $scope.view.viewId, keyPrefix: $scope.keyPrefix, skipCount: $scope.skipCount, pageSize: $scope.pageSize, docFilter: $scope.docFilter }, function (error, resultSet) {
+            api.request(controllerName, 'list', { host: credentials.host, bucketId: $scope.view.bucketId, viewId: $scope.view.viewId, keyPrefix: $scope.keyPrefix, skipCount: $scope.skipCount, pageSize: $scope.pageSize, docFilter: $scope.docFilter, queryTimeoutSeconds: $scope.queryTimeoutSeconds }, function (error, resultSet) {
                 if (error) {
                     $rootScope.$broadcast('loading-complete');
                     $alert(JSON.stringify(error, null, 2));
@@ -147,6 +147,7 @@
                 $scope.skipCount = 0;
                 $scope.prevSkipCount = $scope.skipCount;
                 $scope.pageSize = configPageSize;
+                $scope.queryTimeoutSeconds = config.argv.timeout;
                 refresh();
             }
         });
