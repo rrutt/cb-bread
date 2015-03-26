@@ -21,6 +21,7 @@
                 else {
                     $scope.prevSkipCount = $scope.skipCount;
                     $scope.nextSkipCount = resultSet.nextSkipCount;
+                    $scope.resultSetMessage = resultSet.message;
                     $scope.documents = [];
                     var resultRows = resultSet.resultRows;
                     resultRows.forEach(function (row) {

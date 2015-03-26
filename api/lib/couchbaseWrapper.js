@@ -165,6 +165,21 @@
         return filterResult;
     };
 
+    var formatResultSetMessage = function(resultSet, pageSize, parsedDocFilter) {
+        var noDocs = "No documents";
+        if ((resultSet.skipCount > 0) || (resultSet.resultRows.length > 0)) {
+            noDocs = "No more documents";
+        }
+        if (resultSet.resultRows.length < pageSize) {
+            if (parsedDocFilter) {
+                resultSet.message = noDocs + " match the Key Prefix and Doc Filter criteria.";
+            } else {
+                resultSet.message = noDocs + " match the Key Prefix.";
+            }
+            resultSet.nextSkipCount = null;
+        }
+    };
+
     var recursivelyQueryBucket = function(cbBucket, cbQuery, pageSize, parsedDocFilter, resultSet, callback) {
         cbBucket.query(cbQuery, function (err, viewRows) {
             if (err) {
@@ -193,29 +208,45 @@
                         }
 
                         var docIndex = resultSet.skipCount;
+                        var keptRows = 0;
                         docIds.forEach(function (docId) {
                             docIndex++;
                             var row = rows[docId];
                             var resultRow = {index: docIndex, key: viewKeys[docId], value: viewValues[docId], id: docId, cas: row.cas || row.error, doc: row.value, error: row.error};
                             var keep = filterResultRow(resultRow, parsedDocFilter);
                             if (keep) {
+                                keptRows++;
                                 resultSet.resultRows.push(resultRow);
                             }
                         });
 
-                        resultSet.nextSkipCount = resultSet.skipCount + docIds.length;
-                        if (resultSet.resultRows.length > 0) {
+                        var stopRecursion = false;
+                        if (parsedDocFilter) {
+                            if (resultSet.resultRows.length >= pageSize) {
+                                stopRecursion = true;
+                            } else {
+                                if (keptRows === 0) {
+                                    cbLogger.warn("No documents passed docFilter for skipCount = %d, moving to next page.", resultSet.skipCount);
+                                } else {
+                                    cbLogger.warn("Only %d documents passed docFilter for skipCount = %d, moving to next page.", keptRows, resultSet.skipCount);
+                                }
+                            }
+                        } else if (resultSet.resultRows.length > 0) {
+                            stopRecursion = true;
+                        }
+
+                        resultSet.nextSkipCount = resultSet.skipCount + pageSize;
+                        if (stopRecursion) {
+                            formatResultSetMessage(resultSet, pageSize, parsedDocFilter);
                             return callback(null, resultSet);
                         } else {
-                            cbLogger.warn("No documents passed docFilter for skipCount = %d, moving to next page.", resultSet.skipCount);
                             resultSet.skipCount = resultSet.nextSkipCount;
                             cbQuery.skip(resultSet.skipCount);
                             return recursivelyQueryBucket(cbBucket, cbQuery, pageSize, parsedDocFilter, resultSet, callback);
                         }
                     });
                 } else {
-                    cbLogger.warn("No more documents to query.");
-                    resultSet.nextSkipCount = null;
+                    formatResultSetMessage(resultSet, pageSize, parsedDocFilter);
                     return callback(null, resultSet);
                 }
             }
