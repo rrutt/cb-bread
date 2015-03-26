@@ -1,4 +1,4 @@
-cb-bread@0.3.1
+cb-bread@0.7.0
 ├─┬ body-parser@1.6.7
 │ ├── bytes@1.0.0
 │ ├── depd@0.4.4
@@ -101,6 +101,7 @@ cb-bread@0.3.1
 │ │ ├── isarray@0.0.1
 │ │ └── string_decoder@0.10.31
 │ └── semver@1.1.4
+├── moment@2.9.0
 └─┬ yargs@3.0.4
   ├── window-size@0.1.0
   └── wordwrap@0.0.2
