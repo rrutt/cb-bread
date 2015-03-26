@@ -4,6 +4,7 @@
     var exprjs = require('exprjs');
     var exprjsParser = new exprjs();
 
+    var moment = require('moment');
     var util = require('util');
 
     // http://docs.couchbase.com/developer/node-2.0/introduction.html
@@ -166,15 +167,24 @@
     };
 
     var formatResultSetMessage = function(resultSet, pageSize, parsedDocFilter) {
+        var endTime = moment();
+        var duration = endTime.diff(resultSet.startTime, 'seconds', true); // Include fraction.
+        var docCount = resultSet.resultRows.length;
+        if (docCount === 1) {
+            resultSet.message = util.format("Found %d document in %d seconds. ", docCount, duration);
+        } else {
+            resultSet.message = util.format("Found %d documents in %d seconds. ", docCount, duration);
+        }
+
         var noDocs = "No documents";
-        if ((resultSet.skipCount > 0) || (resultSet.resultRows.length > 0)) {
+        if ((resultSet.skipCount > 0) || (docCount > 0)) {
             noDocs = "No more documents";
         }
-        if (resultSet.resultRows.length < pageSize) {
+        if (docCount < pageSize) {
             if (parsedDocFilter) {
-                resultSet.message = noDocs + " match the Key Prefix and Doc Filter criteria.";
+                resultSet.message = resultSet.message + noDocs + " match the Key Prefix and Doc Filter criteria.";
             } else {
-                resultSet.message = noDocs + " match the Key Prefix.";
+                resultSet.message = resultSet.message + noDocs + " match the Key Prefix.";
             }
         }
     };
@@ -227,12 +237,14 @@
                             stopRecursion = true;
                         } else {
                             if (parsedDocFilter) {
+                                var currentTime = moment();
+                                var duration = currentTime.diff(resultSet.startTime, 'seconds', true); // Include fraction.
                                 if (keptRows === 0) {
-                                    cbLogger.warn("No documents passed the Doc Filter for Skip Count = %d.", resultSet.skipCount);
+                                    cbLogger.warn("No documents passed the Doc Filter for Skip Count = %d. (%d seconds)", resultSet.skipCount, duration);
                                 } else if (keptRows === 1) {
-                                    cbLogger.warn("%d document passed the Doc Filter for Skip Count = %d.", keptRows, resultSet.skipCount);
+                                    cbLogger.warn("%d document passed the Doc Filter for Skip Count = %d. (%d seconds)", keptRows, resultSet.skipCount, duration);
                                 } else {
-                                    cbLogger.warn("%d documents passed the Doc Filter for Skip Count = %d.", keptRows, resultSet.skipCount);
+                                    cbLogger.warn("%d documents passed the Doc Filter for Skip Count = %d. (%d seconds)", keptRows, resultSet.skipCount, duration);
                                 }
                             }
                         }
@@ -410,7 +422,7 @@
             }
 
             var resultSet = { skipCount: skipCount, nextSkipCount: null, resultRows: [] };
-            cbLogger.error(">>> DEBUG: Starting listDocuments, resultSet = %s", util.inspect(resultSet));
+            resultSet.startTime = moment();
             return recursivelyQueryBucket(cbBucket, cbQuery, pageSize, parsedDocFilter, resultSet, function(err, finalResultSet) {
                 cbBucket.disconnect();
                 if (err) {

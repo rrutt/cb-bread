@@ -35,6 +35,7 @@
     "express": "4.8.x",
     "exprjs": "0.0.x",
     "log4js": "0.6.x",
+    "moment": "2.9.0",
     "yargs": "3.0.x"
   }
 }

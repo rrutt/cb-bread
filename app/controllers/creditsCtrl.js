@@ -65,7 +65,14 @@
             description: "Yargs be a node.js library fer hearties tryin' ter parse optstrings. With yargs, ye be havin' a map that leads straight to yer treasure! Treasure of course, being a simple option hash.",
             license: 'https://github.com/chevex/yargs/blob/master/LICENSE'
         });
-        
+
+        $scope.credits.push({
+            title: 'moment',
+            link: 'https://www.npmjs.com/package/moment',
+            description: "A lightweight JavaScript date library for parsing, validating, manipulating, and formatting dates.",
+            license: 'https://github.com/moment/moment/blob/develop/LICENSE'
+        });
+
         $scope.credits.push({
             title: 'compression',
             link: 'https://www.npmjs.com/package/compression',
