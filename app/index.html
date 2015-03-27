@@ -32,10 +32,10 @@
                             <a data-ui-sref="credits">Credits</a>
                         </li>
                         <li>
-                            <a href="https://github.com/rrutt/cb-bread" target="_blank">Source Code</a>
+                            <a ng-href="{{packageJson.repository.url}}" target="_blank">Source Code</a>
                         </li>
                         <li>
-                            <a href="https://github.com/rrutt/cb-bread/blob/dev/README.md" target="_blank">Read Me</a>
+                            <a ng-href="{{packageJson.repository.url}}/blob/{{packageJson.version}}/README.md" target="_blank">Read Me</a>
                         </li>
                     </ul>
                     <!-- http://weblog.west-wind.com/posts/2014/Jun/02/AngularJs-ngcloak-Problems-on-large-Pages -->

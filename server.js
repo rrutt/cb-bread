@@ -6,7 +6,7 @@
 
     var packageJson = require('./package.json');
     var packageMsg = util.format("\n%s: %s\nVersion %s Copyright %s\n\n", packageJson.name, packageJson.description, packageJson.version, packageJson.copyright);
-    var epilogMsg = util.format("For more information see %s/README.md\n\nReport issues at %s", packageJson.repository.url, packageJson.bugs.url)
+    var epilogMsg = util.format("For more information see %s/blob/%s/README.md\n\nReport issues at %s", packageJson.repository.url, packageJson.version, packageJson.bugs.url)
 
     var defaultPageSize = 10;
     var defaultTimeoutSeconds = 60;

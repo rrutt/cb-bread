@@ -153,7 +153,7 @@
         });
     });
 
-    app.controller('DocumentCreateOrUpdateCtrl', function ($scope, $, $alert, $modalInstance, credentials, api, view, doc) {
+    app.controller('DocumentCreateOrUpdateCtrl', function ($rootScope, $scope, $, $alert, $modalInstance, credentials, api, view, doc) {
         $scope.doc = doc || {};
         $scope.raw = JSON.stringify($scope.doc, null, 2);
         $scope.view = view;
@@ -184,6 +184,7 @@
         };
 
         $scope.cancel = function () {
+            $rootScope.$broadcast('loading-complete');
             $modalInstance.dismiss('cancel');
         };
     });

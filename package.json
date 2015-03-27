@@ -1,6 +1,6 @@
 {
   "name": "cb-bread",
-  "version": "0.7.0+20150326",
+  "version": "0.7.1+20150327",
   "copyright": "© 2015 Rick Rutt (Portions © 2014 Shaun Xu)",
   "description": "Couchbase Browse/Read/Edit/Add/Delete",
   "private": true,
@@ -23,7 +23,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/rrutt/cb-bread.git"
+    "url": "https://github.com/rrutt/cb-bread"
   },
   "bugs": {
     "url": "https://github.com/rrutt/cb-bread/issues"

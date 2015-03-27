@@ -82,7 +82,7 @@ In order to avoid entering the host, user, and password in the web page login fi
 
     node server -h localhost -u admin -p demo01
 
-I then open a browser to **[http://localhost:8008/](http://localhost:8008/)**
+Then open a browser to **[http://localhost:8008/](http://localhost:8008/)**
 
 With the login credentials already provided, simply click the **Connect** button on the home page
 
@@ -217,6 +217,10 @@ When I query this with **Key Prefix** set to **=0.5** it returns this single non
       "category": "North American Lager"
     }
 
+Querying this view with **Key Prefix** set to **=3.2** returns 4 beers with 3.2% alcohol content, and one beer with 3.22% alcohol.
+
+Querying this view with **Key Prefix** set to **=3.22** returns just the one beer with 3.22% alcohol content.
+
 ### Advanced querying with Doc Filter expressions:
 
 For these examples navigate to the **Home  / Buckets / beer-sample / beer/brewery_beers** document list page.
@@ -332,10 +336,10 @@ For potent porter or stout fans:
 
 If any documents on the current page satisfy the filter expression, they are shown.
 
-If no documents satisfy the filter, the server automatically scans successive pages until at least one document is found.
-If you click the **Next** button at that point, the server resumes scanning on the page _after_ the most recent page that returned a document.
+If no documents satisfy the filter, the server automatically scans successive pages until the requested **Page Size** number of documents are found.
+If you click the **Next** button at that point, the server resumes scanning after the last already-scanned document, using its index # as the new **Skip Count**.
 
-Once the end of the view is reached, the document list displays an empty table with no documents.
+Once the end of the view is reached, the message "**No more documents match the Key Prefix and Doc Filter criteria.**" appears above the document list. 
 
 ## Installing a local Couchbase Server for development and testing
 

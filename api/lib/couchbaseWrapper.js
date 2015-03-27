@@ -166,7 +166,7 @@
         return filterResult;
     };
 
-    var formatResultSetMessage = function(resultSet, pageSize, parsedDocFilter, queryTimeoutReached) {
+    var formatResultSetMessage = function(resultSet, queryLimit, parsedDocFilter, queryTimeoutReached) {
         var endTime = moment();
         var duration = endTime.diff(resultSet.startTime, 'seconds', true); // Include fraction.
         var docCount = resultSet.resultRows.length;
@@ -183,7 +183,7 @@
             if ((resultSet.skipCount > 0) || (docCount > 0)) {
                 noDocs = "No more documents";
             }
-            if (docCount < pageSize) {
+            if (docCount < queryLimit) {
                 if (parsedDocFilter) {
                     resultSet.message = resultSet.message + noDocs + " match the Key Prefix and Doc Filter criteria.";
                 } else {
@@ -193,7 +193,7 @@
         }
     };
 
-    var recursivelyQueryBucket = function(cbBucket, cbQuery, pageSize, parsedDocFilter, resultSet, callback) {
+    var recursivelyQueryBucket = function(cbBucket, cbQuery, queryLimit, parsedDocFilter, resultSet, callback) {
         cbBucket.query(cbQuery, function (err, viewRows) {
             if (err) {
                 cbBucket.disconnect();
@@ -217,7 +217,7 @@
                 var queryTimeoutReached = false;
 
                 if (docIds && docIds.length > 0) {
-                    resultSet.nextSkipCount = resultSet.skipCount + pageSize;
+                    resultSet.nextSkipCount = resultSet.skipCount + queryLimit;
 
                     cbBucket.getMulti(docIds, function (err, rows) {
                         if (err) {
@@ -230,7 +230,7 @@
                             docIndex++;
                             var row = rows[docId];
                             var resultRow = {index: docIndex, key: viewKeys[docId], value: viewValues[docId], id: docId, cas: row.cas || row.error, doc: row.value, error: row.error};
-                            var keep = (resultSet.resultRows.length < pageSize) && filterResultRow(resultRow, parsedDocFilter);
+                            var keep = (resultSet.resultRows.length < queryLimit) && filterResultRow(resultRow, parsedDocFilter);
                             if (keep) {
                                 keptRows++;
                                 resultSet.resultRows.push(resultRow);
@@ -243,7 +243,7 @@
                         queryTimeoutReached = (duration >= resultSet.queryTimeoutSeconds);
 
                         var stopRecursion = false;
-                        if (queryTimeoutReached || (resultSet.resultRows.length >= pageSize)) {
+                        if (queryTimeoutReached || (resultSet.resultRows.length >= queryLimit)) {
                             stopRecursion = true;
                         } else {
                             if (parsedDocFilter) {
@@ -258,16 +258,16 @@
                         }
 
                         if (stopRecursion) {
-                            formatResultSetMessage(resultSet, pageSize, parsedDocFilter, queryTimeoutReached);
+                            formatResultSetMessage(resultSet, queryLimit, parsedDocFilter, queryTimeoutReached);
                             return callback(null, resultSet);
                         } else {
                             resultSet.skipCount = resultSet.nextSkipCount;
                             cbQuery.skip(resultSet.skipCount);
-                            return recursivelyQueryBucket(cbBucket, cbQuery, pageSize, parsedDocFilter, resultSet, callback);
+                            return recursivelyQueryBucket(cbBucket, cbQuery, queryLimit, parsedDocFilter, resultSet, callback);
                         }
                     });
                 } else {
-                    formatResultSetMessage(resultSet, pageSize, parsedDocFilter, queryTimeoutReached);
+                    formatResultSetMessage(resultSet, queryLimit, parsedDocFilter, queryTimeoutReached);
                     return callback(null, resultSet);
                 }
             }
@@ -432,7 +432,7 @@
             var resultSet = { skipCount: skipCount, nextSkipCount: null, resultRows: [] };
             resultSet.startTime = moment();
             resultSet.queryTimeoutSeconds = queryTimeoutSeconds;
-            return recursivelyQueryBucket(cbBucket, cbQuery, pageSize, parsedDocFilter, resultSet, function(err, finalResultSet) {
+            return recursivelyQueryBucket(cbBucket, cbQuery, queryLimit, parsedDocFilter, resultSet, function(err, finalResultSet) {
                 cbBucket.disconnect();
                 if (err) {
                     var queryError = {

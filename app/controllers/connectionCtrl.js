@@ -33,6 +33,7 @@
                         $rootScope.$broadcast('loading-complete');
                         $alert(JSON.stringify(error, null, 2));
                     } else {
+                        $scope.packageJson = config.packageJson;
                         if ((!$scope.host) || ($scope.host.length == 0)) {
                             $scope.host = config.argv.host;
                         }
