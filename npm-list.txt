@@ -1,4 +1,4 @@
-cb-bread@0.7.0
+cb-bread@0.7.1
 ├─┬ body-parser@1.6.7
 │ ├── bytes@1.0.0
 │ ├── depd@0.4.4
