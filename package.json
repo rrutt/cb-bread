@@ -1,12 +1,12 @@
 {
     "name": "cb-bread",
-    "version": "0.8.0+node.webkit.20150402",
+    "version": "0.8.1+nwjs.20150402",
     "copyright": "© 2015 Rick Rutt (Portions © 2014 Shaun Xu)",
     "description": "Couchbase Browse/Read/Edit/Add/Delete",
     "private": true,
     "main": "app/nwIndex.html",
     "scripts": {
-        "start": "nodewebkit",
+        "start": "nw",
         "test": "echo \"Error: No automated tests provided; manually test via web browser.\" && exit 1"
     },
     "keywords": [
@@ -29,7 +29,7 @@
         "url": "https://github.com/rrutt/cb-bread/issues"
     },
     "dependencies": {
-        "nodewebkit": "0.8.6",
+        "nw": "0.12.0",
         "body-parser": "1.6.x",
         "compression": "1.0.x",
         "couchbase": "2.0.5",
