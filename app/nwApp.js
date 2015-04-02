@@ -13,10 +13,19 @@ var log4js = require('log4js');
 log4js.configure({ appenders: [ { type: "console", layout: { type: "basic" } } ], replaceConsole: true });
 var logger = log4js.getLogger('cb-bread');
 
-//logger.info("app = %s", util.inspect(app));
-//
-//var gui = require('nw.gui');
-//logger.info("gui = %s", util.inspect(gui));
+var argv = {};
+var userArgString = process.env.USERARGS;
+if (userArgString) {
+    var commandLineArguments = require('./commandLineArguments');
+    argv = commandLineArguments.parseArgumentString(userArgString);
+}
+
+if (argv.debug) {
+    logger.setLevel('DEBUG');
+}
+else {
+    logger.setLevel('INFO');
+}
 
 app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
     $urlRouterProvider.otherwise('/');
@@ -145,7 +154,6 @@ app.factory('credentials', function () {
 });
 
 var nodeWebkitApi = require('../api/nodeWebKitApi');
-var argv = { responses: true };
 
 app.factory('api', function ($http, credentials) {
     return {

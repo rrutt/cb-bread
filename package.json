@@ -5,12 +5,24 @@
     "description": "Couchbase Browse/Read/Edit/Add/Delete",
     "private": true,
     "main": "app/nwIndex.html",
+    "window": {
+        "title": "cb-bread via nw.js",
+        "toolbar": true,
+        "frame": true,
+        "width": 1024,
+        "height": 750,
+        "position": "center",
+        "min_width": 1024,
+        "min_height": 750,
+        "resizable": true
+    },
     "scripts": {
         "start": "nw",
         "test": "echo \"Error: No automated tests provided; manually test via web browser.\" && exit 1"
     },
     "keywords": [
         "angularjs",
+        "node-webkit", "nw.js",
         "couchbase",
         "json",
         "crud", "create", "read", "update", "delete",
