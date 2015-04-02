@@ -1,41 +1,42 @@
 {
-  "name": "cb-bread",
-  "version": "0.7.1+20150327",
-  "copyright": "© 2015 Rick Rutt (Portions © 2014 Shaun Xu)",
-  "description": "Couchbase Browse/Read/Edit/Add/Delete",
-  "private": true,
-  "main": "server.js",
-  "scripts": {
-    "start": "node server.js",
-    "test": "echo \"Error: No automated tests provided; manually test via web browser.\" && exit 1"
-  },
-  "keywords": [
-    "angularjs",
-    "couchbase",
-    "json",
-    "crud", "create", "read", "update", "delete",
-    "bread", "browse", "edit", "add"
-  ],
-  "author": "Rick Rutt <RRutt@live.com>",
-  "contributors": [{
-    "name": "Shaun Xu"
-  }],  
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/rrutt/cb-bread"
-  },
-  "bugs": {
-    "url": "https://github.com/rrutt/cb-bread/issues"
-  },
-  "dependencies": {
-    "body-parser": "1.6.x",
-    "compression": "1.0.x",
-    "couchbase": "2.0.5",
-    "express": "4.8.x",
-    "exprjs": "0.0.x",
-    "log4js": "0.6.x",
-    "moment": "2.9.0",
-    "yargs": "3.0.x"
-  }
+    "name": "cb-bread",
+    "version": "0.8.0+node.webkit.20150402",
+    "copyright": "© 2015 Rick Rutt (Portions © 2014 Shaun Xu)",
+    "description": "Couchbase Browse/Read/Edit/Add/Delete",
+    "private": true,
+    "main": "app/nwIndex.html",
+    "scripts": {
+        "start": "nodewebkit",
+        "test": "echo \"Error: No automated tests provided; manually test via web browser.\" && exit 1"
+    },
+    "keywords": [
+        "angularjs",
+        "couchbase",
+        "json",
+        "crud", "create", "read", "update", "delete",
+        "bread", "browse", "edit", "add"
+    ],
+    "author": "Rick Rutt <RRutt@live.com>",
+    "contributors": [{
+        "name": "Shaun Xu"
+    }],
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/rrutt/cb-bread"
+    },
+    "bugs": {
+        "url": "https://github.com/rrutt/cb-bread/issues"
+    },
+    "dependencies": {
+        "nodewebkit": "0.8.6",
+        "body-parser": "1.6.x",
+        "compression": "1.0.x",
+        "couchbase": "2.0.5",
+        "express": "4.8.x",
+        "exprjs": "0.0.x",
+        "log4js": "0.6.x",
+        "moment": "2.9.0",
+        "yargs": "3.0.x"
+    }
 }
