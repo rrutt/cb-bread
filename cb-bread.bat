@@ -2,12 +2,11 @@
 
 pushd %~dp0
 
-
 if .%1==.-? goto ShowHelp
 if .%1==.--help goto ShowHelp
 
 set USERARGS=%*
-npm start
+call npm start
 goto AllDone
 
 :ShowHelp
@@ -16,4 +15,4 @@ pause
 goto AllDone
 
 :AllDone
-echo "Type popd to return to original directory."
+popd
