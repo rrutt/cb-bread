@@ -1,6 +1,6 @@
 {
     "name": "cb-bread",
-    "version": "0.8.1+nwjs.20150402",
+    "version": "0.8.1+nwjs.20150403",
     "copyright": "© 2015 Rick Rutt (Portions © 2014 Shaun Xu)",
     "description": "Couchbase Browse/Read/Edit/Add/Delete",
     "private": true,
@@ -9,11 +9,11 @@
         "title": "cb-bread via nw.js",
         "toolbar": true,
         "frame": true,
-        "width": 1024,
-        "height": 750,
+        "width": 1202,
+        "height": 928,
         "position": "center",
-        "min_width": 1024,
-        "min_height": 750,
+        "min_width": 800,
+        "min_height": 550,
         "resizable": true
     },
     "scripts": {

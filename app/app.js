@@ -15,12 +15,6 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $u
         controller: 'DashboardCtrl'
     });
 
-    $stateProvider.state('console', {
-        url: '/console',
-        templateUrl: '/views/console.html',
-        controller: 'ConsoleCtrl'
-    });
-
     $stateProvider.state('credits', {
         url: '/credits',
         templateUrl: '/views/credits.html',

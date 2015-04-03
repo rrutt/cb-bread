@@ -153,18 +153,17 @@ app.factory('credentials', function () {
     };
 });
 
-var nodeWebkitApi = require('../api/nodeWebKitApi');
+var nwApi = require('../api/nwIndex');
 
 app.factory('api', function ($http, credentials) {
     return {
         path: '/api',
         request: function (controllerName, actionName, params, callback) {
-            nodeWebkitApi.invokeControllerAction(logger, argv, credentials, controllerName, actionName, params, function(err, data) {
+            nwApi.invokeControllerAction(logger, argv, credentials, controllerName, actionName, params, function(err, data) {
                 if (err) {
-                    logger.error("nodeWebkitApi.invokeControllerAction %s.%s returned error: %s", controllerName, actionName, util.inspect(err));
+                    logger.error("nwApi.invokeControllerAction %s.%s returned error: %s", controllerName, actionName, util.inspect(err));
                     return callback(err);
                 } else {
-                    logger.debug("nodeWebkitApi.invokeControllerAction %s.%s returned data: %s", controllerName, actionName, util.inspect(data));
                     return callback(null, data);
                 }
             });

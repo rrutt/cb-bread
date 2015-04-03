@@ -12,6 +12,7 @@
                 }
                 else {
                     $scope.buckets = buckets;
+                    $scope.$apply();  // Needed when running in nw.js embedded webkit browser.
                 }
             });
         };

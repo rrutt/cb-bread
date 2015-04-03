@@ -12,6 +12,7 @@
                 }
                 else {
                     $scope.views = views;
+                    $scope.$apply();  // Needed when running in nw.js embedded webkit browser.
                 }
             });
         };

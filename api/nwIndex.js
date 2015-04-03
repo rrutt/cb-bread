@@ -32,7 +32,7 @@
                 message.params = params;
                 message.result = result;
                 if (argv.responses) {
-                    logger.warn("nodeWebkitApi: Server Response\n%s", util.inspect(message, false, null, true));
+                    logger.warn("nwApi: Server Response\n%s", util.inspect(message, false, null, true));
                 }
                 return callback(null, result);
             }

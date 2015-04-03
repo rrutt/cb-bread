@@ -41,6 +41,7 @@
                         model.bodyString = JSON.stringify(row.doc, null, 2);
                         $scope.documents.push(model);
                     });
+                    $scope.$apply();  // Needed when running in nw.js embedded webkit browser.
                 }
             });
         };
