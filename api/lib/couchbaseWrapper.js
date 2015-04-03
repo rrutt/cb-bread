@@ -349,7 +349,7 @@
                     }
                 } catch (e) {
                     cbLogger.error("Parsing array keyPrefix '%s' threw exception: %s", keyPrefix, util.inspect(e));
-                    return util.format("Key Prefix must be a valid JSON value, array, or a number preceded by =.");
+                    return util.format("Key Prefix must be a valid JSON value, array, or a number preceded by an = sign.");
                 }
             } else {
                 rangeInfo = configureRangeInfoSync(keyPrefix, sortOrder);

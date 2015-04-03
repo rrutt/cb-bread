@@ -112,7 +112,11 @@ app.factory('serverConfig', function ($alert, api) {
             } else {
                 api.request(controllerName, 'config', null, function (error, config) {
                     if (error) {
-                        $alert(JSON.stringify(error, null, 2));
+                        if (error.error) {
+                            $alert(error.error);
+                        } else {
+                            $alert(JSON.stringify(error, null, 2));
+                        }
                         return callback(error);
                     }
                     else {
@@ -162,7 +166,13 @@ app.factory('api', function ($http, credentials) {
             nwApi.invokeControllerAction(logger, argv, credentials, controllerName, actionName, params, function(err, data) {
                 if (err) {
                     logger.error("nwApi.invokeControllerAction %s.%s returned error: %s", controllerName, actionName, util.inspect(err));
-                    return callback(err);
+                    if (err.error) {
+                        var alertMsg = JSON.stringify(err.error);  // No line breaks for compound error.
+                        alertMsg = alertMsg.replace(/\"/g, '');  // Remove quotes.
+                        return callback(alertMsg);
+                    } else {
+                        return callback(err);
+                    }
                 } else {
                     return callback(null, data);
                 }
