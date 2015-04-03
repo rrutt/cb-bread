@@ -341,6 +341,65 @@ If you click the **Next** button at that point, the server resumes scanning afte
 
 Once the end of the view is reached, the message "**No more documents match the Key Prefix and Doc Filter criteria.**" appears above the document list. 
 
+## Running cb-bread as a Standalone Application
+
+The cb-bread application incorporates the [NW.js](http://nwjs.io/) technology to provide the option to run cb-bread as a standalone desktop application.
+The NW.js module (previously known as **node-webkit**) includes an embedded **webkit** browser based on Chromium (Google Chrome).
+
+### Installing for Standalone Execution
+
+Third-party **npm** modules that include compiled binary components must be recompiled for compatibility with **NW.js**.
+
+Run either of these scripts to perform the full installation for use with **NW.js**:
+
+_Note:_ After running either of these scripts, the **cb-bread** application still remains compatible with the normal **node server** launch option.
+
+### On Windows:
+
+    install.bat
+
+You can run this file in a command prompt terminal or double-click on this file in File Explorer.
+
+### On Linux or Mac OSX:
+
+    bash ./install.sh
+
+This script can also be run on Windows inside a **git-bash** terminal session.
+
+## Launching as a Standalone Application
+
+### On Windows
+
+Run this script, either in a a command prompt terminal or by double-clicking it in File Explorer:
+
+    cb-bread.bat
+
+### On Linux or Mac OSX:
+
+Open a terminal window and run the following command:
+
+    bash ./cb-bread.sh
+
+This script can also be run on Windows inside a **git-bash** terminal session.
+
+### Passing Optional Command Line Arguments:
+
+Pass any optional arguments (as documented in the **help.txt** file) after the script name.
+For example:
+
+    cb-bread.bat --host localhost --user admin
+
+or:
+
+    bash ./cb-bread.sh --host localhost --user admin
+
+### Viewing Log Messages in Standalone Mode
+
+Log messages will _not_ appear in the terminal window.
+
+Instead, they will appear in the webkit Developer Tools Javascript console.
+This can be opened by clicking on the **≡** icon in the upper-right corner of the **cb-bread** window.
+
 ## Installing a local Couchbase Server for development and testing
 
 ### Workstation requirements:

@@ -1,4 +1,4 @@
-cb-bread@0.7.1
+cb-bread@0.8.0
 ├─┬ body-parser@1.6.7
 │ ├── bytes@1.0.0
 │ ├── depd@0.4.4
@@ -102,6 +102,353 @@ cb-bread@0.7.1
 │ │ └── string_decoder@0.10.31
 │ └── semver@1.1.4
 ├── moment@2.9.0
+├─┬ nw@0.12.0
+│ ├─┬ download@4.1.2
+│ │ ├─┬ concat-stream@1.4.7
+│ │ │ ├── inherits@2.0.1
+│ │ │ ├─┬ readable-stream@1.1.13
+│ │ │ │ ├── core-util-is@1.0.1
+│ │ │ │ ├── isarray@0.0.1
+│ │ │ │ └── string_decoder@0.10.31
+│ │ │ └── typedarray@0.0.6
+│ │ ├─┬ each-async@1.1.1
+│ │ │ ├── onetime@1.0.0
+│ │ │ └── set-immediate-shim@1.0.1
+│ │ ├─┬ filenamify@1.1.0
+│ │ │ ├── filename-reserved-regex@1.0.0
+│ │ │ ├─┬ strip-outer@1.0.0
+│ │ │ │ └── escape-string-regexp@1.0.3
+│ │ │ └─┬ trim-repeated@1.0.0
+│ │ │   └── escape-string-regexp@1.0.3
+│ │ ├── get-stdin@4.0.1
+│ │ ├─┬ got@2.5.0
+│ │ │ ├─┬ duplexify@3.2.0
+│ │ │ │ ├─┬ end-of-stream@1.0.0
+│ │ │ │ │ └─┬ once@1.3.1
+│ │ │ │ │   └── wrappy@1.0.1
+│ │ │ │ └─┬ readable-stream@1.0.33
+│ │ │ │   ├── core-util-is@1.0.1
+│ │ │ │   ├── inherits@2.0.1
+│ │ │ │   ├── isarray@0.0.1
+│ │ │ │   └── string_decoder@0.10.31
+│ │ │ ├── infinity-agent@1.0.2
+│ │ │ ├── is-stream@1.0.1
+│ │ │ ├── lowercase-keys@1.0.0
+│ │ │ ├── prepend-http@1.0.1
+│ │ │ ├── statuses@1.2.1
+│ │ │ └── timed-out@2.0.0
+│ │ ├─┬ gulp-decompress@1.0.2
+│ │ │ ├─┬ archive-type@2.0.0
+│ │ │ │ ├─┬ file-type@2.5.0
+│ │ │ │ │ └─┬ meow@3.1.0
+│ │ │ │ │   ├─┬ camelcase-keys@1.0.0
+│ │ │ │ │   │ ├── camelcase@1.0.2
+│ │ │ │ │   │ └── map-obj@1.0.0
+│ │ │ │ │   ├─┬ indent-string@1.2.1
+│ │ │ │ │   │ ├── get-stdin@4.0.1
+│ │ │ │ │   │ └─┬ repeating@1.1.2
+│ │ │ │ │   │   └── is-finite@1.0.0
+│ │ │ │ │   └── minimist@1.1.1
+│ │ │ │ ├── get-stdin@3.0.2
+│ │ │ │ ├─┬ meow@2.1.0
+│ │ │ │ │ ├─┬ camelcase-keys@1.0.0
+│ │ │ │ │ │ ├── camelcase@1.0.2
+│ │ │ │ │ │ └── map-obj@1.0.0
+│ │ │ │ │ ├─┬ indent-string@1.2.1
+│ │ │ │ │ │ ├── get-stdin@4.0.1
+│ │ │ │ │ │ └─┬ repeating@1.1.2
+│ │ │ │ │ │   ├── is-finite@1.0.0
+│ │ │ │ │ │   └── meow@3.1.0
+│ │ │ │ │ └── minimist@1.1.1
+│ │ │ │ └── read-chunk@1.0.1
+│ │ │ ├─┬ decompress@2.2.1
+│ │ │ │ ├─┬ buffer-to-vinyl@1.0.0
+│ │ │ │ │ ├── file-type@2.5.0
+│ │ │ │ │ └── uuid@2.0.1
+│ │ │ │ ├─┬ decompress-tar@3.1.0
+│ │ │ │ │ ├── is-tar@1.0.0
+│ │ │ │ │ ├─┬ strip-dirs@1.1.1
+│ │ │ │ │ │ ├─┬ chalk@1.0.0
+│ │ │ │ │ │ │ ├── ansi-styles@2.0.1
+│ │ │ │ │ │ │ ├── escape-string-regexp@1.0.3
+│ │ │ │ │ │ │ ├─┬ has-ansi@1.0.3
+│ │ │ │ │ │ │ │ └── ansi-regex@1.1.1
+│ │ │ │ │ │ │ ├─┬ strip-ansi@2.0.1
+│ │ │ │ │ │ │ │ └── ansi-regex@1.1.1
+│ │ │ │ │ │ │ └── supports-color@1.3.1
+│ │ │ │ │ │ ├─┬ is-absolute@0.1.7
+│ │ │ │ │ │ │ └── is-relative@0.1.3
+│ │ │ │ │ │ ├── is-natural-number@2.0.0
+│ │ │ │ │ │ ├── minimist@1.1.1
+│ │ │ │ │ │ └── sum-up@1.0.1
+│ │ │ │ │ └─┬ tar-stream@1.1.2
+│ │ │ │ │   ├── bl@0.9.4
+│ │ │ │ │   ├─┬ end-of-stream@1.1.0
+│ │ │ │ │   │ └─┬ once@1.3.1
+│ │ │ │ │   │   └── wrappy@1.0.1
+│ │ │ │ │   ├─┬ readable-stream@1.0.33
+│ │ │ │ │   │ ├── core-util-is@1.0.1
+│ │ │ │ │   │ ├── inherits@2.0.1
+│ │ │ │ │   │ ├── isarray@0.0.1
+│ │ │ │ │   │ └── string_decoder@0.10.31
+│ │ │ │ │   └── xtend@4.0.0
+│ │ │ │ ├─┬ decompress-tarbz2@3.1.0
+│ │ │ │ │ ├── is-bzip2@1.0.0
+│ │ │ │ │ ├─┬ seek-bzip@1.0.4
+│ │ │ │ │ │ └── commander@2.4.0
+│ │ │ │ │ ├─┬ strip-dirs@1.1.1
+│ │ │ │ │ │ ├─┬ chalk@1.0.0
+│ │ │ │ │ │ │ ├── ansi-styles@2.0.1
+│ │ │ │ │ │ │ ├── escape-string-regexp@1.0.3
+│ │ │ │ │ │ │ ├─┬ has-ansi@1.0.3
+│ │ │ │ │ │ │ │ └── ansi-regex@1.1.1
+│ │ │ │ │ │ │ ├─┬ strip-ansi@2.0.1
+│ │ │ │ │ │ │ │ └── ansi-regex@1.1.1
+│ │ │ │ │ │ │ └── supports-color@1.3.1
+│ │ │ │ │ │ ├─┬ is-absolute@0.1.7
+│ │ │ │ │ │ │ └── is-relative@0.1.3
+│ │ │ │ │ │ ├── is-natural-number@2.0.0
+│ │ │ │ │ │ ├── minimist@1.1.1
+│ │ │ │ │ │ └── sum-up@1.0.1
+│ │ │ │ │ └─┬ tar-stream@1.1.2
+│ │ │ │ │   ├── bl@0.9.4
+│ │ │ │ │   ├─┬ end-of-stream@1.1.0
+│ │ │ │ │   │ └─┬ once@1.3.1
+│ │ │ │ │   │   └── wrappy@1.0.1
+│ │ │ │ │   ├─┬ readable-stream@1.0.33
+│ │ │ │ │   │ ├── core-util-is@1.0.1
+│ │ │ │ │   │ ├── inherits@2.0.1
+│ │ │ │ │   │ ├── isarray@0.0.1
+│ │ │ │ │   │ └── string_decoder@0.10.31
+│ │ │ │ │   └── xtend@4.0.0
+│ │ │ │ ├─┬ decompress-targz@3.1.0
+│ │ │ │ │ ├── is-gzip@1.0.0
+│ │ │ │ │ ├─┬ strip-dirs@1.1.1
+│ │ │ │ │ │ ├─┬ chalk@1.0.0
+│ │ │ │ │ │ │ ├── ansi-styles@2.0.1
+│ │ │ │ │ │ │ ├── escape-string-regexp@1.0.3
+│ │ │ │ │ │ │ ├─┬ has-ansi@1.0.3
+│ │ │ │ │ │ │ │ └── ansi-regex@1.1.1
+│ │ │ │ │ │ │ ├─┬ strip-ansi@2.0.1
+│ │ │ │ │ │ │ │ └── ansi-regex@1.1.1
+│ │ │ │ │ │ │ └── supports-color@1.3.1
+│ │ │ │ │ │ ├─┬ is-absolute@0.1.7
+│ │ │ │ │ │ │ └── is-relative@0.1.3
+│ │ │ │ │ │ ├── is-natural-number@2.0.0
+│ │ │ │ │ │ ├── minimist@1.1.1
+│ │ │ │ │ │ └── sum-up@1.0.1
+│ │ │ │ │ └─┬ tar-stream@1.1.2
+│ │ │ │ │   ├── bl@0.9.4
+│ │ │ │ │   ├─┬ end-of-stream@1.1.0
+│ │ │ │ │   │ └─┬ once@1.3.1
+│ │ │ │ │   │   └── wrappy@1.0.1
+│ │ │ │ │   ├─┬ readable-stream@1.0.33
+│ │ │ │ │   │ ├── core-util-is@1.0.1
+│ │ │ │ │   │ ├── inherits@2.0.1
+│ │ │ │ │   │ ├── isarray@0.0.1
+│ │ │ │ │   │ └── string_decoder@0.10.31
+│ │ │ │ │   └── xtend@4.0.0
+│ │ │ │ ├─┬ decompress-unzip@3.2.1
+│ │ │ │ │ ├── is-zip@1.0.0
+│ │ │ │ │ ├─┬ strip-dirs@1.1.1
+│ │ │ │ │ │ ├─┬ chalk@1.0.0
+│ │ │ │ │ │ │ ├── ansi-styles@2.0.1
+│ │ │ │ │ │ │ ├── escape-string-regexp@1.0.3
+│ │ │ │ │ │ │ ├─┬ has-ansi@1.0.3
+│ │ │ │ │ │ │ │ └── ansi-regex@1.1.1
+│ │ │ │ │ │ │ ├─┬ strip-ansi@2.0.1
+│ │ │ │ │ │ │ │ └── ansi-regex@1.1.1
+│ │ │ │ │ │ │ └── supports-color@1.3.1
+│ │ │ │ │ │ ├─┬ is-absolute@0.1.7
+│ │ │ │ │ │ │ └── is-relative@0.1.3
+│ │ │ │ │ │ ├── is-natural-number@2.0.0
+│ │ │ │ │ │ ├── minimist@1.1.1
+│ │ │ │ │ │ └── sum-up@1.0.1
+│ │ │ │ │ └─┬ yauzl@2.2.1
+│ │ │ │ │   ├── fd-slicer@1.0.1
+│ │ │ │ │   └── pend@1.2.0
+│ │ │ │ ├── vinyl-assign@1.1.0
+│ │ │ │ └─┬ vinyl-fs@0.3.13
+│ │ │ │   ├─┬ defaults@1.0.2
+│ │ │ │   │ └── clone@0.1.19
+│ │ │ │   ├─┬ glob-stream@3.1.18
+│ │ │ │   │ ├─┬ glob@4.5.3
+│ │ │ │   │ │ ├─┬ inflight@1.0.4
+│ │ │ │   │ │ │ └── wrappy@1.0.1
+│ │ │ │   │ │ ├── inherits@2.0.1
+│ │ │ │   │ │ └─┬ once@1.3.1
+│ │ │ │   │ │   └── wrappy@1.0.1
+│ │ │ │   │ ├─┬ glob2base@0.0.12
+│ │ │ │   │ │ └── find-index@0.1.1
+│ │ │ │   │ ├─┬ minimatch@2.0.4
+│ │ │ │   │ │ └─┬ brace-expansion@1.1.0
+│ │ │ │   │ │   ├── balanced-match@0.2.0
+│ │ │ │   │ │   └── concat-map@0.0.1
+│ │ │ │   │ ├── ordered-read-streams@0.1.0
+│ │ │ │   │ └── unique-stream@1.0.0
+│ │ │ │   ├─┬ glob-watcher@0.0.6
+│ │ │ │   │ └─┬ gaze@0.5.1
+│ │ │ │   │   └─┬ globule@0.1.0
+│ │ │ │   │     ├─┬ glob@3.1.21
+│ │ │ │   │     │ ├── graceful-fs@1.2.3
+│ │ │ │   │     │ └── inherits@1.0.0
+│ │ │ │   │     ├── lodash@1.0.2
+│ │ │ │   │     └─┬ minimatch@0.2.14
+│ │ │ │   │       ├── lru-cache@2.5.0
+│ │ │ │   │       └── sigmund@1.0.0
+│ │ │ │   ├── graceful-fs@3.0.6
+│ │ │ │   ├─┬ mkdirp@0.5.0
+│ │ │ │   │ └── minimist@0.0.8
+│ │ │ │   └─┬ strip-bom@1.0.0
+│ │ │ │     ├── first-chunk-stream@1.0.0
+│ │ │ │     └── is-utf8@0.2.0
+│ │ │ └─┬ gulp-util@3.0.4
+│ │ │   ├── array-differ@1.0.0
+│ │ │   ├── array-uniq@1.0.2
+│ │ │   ├── beeper@1.0.0
+│ │ │   ├─┬ chalk@1.0.0
+│ │ │   │ ├── ansi-styles@2.0.1
+│ │ │   │ ├── escape-string-regexp@1.0.3
+│ │ │   │ ├─┬ has-ansi@1.0.3
+│ │ │   │ │ └── ansi-regex@1.1.1
+│ │ │   │ ├─┬ strip-ansi@2.0.1
+│ │ │   │ │ └── ansi-regex@1.1.1
+│ │ │   │ └── supports-color@1.3.1
+│ │ │   ├── dateformat@1.0.11
+│ │ │   ├── lodash._reescape@3.0.0
+│ │ │   ├── lodash._reevaluate@3.0.0
+│ │ │   ├── lodash._reinterpolate@3.0.0
+│ │ │   ├─┬ lodash.template@3.4.0
+│ │ │   │ ├── lodash._basecopy@3.0.0
+│ │ │   │ ├── lodash._basetostring@3.0.0
+│ │ │   │ ├── lodash._basevalues@3.0.0
+│ │ │   │ ├── lodash._isiterateecall@3.0.5
+│ │ │   │ ├── lodash.escape@3.0.0
+│ │ │   │ ├─┬ lodash.keys@3.0.5
+│ │ │   │ │ ├── lodash.isarguments@3.0.1
+│ │ │   │ │ ├── lodash.isarray@3.0.1
+│ │ │   │ │ └── lodash.isnative@3.0.1
+│ │ │   │ ├── lodash.restparam@3.6.0
+│ │ │   │ └── lodash.templatesettings@3.1.0
+│ │ │   ├── minimist@1.1.1
+│ │ │   ├─┬ multipipe@0.1.2
+│ │ │   │ └─┬ duplexer2@0.0.2
+│ │ │   │   └─┬ readable-stream@1.1.13
+│ │ │   │     ├── core-util-is@1.0.1
+│ │ │   │     ├── inherits@2.0.1
+│ │ │   │     ├── isarray@0.0.1
+│ │ │   │     └── string_decoder@0.10.31
+│ │ │   └── replace-ext@0.0.1
+│ │ ├── gulp-rename@1.2.2
+│ │ ├── is-url@1.2.0
+│ │ ├─┬ meow@3.1.0
+│ │ │ ├─┬ camelcase-keys@1.0.0
+│ │ │ │ ├── camelcase@1.0.2
+│ │ │ │ └── map-obj@1.0.0
+│ │ │ ├─┬ indent-string@1.2.1
+│ │ │ │ └─┬ repeating@1.1.2
+│ │ │ │   └── is-finite@1.0.0
+│ │ │ └── minimist@1.1.1
+│ │ ├── object-assign@2.0.0
+│ │ ├── read-all-stream@1.0.2
+│ │ ├─┬ stream-combiner2@1.0.2
+│ │ │ ├─┬ duplexer2@0.0.2
+│ │ │ │ └─┬ readable-stream@1.1.13
+│ │ │ │   ├── core-util-is@1.0.1
+│ │ │ │   ├── inherits@2.0.1
+│ │ │ │   ├── isarray@0.0.1
+│ │ │ │   └── string_decoder@0.10.31
+│ │ │ └─┬ through2@0.5.1
+│ │ │   ├─┬ readable-stream@1.0.33
+│ │ │   │ ├── core-util-is@1.0.1
+│ │ │   │ ├── inherits@2.0.1
+│ │ │   │ ├── isarray@0.0.1
+│ │ │   │ └── string_decoder@0.10.31
+│ │ │   └── xtend@3.0.0
+│ │ ├─┬ through2@0.6.3
+│ │ │ ├─┬ readable-stream@1.0.33
+│ │ │ │ ├── core-util-is@1.0.1
+│ │ │ │ ├── inherits@2.0.1
+│ │ │ │ ├── isarray@0.0.1
+│ │ │ │ └── string_decoder@0.10.31
+│ │ │ └── xtend@4.0.0
+│ │ ├─┬ vinyl@0.4.6
+│ │ │ ├── clone@0.2.0
+│ │ │ └── clone-stats@0.0.1
+│ │ ├─┬ vinyl-fs@1.0.0
+│ │ │ ├─┬ duplexify@3.2.0
+│ │ │ │ ├─┬ end-of-stream@1.0.0
+│ │ │ │ │ └─┬ once@1.3.1
+│ │ │ │ │   └── wrappy@1.0.1
+│ │ │ │ └─┬ readable-stream@1.0.33
+│ │ │ │   ├── core-util-is@1.0.1
+│ │ │ │   ├── inherits@2.0.1
+│ │ │ │   ├── isarray@0.0.1
+│ │ │ │   └── string_decoder@0.10.31
+│ │ │ ├─┬ glob-stream@4.1.1
+│ │ │ │ ├─┬ glob@4.5.3
+│ │ │ │ │ ├─┬ inflight@1.0.4
+│ │ │ │ │ │ └── wrappy@1.0.1
+│ │ │ │ │ ├── inherits@2.0.1
+│ │ │ │ │ └─┬ once@1.3.1
+│ │ │ │ │   └── wrappy@1.0.1
+│ │ │ │ ├─┬ glob2base@0.0.12
+│ │ │ │ │ └── find-index@0.1.1
+│ │ │ │ ├─┬ minimatch@2.0.4
+│ │ │ │ │ └─┬ brace-expansion@1.1.0
+│ │ │ │ │   ├── balanced-match@0.2.0
+│ │ │ │ │   └── concat-map@0.0.1
+│ │ │ │ ├── ordered-read-streams@0.1.0
+│ │ │ │ └─┬ unique-stream@2.0.2
+│ │ │ │   ├─┬ es6-set@0.1.1
+│ │ │ │   │ ├── d@0.1.1
+│ │ │ │   │ ├─┬ es5-ext@0.10.6
+│ │ │ │   │ │ └── es6-symbol@2.0.1
+│ │ │ │   │ ├─┬ es6-iterator@0.1.3
+│ │ │ │   │ │ └── es6-symbol@2.0.1
+│ │ │ │   │ ├── es6-symbol@0.1.1
+│ │ │ │   │ └── event-emitter@0.3.3
+│ │ │ │   └─┬ through2-filter@1.4.1
+│ │ │ │     └── xtend@4.0.0
+│ │ │ ├─┬ glob-watcher@0.0.8
+│ │ │ │ └─┬ gaze@0.5.1
+│ │ │ │   └─┬ globule@0.1.0
+│ │ │ │     ├─┬ glob@3.1.21
+│ │ │ │     │ ├── graceful-fs@1.2.3
+│ │ │ │     │ └── inherits@1.0.0
+│ │ │ │     ├── lodash@1.0.2
+│ │ │ │     └─┬ minimatch@0.2.14
+│ │ │ │       ├── lru-cache@2.5.0
+│ │ │ │       └── sigmund@1.0.0
+│ │ │ ├── graceful-fs@3.0.6
+│ │ │ ├── merge-stream@0.1.7
+│ │ │ ├─┬ mkdirp@0.5.0
+│ │ │ │ └── minimist@0.0.8
+│ │ │ └─┬ strip-bom@1.0.0
+│ │ │   ├── first-chunk-stream@1.0.0
+│ │ │   └── is-utf8@0.2.0
+│ │ └─┬ ware@1.2.0
+│ │   └─┬ wrap-fn@0.1.4
+│ │     └── co@3.1.0
+│ ├─┬ multimeter@0.1.1
+│ │ └── charm@0.1.2
+│ ├─┬ rimraf@2.3.2
+│ │ └─┬ glob@4.5.3
+│ │   ├─┬ inflight@1.0.4
+│ │   │ └── wrappy@1.0.1
+│ │   ├── inherits@2.0.1
+│ │   ├─┬ minimatch@2.0.4
+│ │   │ └─┬ brace-expansion@1.1.0
+│ │   │   ├── balanced-match@0.2.0
+│ │   │   └── concat-map@0.0.1
+│ │   └─┬ once@1.3.1
+│ │     └── wrappy@1.0.1
+│ ├── semver@4.3.3
+│ └─┬ yargs@3.6.0
+│   ├── camelcase@1.0.2
+│   ├── decamelize@1.0.0
+│   ├── window-size@0.1.0
+│   └── wordwrap@0.0.2
 └─┬ yargs@3.0.4
   ├── window-size@0.1.0
   └── wordwrap@0.0.2

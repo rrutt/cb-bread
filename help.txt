@@ -1,6 +1,6 @@
 
 cb-bread: Couchbase Browse/Read/Edit/Add/Delete
-Version 0.7.1+20150327 Copyright © 2015 Rick Rutt (Portions © 2014 Shaun Xu)
+Version 0.8.0+nwjs.20150403 Copyright © 2015 Rick Rutt (Portions © 2014 Shaun Xu)
 
 Usage: node server [--host=(host)] [--user=(user)] [--password=(password)] [--debug] [--responses] [--listen=8008] [--proxy=my.proxy:8888]
 
@@ -27,7 +27,7 @@ Examples:
   node server --proxy=my.proxy:8888         Listens on port 8008 and uses the designated network proxy.
                                                                                       
 
-For more information see https://github.com/rrutt/cb-bread/blob/0.7.1+20150327/README.md
+For more information see https://github.com/rrutt/cb-bread/blob/0.8.0+nwjs.20150403/README.md
 
 Report issues at https://github.com/rrutt/cb-bread/issues
 
