@@ -399,6 +399,7 @@ Log messages will _not_ appear in the terminal window.
 
 Instead, they will appear in the webkit Developer Tools Javascript console.
 This can be opened by clicking on the **≡** icon in the upper-right corner of the **cb-bread** window.
+(On Mac OSX, the **≡** icon is replaced by a _gear_ icon.)
 
 ## Installing a local Couchbase Server for development and testing
 
