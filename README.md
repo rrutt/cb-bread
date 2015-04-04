@@ -14,10 +14,12 @@ I wrote a blog article about my experience creating this application: [If You Bu
 
 ### Pre-requisites:
 
-You need Node.js: [Node.js downloads](http://nodejs.org/download/).
+You need **Node.js**: [Node.js downloads](http://nodejs.org/download/).
 
-In order to let the Node/npm installer compile the Couchbase Node SDK, you need Python 2.7.x (where "x" is any point release): [Download Python](https://www.python.org/downloads/)
-**_Note for Windows:_** You will need to add **C:\Python27** to your **PATH** variable, and possibly logout and login again for this change to take effect.
+In order to let the Node/npm installer compile the Couchbase Node SDK, you need **Python 2.7.x** (where "x" is any point release): [Download Python](https://www.python.org/downloads/)
+
+**_Note for Windows:_** 
+You can omit the installation of Python since the **Couchbase SDK for Node** includes some _fallback_ pre-compiled binaries compatible with standard **Node.js** on Windows; in that case simply run **npm install** and ignore compiler errors for the **couchbase** module.
 
 If you want to customize the **cb-bread** application, you need a command-line based Git source code control client: [Git client downloads](http://git-scm.com/downloads).
 Windows users may prefer [PortableGit](https://github.com/msysgit/msysgit/releases/).
@@ -68,8 +70,7 @@ You can also view the resulting usage text as [help.txt](https://github.com/rrut
 ### Adapted from:
 
 ["My DocumentDB" - A Simple Web-based DocumentDB Management Tool](http://blog.shaunxu.me/archive/2014/09/17/quotmy-documentdbquot---a-simple-web-based-documentdb-management-tool.aspx) by Shaun Xu.
-
-[https://github.com/shaunxu/myazdocdb](https://github.com/shaunxu/myazdocdb)
+**[https://github.com/shaunxu/myazdocdb](https://github.com/shaunxu/myazdocdb)**
 
 ## Querying and Filtering JSON Documents with the cb-bread Application
 
@@ -341,16 +342,26 @@ If you click the **Next** button at that point, the server resumes scanning afte
 
 Once the end of the view is reached, the message "**No more documents match the Key Prefix and Doc Filter criteria.**" appears above the document list. 
 
-## Running cb-bread as a Standalone Application
+## Installing cb-bread as a Standalone Application
 
-The cb-bread application incorporates the [NW.js](http://nwjs.io/) technology to provide the option to run cb-bread as a standalone desktop application.
-The NW.js module (previously known as **node-webkit**) includes an embedded **webkit** browser based on Chromium (Google Chrome).
+The cb-bread application incorporates [NW.js](http://nwjs.io/) technology to allow running cb-bread as a standalone desktop application.
+The **NW.js** module (previously known as **node-webkit**) includes an embedded **webkit** browser based on Chromium (Google Chrome).
 
-### Installing for Standalone Execution
+Third-party **npm** modules that include compiled binary components must be recompiled for compatibility with the _binding_ interface used by **NW.js**.
 
-Third-party **npm** modules that include compiled binary components must be recompiled for compatibility with **NW.js**.
+### Pre-requisites:
 
-Run either of these scripts to perform the full installation for use with **NW.js**:
+In order to let the installation script compile the Couchbase Node SDK, you need Python 2.7.x (where "x" is any point release): [Download Python](https://www.python.org/downloads/)
+
+**_Note for Windows:_** Select the 32-bit version [Windows x86 MSI installer](https://www.python.org/ftp/python/2.7.9/python-2.7.9.msi).
+You will need to add **C:\Python27** to your **PATH** variable, and possibly logout and login again for this change to take effect.
+You also need either a recent version of Microsoft Visual Studio, or else the [Microsoft Build Tools 2013](http://www.microsoft.com/en-us/download/details.aspx?id=40760).
+If the **Microsoft Build Tools 2013**  fails to install, try installing [Microsoft Windows SDK for Windows 7 and .NET Framework 4](http://www.microsoft.com/en-us/download/details.aspx?id=8279) first and then repeat the installation of the **Microsoft Build Tools 2013**.
+If any or all of these setups fail, you should still be able to run the **cb-bread** application via the **node server** command describe above, since the **Couchbase SDK for Node** includes some _fallback_ pre-compiled binaries compatible with standard Node.js on Windows; in that case simply run **npm install** and ignore compiler errors for the **couchbase** module.
+
+### Installation
+
+Run either of the following scripts to perform the full installation for use with **NW.js**:
 
 _Note:_ After running either of these scripts, the **cb-bread** application still remains compatible with the normal **node server** launch option.
 
