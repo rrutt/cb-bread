@@ -8,7 +8,17 @@ The acronym BREAD replaces the usual CRUD = Create/Read/Update/Delete purely for
 This application is intended to be run on your local workstation, so you can provide Couchbase server connection options on the command line and monitor the server log messages.
 Running the application on your own workstation also relieves the application of some security responsibilities.
 
-This application can connect to any Couchbase server visible to your workstation's network connect.
+There are two options for running the application:
+
+- Run as an HTTP server using [Node.js](https://nodejs.org/), and then open the application web page in a web browser.
+
+- Run as a standalone desktop application with an embedded browser window using [NW.js](http://nwjs.io/).
+
+This application can connect to any Couchbase server visible to your workstation's network connection.
+
+The application supports filtering documents using a _Key Prefix_ for any Couchbase view defined on a bucket. (For Map/Reduce views, the _reduce_ operation is omitted from the query.)
+
+The application also supports additional document filtering using a Javascript expression.
 
 I wrote a blog article about my experience creating this application: [If You Build It, They Will Fork It](https://rickrutt.wordpress.com/2015/02/15/if-you-build-it-they-will-fork-it/).
 
@@ -18,11 +28,19 @@ You need **Node.js**: [Node.js downloads](http://nodejs.org/download/).
 
 In order to let the Node/npm installer compile the Couchbase Node SDK, you need **Python 2.7.x** (where "x" is any point release): [Download Python](https://www.python.org/downloads/)
 
-**_Note for Windows:_** 
-You can omit the installation of Python since the **Couchbase SDK for Node** includes some _fallback_ pre-compiled binaries compatible with standard **Node.js** on Windows; in that case simply run **npm install** and ignore compiler errors for the **couchbase** module.
-
 If you want to customize the **cb-bread** application, you need a command-line based Git source code control client: [Git client downloads](http://git-scm.com/downloads).
 Windows users may prefer [PortableGit](https://github.com/msysgit/msysgit/releases/).
+
+#### _Note for Mac OSX:_
+
+You also need to have [Xcode](https://developer.apple.com/xcode/downloads/) installed.
+
+#### _Notes for Windows:_ 
+
+If you want to run **cb-bread** as an HTTP server via Node.js, you can omit the installation of Python since the **Couchbase SDK for Node** includes some _fallback_ pre-compiled binaries compatible with standard **Node.js** on Windows; in that case simply run **npm install** and ignore compiler errors for the **couchbase** module.
+
+If you choose to omit Python and use the pre-compiled binaries, you will _not_ be able to run **cb-bread** as a standalone desktop application;
+instead you will need to run it as an HTTP server. 
 
 ### To download cb-bread without Git:
 
@@ -45,11 +63,13 @@ Clone the **cb-bread** project from GitHub, and then navigate to that folder:
     git clone https://github.com/rrutt/cb-bread.git
     cd cb-bread
 
-### To install cb-bread:
+## Installing and Running cb-bread as an HTTP Server:
+
+### To install cb-bread for use as an HTTP server:
 
     npm install
 
-### To run cb-bread:
+### To run cb-bread as an HTTP server:
 
     node server
 
@@ -57,7 +77,7 @@ Then open [http://localhost:8008/](http://localhost:8008/) in a browser.
 
 **_Note:_** If the browser window seems to _hang_ after some operation check the command prompt window for possible error messages.
 
-### To stop the cb-bread server:
+### To stop the cb-bread HTTP server:
 
 Use **Control-C** once or twice in the command prompt window to stop the Node.js server.
 
@@ -67,17 +87,113 @@ Use **Control-C** once or twice in the command prompt window to stop the Node.js
 
 You can also view the resulting usage text as [help.txt](https://github.com/rrutt/cb-bread/blob/dev/help.txt)
 
-### Adapted from:
+## Installing and Running cb-bread as a Standalone Application
 
-["My DocumentDB" - A Simple Web-based DocumentDB Management Tool](http://blog.shaunxu.me/archive/2014/09/17/quotmy-documentdbquot---a-simple-web-based-documentdb-management-tool.aspx) by Shaun Xu.
-**[https://github.com/shaunxu/myazdocdb](https://github.com/shaunxu/myazdocdb)**
+The cb-bread application incorporates [NW.js](http://nwjs.io/) technology to allow running cb-bread as a standalone desktop application.
+The **NW.js** module (previously known as **node-webkit**) includes an embedded **webkit** browser based on Chromium (Google Chrome).
+
+Third-party **npm** modules that include compiled binary components must be recompiled for compatibility with the _binding_ interface used by **NW.js**.
+
+### Pre-requisites:
+
+In order to let the installation script rebind the Couchbase Node SDK binary modules, you _must_ have Python 2.7.x (where "x" is any point release): [Download Python](https://www.python.org/downloads/).
+
+### _Notes for Windows:_
+
+You will need to add **C:\Python27** to your **PATH** variable, and possibly logout and login again for this change to take effect.
+
+Review this Stack Overflow answer:
+[...install node modules that require compilation on Windows...](http://stackoverflow.com/questions/14278417/cannot-install-node-modules-that-require-compilation-on-windows-7-x64-vs2012/15830975#15830975).
+
+After reviewing that question and answer, follow the four steps described in this wiki page referenced in the Stack Overflow answer:
+[TooTallNate/node-gyp: Visual Studio 2010 Setup](https://github.com/TooTallNate/node-gyp/wiki/Visual-Studio-2010-Setup).
+
+Then run this command to test the ability to compile the Couchbase SDK modules:
+
+    npm install
+
+### Installation
+
+Run either of the following scripts to perform the full installation for use with **NW.js**.
+This includes installing the **NW.js** launcher appropriate for your operating system, and rebinding the Couchbase SDK binary modules for compatibility with **NW.js** and the **nw-gyp** binary module binding component.
+
+_Note:_ After running either of these scripts, the **cb-bread** application still remains compatible with standard **Node.js** and the normal **node server** launch option as an HTTP server.
+
+#### _On Windows:_
+
+    install.bat
+
+You can run this file in a command prompt terminal or double-click on this file in File Explorer.
+
+#### _On Linux or Mac OSX:_
+
+    bash ./install.sh
+
+You may need to prefix this command with **sudo**: 
+
+    sudo bash ./install.sh
+
+(This script can also be run on Windows inside a **git-bash** terminal session.)
+
+If any or all of these setups fail, you should still be able to run  **cb-bread** as an HTTP server via the **node server** command described above, using pre-compiled binaries.
+In that case simply run **npm install** and ignore any compiler errors for the **couchbase** module.
+
+### Launching as a Standalone Application
+
+#### _On Windows:_
+
+Run this script, either in a command prompt terminal or by double-clicking it in File Explorer:
+
+    cb-bread.bat
+
+#### _On Linux or Mac OSX:_
+
+Open a terminal window and run the following command:
+
+    bash ./cb-bread.sh
+
+This script can also be run on Windows inside a **git-bash** terminal session.
+
+### Passing Optional Command Line Arguments:
+
+Pass any optional arguments (as documented in the **help.txt** file or the **node server --help** command) after the script name.
+
+For example:
+
+    cb-bread.bat --host localhost --user admin
+
+or:
+
+    bash ./cb-bread.sh --host localhost --user admin
+
+### Viewing Log Messages in Standalone Mode
+
+Log messages will _not_ appear in the terminal window.
+
+Instead, they will appear in the webkit Developer Tools Javascript console.
+This can be opened by clicking on the **≡** icon in the upper-right corner of the **cb-bread** window.
+(On Mac OSX, the **≡** icon is replaced by a _gear_ icon.)
+
+### For command-line options:
+
+Use the same command as for HTTP server mode:
+
+    node server --help
+
+or let the script invoke that for you:
+
+    bash ./cb-bread.sh --help
+
+    cb-bread.bat --help
+
+You can also view the resulting usage text as [help.txt](https://github.com/rrutt/cb-bread/blob/dev/help.txt)
 
 ## Querying and Filtering JSON Documents with the cb-bread Application
 
 For these examples, I am running **cb-bread** against a local Couchbase Server installed on my workstation with the **beer-sample** and **gamesim-sample** buckets created and loaded with the Couchbase-provided sample data.
 See the following section for installation instructions for your workstation.
 
-### Starting the server:
+### Starting the HTTP server:
 
 In order to avoid entering the host, user, and password in the web page login fields, start the demonstration by passing these values on the command line:
 
@@ -85,9 +201,21 @@ In order to avoid entering the host, user, and password in the web page login fi
 
 Then open a browser to **[http://localhost:8008/](http://localhost:8008/)**
 
-With the login credentials already provided, simply click the **Connect** button on the home page
+### Starting the standalone desktop application:
+
+In order to avoid entering the host, user, and password in the web page login fields, start the demonstration by passing these values on the command line:
+
+    bash ./cb-bread.sh -h localhost -u admin -p demo01
+
+or 
+
+    cb-bread.bat -h localhost -u admin -p demo01
+
+The embedded browser window will open.
 
 ### Browsing documents in a view:
+
+With the login credentials already provided, simply click the **Connect** button on the home page
 
 On the **Home / Buckets** page, click the **gamesim-sample** bucket.
 
@@ -342,76 +470,6 @@ If you click the **Next** button at that point, the server resumes scanning afte
 
 Once the end of the view is reached, the message "**No more documents match the Key Prefix and Doc Filter criteria.**" appears above the document list. 
 
-## Installing cb-bread as a Standalone Application
-
-The cb-bread application incorporates [NW.js](http://nwjs.io/) technology to allow running cb-bread as a standalone desktop application.
-The **NW.js** module (previously known as **node-webkit**) includes an embedded **webkit** browser based on Chromium (Google Chrome).
-
-Third-party **npm** modules that include compiled binary components must be recompiled for compatibility with the _binding_ interface used by **NW.js**.
-
-### Pre-requisites:
-
-In order to let the installation script compile the Couchbase Node SDK, you need Python 2.7.x (where "x" is any point release): [Download Python](https://www.python.org/downloads/)
-
-**_Note for Windows:_** Select the 32-bit version [Windows x86 MSI installer](https://www.python.org/ftp/python/2.7.9/python-2.7.9.msi).
-You will need to add **C:\Python27** to your **PATH** variable, and possibly logout and login again for this change to take effect.
-You also need either a recent version of Microsoft Visual Studio, or else the [Microsoft Build Tools 2013](http://www.microsoft.com/en-us/download/details.aspx?id=40760).
-If the **Microsoft Build Tools 2013**  fails to install, try installing [Microsoft Windows SDK for Windows 7 and .NET Framework 4](http://www.microsoft.com/en-us/download/details.aspx?id=8279) first and then repeat the installation of the **Microsoft Build Tools 2013**.
-If any or all of these setups fail, you should still be able to run the **cb-bread** application via the **node server** command describe above, since the **Couchbase SDK for Node** includes some _fallback_ pre-compiled binaries compatible with standard Node.js on Windows; in that case simply run **npm install** and ignore compiler errors for the **couchbase** module.
-
-### Installation
-
-Run either of the following scripts to perform the full installation for use with **NW.js**:
-
-_Note:_ After running either of these scripts, the **cb-bread** application still remains compatible with the normal **node server** launch option.
-
-### On Windows:
-
-    install.bat
-
-You can run this file in a command prompt terminal or double-click on this file in File Explorer.
-
-### On Linux or Mac OSX:
-
-    bash ./install.sh
-
-This script can also be run on Windows inside a **git-bash** terminal session.
-
-## Launching as a Standalone Application
-
-### On Windows
-
-Run this script, either in a a command prompt terminal or by double-clicking it in File Explorer:
-
-    cb-bread.bat
-
-### On Linux or Mac OSX:
-
-Open a terminal window and run the following command:
-
-    bash ./cb-bread.sh
-
-This script can also be run on Windows inside a **git-bash** terminal session.
-
-### Passing Optional Command Line Arguments:
-
-Pass any optional arguments (as documented in the **help.txt** file) after the script name.
-For example:
-
-    cb-bread.bat --host localhost --user admin
-
-or:
-
-    bash ./cb-bread.sh --host localhost --user admin
-
-### Viewing Log Messages in Standalone Mode
-
-Log messages will _not_ appear in the terminal window.
-
-Instead, they will appear in the webkit Developer Tools Javascript console.
-This can be opened by clicking on the **≡** icon in the upper-right corner of the **cb-bread** window.
-(On Mac OSX, the **≡** icon is replaced by a _gear_ icon.)
-
 ## Installing a local Couchbase Server for development and testing
 
 ### Workstation requirements:
@@ -465,5 +523,11 @@ Using my example installation folder **E:\Couchbase** here are the commands to l
     cd /d E:\Couchbase\Server\samples
     ..\bin\cbdocloader.exe -u admin -p demo01 -n localhost:8091 -b beer-sample -s 100 beer-sample.zip
     ..\bin\cbdocloader.exe -u admin -p demo01 -n localhost:8091 -b gamesim-sample -s 100 gamesim-sample.zip
-    
+
 Substitute your actual Administrator user and password values for "**-u admin -p demo01**".
+
+## cb-bread was adapted from:
+
+["My DocumentDB" - A Simple Web-based DocumentDB Management Tool](http://blog.shaunxu.me/archive/2014/09/17/quotmy-documentdbquot---a-simple-web-based-documentdb-management-tool.aspx) by Shaun Xu.
+
+- **[https://github.com/shaunxu/myazdocdb](https://github.com/shaunxu/myazdocdb)**
