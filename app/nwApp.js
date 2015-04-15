@@ -13,12 +13,9 @@ var log4js = require('log4js');
 log4js.configure({ appenders: [ { type: "console", layout: { type: "basic" } } ], replaceConsole: true });
 var logger = log4js.getLogger('cb-bread');
 
-var argv = {};
-var userArgString = process.env.USERARGS;
-if (userArgString) {
-    var commandLineArguments = require('./commandLineArguments');
-    argv = commandLineArguments.parseArgumentString(userArgString);
-}
+var userArgString = process.env.USERARGS || '--pagesize=10'; // Need at least one argument if no other passed.
+var commandLineArguments = require('./commandLineArguments');
+var argv = commandLineArguments.parseArgumentString(userArgString);
 
 if (argv.debug) {
     logger.setLevel('DEBUG');
