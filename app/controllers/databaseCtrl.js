@@ -12,7 +12,7 @@
                 }
                 else {
                     $scope.buckets = buckets;
-                    $scope.$apply();  // Needed when running in nw.js embedded webkit browser.
+                    if($scope.$$phase !== '$digest') { $scope.$digest() }  // Needed when running in nw.js embedded webkit browser.
                 }
             });
         };

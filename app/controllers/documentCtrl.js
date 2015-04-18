@@ -41,7 +41,7 @@
                         model.bodyString = JSON.stringify(row.doc, null, 2);
                         $scope.documents.push(model);
                     });
-                    $scope.$apply();  // Needed when running in nw.js embedded webkit browser.
+                    if($scope.$$phase !== '$digest') { $scope.$digest() }  // Needed when running in nw.js embedded webkit browser.
                 }
             });
         };
@@ -160,7 +160,7 @@
         $scope.view = view;
         $scope.isUpdate = $scope.doc && $scope.doc.id;
 
-        $scope.designMode = true;
+        $scope.designMode = true;        
         $scope.changeMode = function (isDesignMode) {
             $scope.designMode = isDesignMode;
             if (isDesignMode === true) {
@@ -217,7 +217,7 @@
         };
     });
 
-    app.directive('mdJsonEditor', function () {
+    app.directive('mdJsonEditor', function ($timeout) {
         return {
             restrict: 'A',
             scope: {
@@ -227,6 +227,7 @@
                 var container = elem[0];
                 var opts = {
                     name: 'document',
+                    mode: 'text',  // Initial mode will be defer-toggled to 'tree'.
                     modes: [
                         'tree',
                         'text'
@@ -240,6 +241,13 @@
                     }
                 };
                 scope.editor = new JSONEditor(container, opts, scope.json || {});
+                $timeout(function() {  // Need to defer-toggle mode when running in nw.js embedded webkit browser.
+                    if (scope.editor) {
+                        scope.$apply(function () {
+                            scope.editor.setMode('tree');
+                        });
+                    }
+                });
             }
         };
     });

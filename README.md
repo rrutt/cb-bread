@@ -112,6 +112,8 @@ Then run this command to test the ability to compile the Couchbase SDK modules:
 
     npm install
 
+(You may need to run this command in the **Windows SDK 7.1 Command Prompt** terminal window.)
+
 ### Installation
 
 Run either of the following scripts to perform the full installation for use with **NW.js**.
@@ -124,6 +126,7 @@ _Note:_ After running either of these scripts, the **cb-bread** application stil
     install.bat
 
 You can run this file in a command prompt terminal or double-click on this file in File Explorer.
+(You may need to run this command in the **Windows SDK 7.1 Command Prompt** terminal window.)
 
 #### _On Linux or Mac OSX:_
 
