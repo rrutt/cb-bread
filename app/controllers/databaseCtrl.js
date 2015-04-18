@@ -3,7 +3,7 @@
 
     var controllerName = 'database';
 
-    app.controller('DatabaseCtrl', function ($rootScope, $state, $scope, $alert, $modal, credentials, api) {
+    app.controller('DatabaseCtrl', function ($timeout, $rootScope, $state, $scope, $alert, $modal, credentials, api) {
         var refresh = function () {
             api.request(controllerName, 'list', { host: credentials.host }, function (error, buckets) {
                 if (error) {
@@ -11,8 +11,9 @@
                     $alert(JSON.stringify(error, null, 2));
                 }
                 else {
-                    $scope.buckets = buckets;
-                    if($scope.$$phase !== '$digest') { $scope.$digest() }  // Needed when running in nw.js embedded webkit browser.
+                    $timeout(function() {
+                        $scope.buckets = buckets;
+                    });
                 }
             });
         };
