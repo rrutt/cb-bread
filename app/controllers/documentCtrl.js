@@ -3,7 +3,7 @@
 
     var controllerName = 'document';
 
-    app.controller('DocumentCtrl', function ($timeout, $rootScope, $scope, $state, $stateParams, $alert, $modal, credentials, api, serverConfig) {
+    app.controller('DocumentCtrl', function ($rootScope, $scope, $state, $stateParams, $alert, $modal, credentials, api, serverConfig) {
         var configPageSize = null;
 
         var preventZeroPageSize = function() {
@@ -19,29 +19,27 @@
                     $alert(JSON.stringify(error, null, 2));
                 }
                 else {
-                    $timeout(function() {
-                        $scope.prevSkipCount = $scope.skipCount;
-                        $scope.nextSkipCount = resultSet.nextSkipCount;
-                        $scope.resultSetMessage = resultSet.message;
-                        $scope.documents = [];
-                        var resultRows = resultSet.resultRows;
-                        resultRows.forEach(function (row) {
-                            var viewValue = '';
-                            if (row.value) {
-                                viewValue = JSON.stringify(row.value);
-                            }
-                            var model = {
-                                expanded: false,
-                                index: row.index,
-                                key: JSON.stringify(row.key),
-                                value: viewValue,
-                                id: row.id,
-                                cas: JSON.stringify(row.cas)
-                            };
-                            model.body = row.doc;
-                            model.bodyString = JSON.stringify(row.doc, null, 2);
-                            $scope.documents.push(model);
-                        });
+                    $scope.prevSkipCount = $scope.skipCount;
+                    $scope.nextSkipCount = resultSet.nextSkipCount;
+                    $scope.resultSetMessage = resultSet.message;
+                    $scope.documents = [];
+                    var resultRows = resultSet.resultRows;
+                    resultRows.forEach(function (row) {
+                        var viewValue = '';
+                        if (row.value) {
+                            viewValue = JSON.stringify(row.value);
+                        }
+                        var model = {
+                            expanded: false,
+                            index: row.index,
+                            key: JSON.stringify(row.key),
+                            value: viewValue,
+                            id: row.id,
+                            cas: JSON.stringify(row.cas)
+                        };
+                        model.body = row.doc;
+                        model.bodyString = JSON.stringify(row.doc, null, 2);
+                        $scope.documents.push(model);
                     });
                 }
             });

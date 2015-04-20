@@ -3,7 +3,7 @@
 
     var controllerName = 'database';
 
-    app.controller('DatabaseCtrl', function ($timeout, $rootScope, $state, $scope, $alert, $modal, credentials, api) {
+    app.controller('DatabaseCtrl', function ($rootScope, $state, $scope, $alert, $modal, credentials, api) {
         var refresh = function () {
             api.request(controllerName, 'list', { host: credentials.host }, function (error, buckets) {
                 if (error) {
@@ -11,9 +11,7 @@
                     $alert(JSON.stringify(error, null, 2));
                 }
                 else {
-                    $timeout(function() {
-                        $scope.buckets = buckets;
-                    });
+                    $scope.buckets = buckets;
                 }
             });
         };

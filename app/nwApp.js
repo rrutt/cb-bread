@@ -156,7 +156,7 @@ app.factory('credentials', function () {
 
 var nwApi = require('../api/nwIndex');
 
-app.factory('api', function ($http, credentials) {
+app.factory('api', function ($http, $timeout, credentials) {
     return {
         path: '/api',
         request: function (controllerName, actionName, params, callback) {
@@ -166,12 +166,18 @@ app.factory('api', function ($http, credentials) {
                     if (err.error) {
                         var alertMsg = JSON.stringify(err.error);  // No line breaks for compound error.
                         alertMsg = alertMsg.replace(/\"/g, '');  // Remove quotes.
-                        return callback(alertMsg);
+                        $timeout(function() {
+                            callback(alertMsg);
+                        });
                     } else {
-                        return callback(err);
+                        $timeout(function() {
+                            callback(err);
+                        });
                     }
                 } else {
-                    return callback(null, data);
+                    $timeout(function() {
+                        callback(null, data);
+                    });
                 }
             });
         }
