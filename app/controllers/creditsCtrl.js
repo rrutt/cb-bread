@@ -41,7 +41,7 @@
         $scope.credits.push({
             title: 'NW.js',
             link: 'http://nwjs.io/',
-            description: "NW.js lets you call all Node.js modules directly from DOM and enables a new way of writing applications with all Web technologies. It was previously known as 'node-webkit'' project.",
+            description: "NW.js lets you call all Node.js modules directly from DOM and enables a new way of writing applications with all Web technologies. It was previously known as the 'node-webkit' project.",
             license: 'https://github.com/nwjs/nw.js/blob/master/LICENSE'
         });
 
