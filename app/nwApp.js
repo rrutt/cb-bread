@@ -156,10 +156,11 @@ app.factory('credentials', function () {
 
 var nwApi = require('../api/nwIndex');
 
-app.factory('api', function ($http, $timeout, credentials) {
+app.factory('api', function ($http, $rootScope, $timeout, credentials) {
     return {
         path: '/api',
         request: function (controllerName, actionName, params, callback) {
+            $rootScope.$broadcast('loading-started');
             nwApi.invokeControllerAction(logger, argv, credentials, controllerName, actionName, params, function(err, data) {
                 if (err) {
                     logger.error("nwApi.invokeControllerAction %s.%s returned error: %s", controllerName, actionName, util.inspect(err));
@@ -168,15 +169,18 @@ app.factory('api', function ($http, $timeout, credentials) {
                         alertMsg = alertMsg.replace(/\"/g, '');  // Remove quotes.
                         $timeout(function() {
                             callback(alertMsg);
+                            $rootScope.$broadcast('loading-complete');
                         });
                     } else {
                         $timeout(function() {
                             callback(err);
+                            $rootScope.$broadcast('loading-complete');
                         });
                     }
                 } else {
                     $timeout(function() {
                         callback(null, data);
+                        $rootScope.$broadcast('loading-complete');
                     });
                 }
             });
