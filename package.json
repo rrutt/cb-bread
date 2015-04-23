@@ -4,7 +4,7 @@
     "copyright": "© 2015 Rick Rutt (Portions © 2014 Shaun Xu)",
     "description": "Couchbase Browse/Read/Edit/Add/Delete",
     "private": true,
-    "main": "app/nwIndex.html",
+    "main": "app/indexNW.html",
     "window": {
         "title": "cb-bread via nw.js",
         "toolbar": true,

@@ -11,31 +11,31 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $u
 
     $stateProvider.state('dashboard', {
         url: '/',
-        templateUrl: '/views/dashboard.html',
+        templateUrl: '/dashboard/dashboard.html',
         controller: 'DashboardCtrl'
     });
 
     $stateProvider.state('credits', {
         url: '/credits',
-        templateUrl: '/views/credits.html',
+        templateUrl: '/credits/credits.html',
         controller: 'CreditsCtrl'
     });
 
     $stateProvider.state('database', {
         url: '/databases',
-        templateUrl: '/views/database/index.html',
+        templateUrl: '/databases/database.html',
         controller: 'DatabaseCtrl'
     });
 
     $stateProvider.state('collection', {
         url: '/collections/?did',
-        templateUrl: '/views/collection/index.html',
+        templateUrl: '/collections/collection.html',
         controller: 'CollectionCtrl'
     });
 
     $stateProvider.state('document', {
         url: '/documents/?did&cid',
-        templateUrl: '/views/document/index.html',
+        templateUrl: '/documents/document.html',
         controller: 'DocumentCtrl'
     });
 }]);

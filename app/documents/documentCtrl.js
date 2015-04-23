@@ -83,7 +83,7 @@
 
         $scope.delete = function (doc) {
             var modalInstance = $modal.open({
-                templateUrl: 'views/document/delete.html',
+                templateUrl: 'documents/document-delete.html',
                 controller: 'DocumentDeleteCtrl',
                 resolve: {
                     view: function () {
@@ -101,7 +101,7 @@
 
         $scope.createOrUpdate = function (doc) {
             var modalInstance = $modal.open({
-                templateUrl: 'views/document/create-update.html',
+                templateUrl: 'documents/document-create-update.html',
                 controller: 'DocumentCreateOrUpdateCtrl',
                 resolve: {
                     view: function () {
