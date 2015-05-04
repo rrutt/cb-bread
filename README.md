@@ -141,6 +141,16 @@ You may need to prefix this command with **sudo**:
 If any or all of these setups fail, you should still be able to run  **cb-bread** as an HTTP server via the **node server** command described above, using pre-compiled binaries.
 In that case simply run **npm install** and ignore any compiler errors for the **couchbase** module.
 
+### _Notes for Mac OSX:_
+
+Once you use the **install.sh** script to install as a Standalone Application, cb-bread will no longer run as an HTTP server using **node server**.
+
+You can revert to HTTP server operation using these commands:
+
+    rm -rf ./node_modules
+    npm install
+    node server
+
 ### Launching as a Standalone Application
 
 #### _On Windows:_
