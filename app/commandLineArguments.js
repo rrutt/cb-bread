@@ -10,6 +10,8 @@
     var packageMsg = util.format("\n%s: %s\nVersion %s Copyright %s\n\n", packageJson.name, packageJson.description, packageJson.version, packageJson.copyright);
     var epilogMsg = util.format("For more information see %s/blob/%s/README.md\n\nReport issues at %s", packageJson.repository.url, packageJson.version, packageJson.bugs.url)
 
+    var argv = null;
+
     // https://github.com/chevex/yargs
     var getArgv = function (userArgArray) {
         var yargs = require('yargs')
@@ -89,14 +91,18 @@
     };
 
     exports.parseProcessArguments = function () {
-        var argv = getArgv();
+        if (!argv) {
+            argv = getArgv();
+        }
         return argv;
     };
 
     exports.parseArgumentString = function (argumentString) {
-        var splitRegularExpression = /\s+/;
-        var userArgArray = argumentString.split(splitRegularExpression);
-        var argv = getArgv(userArgArray);
+        if (!argv) {
+            var splitRegularExpression = /\s+/;
+            var userArgArray = argumentString.split(splitRegularExpression);
+            argv = getArgv(userArgArray);
+        }
         return argv;
     };
 })();

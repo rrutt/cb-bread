@@ -25,9 +25,6 @@
                 </div>
                 <div class="navbar-collapse collapse" data-ng-controller="ConnectionCtrl">
                     <ul class="nav navbar-nav">
-                        <li data-ng-if="isConnected">
-                            <a data-ui-sref="database">Buckets</a>
-                        </li>
                         <li>
                             <a data-ui-sref="credits">Credits</a>
                         </li>
@@ -37,17 +34,23 @@
                         <li>
                             <a ng-href="{{packageJson.repository.url}}/blob/{{packageJson.version}}/README.md" target="_blank">Read Me</a>
                         </li>
+                        <li data-ng-if="isConnected">
+                            <a data-ui-sref="database">Buckets</a>
+                        </li>
+                        <li data-ng-if="isConnected">
+                            <a ng-href="#" target="_blank">New Window</a>
+                        </li>
                     </ul>
                     <!-- http://weblog.west-wind.com/posts/2014/Jun/02/AngularJs-ngcloak-Problems-on-large-Pages -->
                     <form ng-cloak class="navbar-form navbar-right" role="form">
                         <div class="form-group" data-ng-show="!isConnected">
                             <input type="text" size="30" placeholder="(host)" class="form-control" data-ng-model="host" value="{{credentials.host}}">
-                            <input type="text" placeholder="(user)" class="form-control" data-ng-model="user" value="{{credentials.user}}">
-                            <input type="password" placeholder="(password)" class="form-control" data-ng-model="password" value="{{credentials.password}}">
+                            <input type="text" size="15" placeholder="(user)" class="form-control" data-ng-model="user" value="{{credentials.user}}">
+                            <input type="password" size="15" placeholder="(password)" class="form-control" data-ng-model="password" value="{{credentials.password}}">
                         </div>
                         <div class="form-group" data-ng-show="isConnected">
                             <input type="text" size="30" readonly class="form-control" data-ng-model="host">
-                            <input type="text" readonly class="form-control" data-ng-model="user">
+                            <input type="text" size="15" readonly class="form-control" data-ng-model="user">
                         </div>
                         <button type="submit" class="btn btn-success" data-ng-show="!isConnected" data-ng-click="connect()" data-ui-sref="database">Connect</button>
                         <button type="button" class="btn btn-success" data-ng-show="isConnected" data-ng-click="disconnect()">Disconnect</button>
