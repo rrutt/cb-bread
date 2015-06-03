@@ -476,9 +476,9 @@ For potent porter or stout fans:
 
 ### Paging with Doc Filter expressions:
 
-If any documents on the current page satisfy the filter expression, they are shown.
+If any documents on the current page satisfy the filter expression, they appear first.
 
-If no documents satisfy the filter, the server automatically scans successive pages until the requested **Page Size** number of documents are found.
+The server continues to scan successive pages until the requested **Page Size** number of documents are found.
 If you click the **Next** button at that point, the server resumes scanning after the last already-scanned document, using its index # as the new **Skip Count**.
 
 Once the end of the view is reached, the message "**No more documents match the Key Prefix and Doc Filter criteria.**" appears above the document list. 
