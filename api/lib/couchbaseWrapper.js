@@ -199,80 +199,90 @@
                 cbBucket.disconnect();
                 return callback(err);
             } else {
-                var docIds = [];
-                var viewKeys = {};
-                var viewValues = {};
-                viewRows.forEach(function (viewRow) {
-                    var docId = viewRow.id;
-                    docIds.push(docId);
-
-                    viewKeys[docId] = viewRow.key;
-                    viewValues[docId] = viewRow.value;
-                });
-
-                cbLogger.debug("docIds = %s", util.inspect(docIds));
-                cbLogger.debug("viewKeys = %s", util.inspect(viewKeys));
-                cbLogger.debug("viewValues = %s", util.inspect(viewValues));
-
-                var queryTimeoutReached = false;
-
-                if (docIds && docIds.length > 0) {
-                    resultSet.nextSkipCount = resultSet.skipCount + queryLimit;
-
-                    cbBucket.getMulti(docIds, function (err, rows) {
-                        if (err) {
-                            cbLogger.warn("cbBucket.getMulti returned error count = %s", util.inspect(err));
-                        }
-
-                        var docIndex = resultSet.skipCount;
-                        var keptRows = 0;
-                        docIds.forEach(function (docId) {
-                            docIndex++;
-                            var row = rows[docId];
-                            var resultRow = {index: docIndex, key: viewKeys[docId], value: viewValues[docId], id: docId, cas: row.cas || row.error, doc: row.value, error: row.error};
-                            var keep = (resultSet.resultRows.length < queryLimit) && filterResultRow(resultRow, parsedDocFilter);
-                            if (keep) {
-                                keptRows++;
-                                resultSet.resultRows.push(resultRow);
-                                resultSet.nextSkipCount = docIndex;
-                            }
-                        });
-
-                        var currentTime = moment();
-                        var duration = currentTime.diff(resultSet.startTime, 'seconds', true); // Include fraction.
-                        queryTimeoutReached = (duration >= resultSet.queryTimeoutSeconds);
-
-                        var stopRecursion = false;
-                        if (queryTimeoutReached || (resultSet.resultRows.length >= queryLimit)) {
-                            stopRecursion = true;
-                        } else {
-                            if (parsedDocFilter) {
-                                if (keptRows === 0) {
-                                    cbLogger.warn("No documents passed the Doc Filter for Skip Count = %d. (%d seconds)", resultSet.skipCount, duration);
-                                } else if (keptRows === 1) {
-                                    cbLogger.warn("%d document passed the Doc Filter for Skip Count = %d. (%d seconds)", keptRows, resultSet.skipCount, duration);
-                                } else {
-                                    cbLogger.warn("%d documents passed the Doc Filter for Skip Count = %d. (%d seconds)", keptRows, resultSet.skipCount, duration);
-                                }
-                            }
-                        }
-
-                        if (stopRecursion) {
-                            formatResultSetMessage(resultSet, queryLimit, parsedDocFilter, queryTimeoutReached);
-                            return callback(null, resultSet);
-                        } else {
-                            resultSet.skipCount = resultSet.nextSkipCount;
-                            cbQuery.skip(resultSet.skipCount);
-                            return recursivelyQueryBucket(cbBucket, cbQuery, queryLimit, parsedDocFilter, resultSet, callback);
+                if (viewRows.length > 0) {
+                    var docIds = [];
+                    viewRows.forEach(function (viewRow) {
+                        var docId = viewRow.id;
+                        if (docIds.indexOf(docId) < 0) {
+                            docIds.push(docId);
                         }
                     });
+
+                    var docRows = {};
+                    if (docIds && (docIds.length > 0)) {
+                        cbBucket.getMulti(docIds, function (err, rows) {
+                            if (err) {
+                                cbLogger.warn("cbBucket.getMulti returned error count = %s", util.inspect(err));
+                            }
+
+                            docIds.forEach(function (docId) {
+                                docRows[docId] = rows[docId];
+                            });
+
+                            processQueryDocRows(cbBucket, cbQuery, queryLimit, parsedDocFilter, resultSet, viewRows, docRows, callback);
+                        });
+                    } else {
+                        processQueryDocRows(cbBucket, cbQuery, queryLimit, parsedDocFilter, resultSet, viewRows, docRows, callback);
+                    }
                 } else {
+                    var queryTimeoutReached = false;
                     formatResultSetMessage(resultSet, queryLimit, parsedDocFilter, queryTimeoutReached);
                     return callback(null, resultSet);
                 }
             }
         });
     };
+
+    function processQueryDocRows(cbBucket, cbQuery, queryLimit, parsedDocFilter, resultSet, viewRows, docRows, callback) {
+//        cbLogger.debug(">>> processQueryDocRows viewRows = %s", util.inspect(viewRows));
+//        cbLogger.debug(">>> processQueryDocRows docRows = %s", util.inspect(docRows));
+
+        var docIndex = resultSet.skipCount;
+        resultSet.nextSkipCount = resultSet.skipCount + queryLimit;
+        var keptRows = 0;
+
+        viewRows.forEach(function (viewRow) {
+            docIndex++;
+            var docId = viewRow.id;
+            var row = docRows[docId];
+
+            var resultRow = {index: docIndex, key: viewRow.key, value: viewRow.value, id: docId, cas: row.cas || row.error, doc: row.value, error: row.error};
+            var keep = (resultSet.resultRows.length < queryLimit) && filterResultRow(resultRow, parsedDocFilter);
+            if (keep) {
+                keptRows++;
+                resultSet.resultRows.push(resultRow);
+                resultSet.nextSkipCount = docIndex;
+            }
+        });
+
+        var currentTime = moment();
+        var duration = currentTime.diff(resultSet.startTime, 'seconds', true); // Include fraction.
+        var queryTimeoutReached = (duration >= resultSet.queryTimeoutSeconds);
+
+        var stopRecursion = false;
+        if (queryTimeoutReached || (resultSet.resultRows.length >= queryLimit)) {
+            stopRecursion = true;
+        } else {
+            if (parsedDocFilter) {
+                if (keptRows === 0) {
+                    cbLogger.warn("No documents passed the Doc Filter for Skip Count = %d. (%d seconds)", resultSet.skipCount, duration);
+                } else if (keptRows === 1) {
+                    cbLogger.warn("%d document passed the Doc Filter for Skip Count = %d. (%d seconds)", keptRows, resultSet.skipCount, duration);
+                } else {
+                    cbLogger.warn("%d documents passed the Doc Filter for Skip Count = %d. (%d seconds)", keptRows, resultSet.skipCount, duration);
+                }
+            }
+        }
+
+        if (stopRecursion) {
+            formatResultSetMessage(resultSet, queryLimit, parsedDocFilter, queryTimeoutReached);
+            return callback(null, resultSet);
+        } else {
+            resultSet.skipCount = resultSet.nextSkipCount;
+            cbQuery.skip(resultSet.skipCount);
+            return recursivelyQueryBucket(cbBucket, cbQuery, queryLimit, parsedDocFilter, resultSet, callback);
+        }
+    }
 
     var configureRangeInfoSync = function(userStartValue, sortOrder) {
         var result = { startKey: null, endKey: null, inclusive: true };
