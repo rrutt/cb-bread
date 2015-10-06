@@ -24,6 +24,17 @@ else {
     logger.setLevel('INFO');
 }
 
+// Enable copy/paste on Mac OSX by activating Edit menu.
+// https://github.com/nwjs/nw.js/issues/1955
+var gui = require('nw.gui');
+if (process.platform === "darwin") {
+    var mb = new gui.Menu({type: 'menubar'});
+    mb.createMacBuiltin('RoboPaint', {
+        hideEdit: false,
+    });
+    gui.Window.get().menu = mb;
+}
+
 app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
     $urlRouterProvider.otherwise('/');
 
