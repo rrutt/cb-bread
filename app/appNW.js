@@ -69,7 +69,7 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $u
     });
 
     $stateProvider.state('query', {
-        url: '/query',
+        url: '/query/?did',
         templateUrl: './query/query.html',
         controller: 'QueryCtrl'
     });
