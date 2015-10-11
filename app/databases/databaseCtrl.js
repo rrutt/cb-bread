@@ -18,7 +18,6 @@
 
         $rootScope.breadcrumb.items = [
             {
-                href: $state.href('database', undefined, undefined),
                 text: 'Buckets'
             }
         ];

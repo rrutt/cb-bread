@@ -5,7 +5,7 @@
 
     app.controller('QueryCtrl', function ($rootScope, $scope, $state, $stateParams, $alert, $modal, credentials, api, serverConfig) {
         var refresh = function () {
-            api.request(controllerName, 'query', { host: credentials.host, n1qlQuery: $scope.n1qlQuery }, function (error, resultSet) {
+            api.request(controllerName, 'query', { host: credentials.host, bucketId: $scope.bucket.id, n1qlQuery: $scope.n1qlQuery }, function (error, resultSet) {
                 if (error) {
                     $rootScope.$broadcast('loading-complete');
                     $alert(JSON.stringify(error, null, 2));
@@ -46,11 +46,23 @@
                 refresh();
             }, function () {});
         };
+
+        console.log("queryCtrl $stateParams = " + JSON.stringify($stateParams));
+        $scope.bucket = {
+            id: $stateParams.did
+        };
         
         $rootScope.breadcrumb.items = [
             {
-                href: $state.href('query', undefined, undefined),
-                text: 'NiQL Query'
+                href: $state.href('database', undefined, undefined),
+                text: 'Buckets'
+            },
+            {
+                href: $state.href('collection', { did: $scope.bucket.id }),
+                text: $scope.bucket.id
+            },
+            {
+                text: '(N1QL Query)'
             }
         ];
 
@@ -59,7 +71,11 @@
                 $rootScope.$broadcast('loading-complete');
                 $alert(JSON.stringify(error, null, 2));
             } else {
-                $scope.n1qlQuery = '';
+                var configPageSize = config.argv.pagesize;
+                if (!configPageSize) {
+                    configPageSize = 10;
+                }
+                $scope.n1qlQuery = 'select *\nfrom `' + $scope.bucket.id +'`\nlimit ' + configPageSize + ' \noffset 0';
                 refresh();
             }
         });

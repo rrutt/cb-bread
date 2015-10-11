@@ -1,16 +1,22 @@
 <table class="table table-striped">
     <thead>
-    <tr>
-        <th>#</th>
-        <th>Design Document/View Name</th>
-    </tr>
+        <tr>
+            <th>#</th>
+            <th>Design Document/View Name</th>
+        </tr>
     </thead>
     <tbody>
-    <tr data-ng-repeat="view in views">
-        <td>{{$index + 1}}</td>
-        <td>
-            <a data-ui-sref="document({ did: bucket.id, cid: view.id })">{{view.id}}</a>
-        </td>
-    </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td>
+                <a data-ui-sref="query({ did: bucket.id })">(N1QL Query for {{bucket.id}})</a>
+            </td>
+        </tr>
+        <tr data-ng-repeat="view in views">
+            <td>{{$index + 1}}</td>
+            <td>
+                <a data-ui-sref="document({ did: bucket.id, cid: view.id })">{{view.id}}</a>
+            </td>
+        </tr>
     </tbody>
 </table>
