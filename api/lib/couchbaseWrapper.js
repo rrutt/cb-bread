@@ -461,6 +461,29 @@
         });
     };
     
+    exports.queryDocuments = function(host, n1qlQuery, callback) {
+        var cachedHostInfo = cbHostInfoCache[host];
+        if (!cachedHostInfo) {
+            var errMsg = util.format("couchbaseWrapper.queryDocuments could not locate host %s in cbHostInfoCache.", host);
+            cbLogger.error(errMsg)
+            throw new Error(errMsg);
+        }
+
+        var cluster = cachedHostInfo.cluster;
+        
+        // TODO: Run N1QL query here.
+        var resultSet = { resultRows: [] };
+        var queryResult = {
+            index: 1,
+            shortForm: 'short form: ' + n1qlQuery,
+            doc: { 'niqlQuery': n1qlQuery }
+        };
+        resultSet.resultRows = [ queryResult ];
+        resultSet.message = "Mock N1QL query results.";
+        
+        return callback(null, resultSet);
+    };
+    
     exports.createOrReplaceDocument = function(host, bucketName, docId, docBody, callback) {
         var cachedHostInfo = cbHostInfoCache[host];
         if (!cachedHostInfo) {

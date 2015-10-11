@@ -17,7 +17,8 @@
                     resultRows.forEach(function (row) {
                         var model = {
                             expanded: false,
-                            index: row.index
+                            index: row.index,
+                            shortForm: row.shortForm
                         };
                         model.body = row.doc;
                         model.bodyString = JSON.stringify(row.doc, null, 2);
