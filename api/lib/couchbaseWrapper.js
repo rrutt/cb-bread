@@ -461,7 +461,7 @@
         });
     };
     
-    exports.queryDocuments = function(host, bucketId, n1qlQuery, callback) {
+    exports.queryDocuments = function(host, bucketName, n1qlQuery, callback) {
         var cachedHostInfo = cbHostInfoCache[host];
         if (!cachedHostInfo) {
             var errMsg = util.format("couchbaseWrapper.queryDocuments could not locate host %s in cbHostInfoCache.", host);
@@ -469,7 +469,18 @@
             throw new Error(errMsg);
         }
 
-        var cluster = cachedHostInfo.cluster;
+        var cluster = cachedHostInfo.cluster;        
+        var bucketPasswords = cachedHostInfo.bucketPasswords;
+        var bucketPassword = bucketPasswords[bucketName];
+        
+        // http://developer.couchbase.com/documentation/server/4.0/sdks/node-2.0/n1ql-queries.html
+        var cbBucket = cluster.openBucket(bucketName, bucketPassword, function(err) {
+            if (err) {
+                cbLogger.error("couchbaseWrapper.listViews cbCluster.openBucket for bucket '%s' threw error: ", bucketName, util.inspect(err));
+                throw err;
+            }
+        });        
+        cbBucket.enableN1ql([host]);
         
         var resultSet = { resultRows: [] };
         var queryResult = {
@@ -478,9 +489,6 @@
             doc: { 'niqlQuery': n1qlQuery }
         };
         
-        // http://developer.couchbase.com/documentation/server/4.0/sdks/node-2.0/n1ql-queries.html
-        var cbBucket = cluster.openBucket(bucketId);
-        cbBucket.enableN1ql([host]);        
         var N1qlQuery = cb.N1qlQuery;
         var query = N1qlQuery.fromString(n1qlQuery);
         cbBucket.query(query, function(err, res) {
