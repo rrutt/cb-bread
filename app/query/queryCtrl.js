@@ -47,7 +47,6 @@
             }, function () {});
         };
 
-        console.log("queryCtrl $stateParams = " + JSON.stringify($stateParams));
         $scope.bucket = {
             id: $stateParams.did
         };

@@ -461,7 +461,7 @@
         });
     };
     
-    exports.queryDocuments = function(host, n1qlQuery, callback) {
+    exports.queryDocuments = function(host, bucketId, n1qlQuery, callback) {
         var cachedHostInfo = cbHostInfoCache[host];
         if (!cachedHostInfo) {
             var errMsg = util.format("couchbaseWrapper.queryDocuments could not locate host %s in cbHostInfoCache.", host);
@@ -479,21 +479,38 @@
         };
         
         // http://developer.couchbase.com/documentation/server/4.0/sdks/node-2.0/n1ql-queries.html
+        var cbBucket = cluster.openBucket(bucketId);
+        cbBucket.enableN1ql([host]);        
         var N1qlQuery = cb.N1qlQuery;
-        var cbBucket = cluster.openBucket('beer-sample');
-//        var cbBucket = cluster.openBucket();
-        cbBucket.enableN1ql([host]);
         var query = N1qlQuery.fromString(n1qlQuery);
         cbBucket.query(query, function(err, res) {
             if (err) {
                 resultSet.message = "N1QL query error.";
                 queryResult.doc = err;
+                resultSet.resultRows = [ queryResult ];
             } else {        
                 resultSet.message = "N1QL query results.";
-                queryResult.doc = res;
+                if (Array.isArray(res)) {
+                    var arrayLength = res.length;
+                    for (var i = 0; i < arrayLength; i++) {
+                        var resRow = res[i];
+                        var resString = JSON.stringify(resRow);
+                        if (resString && (resString.length > 500)) {
+                            resString = resString.substring(0, 500) + '...';
+                        }
+                        queryResult = {
+                            index: i + 1,
+                            shortForm: resString,
+                            doc: resRow
+                        };
+                        resultSet.resultRows.push(queryResult);
+                    }
+                } else {
+                  queryResult.doc = res;
+                  resultSet.resultRows = [ queryResult ];
+                }
             }
             queryResult.shortForm = JSON.stringify(queryResult.doc).substring(0, 120);
-            resultSet.resultRows = [ queryResult ];
             return callback(null, resultSet);
         });                
     };

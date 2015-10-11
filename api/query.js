@@ -5,9 +5,10 @@
 
     var _query = function (client, params, callback) {
         var host = params.host;
+        var bucketId = params.bucketId;
         var n1qlQuery = params.n1qlQuery;
 
-        client.queryDocuments(host, n1qlQuery, function (error, resultSet) {
+        client.queryDocuments(host, bucketId, n1qlQuery, function (error, resultSet) {
             if (error) {
                 return callback(error, null);
             }
