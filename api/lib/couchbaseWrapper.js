@@ -460,6 +460,17 @@
             });
         });
     };
+
+    var formatN1qlResultSetMessage = function(resultSet) {
+        var endTime = moment();
+        var duration = endTime.diff(resultSet.startTime, 'seconds', true); // Include fraction.
+        var docCount = resultSet.resultRows.length;
+        if (docCount === 1) {
+            resultSet.message = util.format("Found %d result in %d seconds. ", docCount, duration);
+        } else {
+            resultSet.message = util.format("Found %d results in %d seconds. ", docCount, duration);
+        }
+    };
     
     exports.queryDocuments = function(host, bucketName, n1qlQuery, callback) {
         var cachedHostInfo = cbHostInfoCache[host];
@@ -483,6 +494,7 @@
         cbBucket.enableN1ql([host]);
         
         var resultSet = { resultRows: [] };
+        resultSet.startTime = moment();
         var queryResult = {
             index: 1,
             shortForm: '',
@@ -494,10 +506,10 @@
         cbBucket.query(query, function(err, res) {
             if (err) {
                 resultSet.message = "N1QL query error.";
+                queryResult.shortForm = JSON.stringify(err);
                 queryResult.doc = err;
                 resultSet.resultRows = [ queryResult ];
             } else {        
-                resultSet.message = "N1QL query results.";
                 if (Array.isArray(res)) {
                     var arrayLength = res.length;
                     for (var i = 0; i < arrayLength; i++) {
@@ -514,11 +526,11 @@
                         resultSet.resultRows.push(queryResult);
                     }
                 } else {
-                  queryResult.doc = res;
-                  resultSet.resultRows = [ queryResult ];
+                    queryResult.doc = res;
+                    resultSet.resultRows = [ queryResult ];
                 }
+                formatN1qlResultSetMessage(resultSet);
             }
-            queryResult.shortForm = JSON.stringify(queryResult.doc).substring(0, 120);
             return callback(null, resultSet);
         });                
     };
