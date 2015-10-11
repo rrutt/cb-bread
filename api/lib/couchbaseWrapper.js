@@ -471,17 +471,31 @@
 
         var cluster = cachedHostInfo.cluster;
         
-        // TODO: Run N1QL query here.
         var resultSet = { resultRows: [] };
         var queryResult = {
             index: 1,
-            shortForm: 'short form: ' + n1qlQuery,
+            shortForm: '',
             doc: { 'niqlQuery': n1qlQuery }
         };
-        resultSet.resultRows = [ queryResult ];
-        resultSet.message = "Mock N1QL query results.";
         
-        return callback(null, resultSet);
+        // http://developer.couchbase.com/documentation/server/4.0/sdks/node-2.0/n1ql-queries.html
+        var N1qlQuery = cb.N1qlQuery;
+        var cbBucket = cluster.openBucket('beer-sample');
+//        var cbBucket = cluster.openBucket();
+        cbBucket.enableN1ql([host]);
+        var query = N1qlQuery.fromString(n1qlQuery);
+        cbBucket.query(query, function(err, res) {
+            if (err) {
+                resultSet.message = "N1QL query error.";
+                queryResult.doc = err;
+            } else {        
+                resultSet.message = "N1QL query results.";
+                queryResult.doc = res;
+            }
+            queryResult.shortForm = JSON.stringify(queryResult.doc).substring(0, 120);
+            resultSet.resultRows = [ queryResult ];
+            return callback(null, resultSet);
+        });                
     };
     
     exports.createOrReplaceDocument = function(host, bucketName, docId, docBody, callback) {
