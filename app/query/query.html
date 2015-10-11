@@ -1,0 +1,50 @@
+<form class="navbar-form navbar-right" role="form">
+    <div style="height: 2px">&nbsp;</div>
+    <div class="form-group">
+        <label for="n1qlQuery" title="Enter a N1QL query.">&nbsp;&nbsp;N1QL Query:&nbsp;</label>
+    </div>
+    <div class="form-group">
+        <textarea id="n1qlQuery" ng-model="multitext" data-ng-model="n1qlQuery" rows="10" cols="150" wrap="on"></textarea>
+    </div>
+    <div style="height: 2px">&nbsp;</div>
+    <div class="form-group">
+        <button type="submit" class="btn" data-ng-click="queryServer()">Query</button>
+    </div>
+</form>
+<div style="height: 0px">&nbsp;</div>
+<table class="table table-striped">
+    <thead>
+        <tr data-ng-show="resultSetMessage">
+            <th colspan="3">{{resultSetMessage}}</td>
+        </tr>
+        <tr>
+            <th>#</th>
+            <th>Query Result</th>
+            <th>
+                &nbsp;
+            </th>
+        </tr>
+    </thead>
+    <tbody data-ng-repeat="queryResult in queryResults">
+        <tr>
+            <td>
+                {{queryResult.index}}
+                <a href="javascript:void(0)" data-ng-show="queryResult.expanded === true" data-ng-click="queryResult.expanded = false">
+                    <span class="glyphicon glyphicon-chevron-up"></span>
+                </a>
+                <a href="javascript:void(0)" data-ng-show="queryResult.expanded === false" data-ng-click="queryResult.expanded = true">
+                    <span class="glyphicon glyphicon-chevron-down"></span>
+                </a>
+            </td>
+            <td>{{queryResult.shortForm}}</td>
+            <td style="width: 4em">
+                <button type="button" class="btn btn-primary btn-xs btn-block" data-ng-click="outline(queryResult)">Outline</button>
+            </td>
+        </tr>
+        <tr data-ng-show="queryResult.expanded === true">
+            <td colspan="3">
+                <pre>{{document.bodyString}}</pre>
+            </td>
+        </tr>
+    </tbody>
+</table>

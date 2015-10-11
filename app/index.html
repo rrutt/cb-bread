@@ -38,6 +38,9 @@
                             <a data-ui-sref="database">Buckets</a>
                         </li>
                         <li data-ng-if="isConnected">
+                            <a data-ui-sref="query">N1QL Query</a>
+                        </li>
+                        <li data-ng-if="isConnected">
                             <a ng-href="#" target="_blank">New Window</a>
                         </li>
                     </ul>
@@ -98,5 +101,6 @@
         <script type="text/javascript" src="databases/databaseCtrl.js"></script>
         <script type="text/javascript" src="collections/collectionCtrl.js"></script>
         <script type="text/javascript" src="documents/documentCtrl.js"></script>
+        <script type="text/javascript" src="query/queryCtrl.js"></script>
     </body>
 </html>

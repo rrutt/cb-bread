@@ -67,6 +67,12 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $u
         templateUrl: './documents/document.html',
         controller: 'DocumentCtrl'
     });
+
+    $stateProvider.state('query', {
+        url: '/query',
+        templateUrl: './query/query.html',
+        controller: 'QueryCtrl'
+    });
 }]);
 
 app.config(function ($httpProvider) {
