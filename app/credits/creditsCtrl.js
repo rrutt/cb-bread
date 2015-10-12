@@ -25,9 +25,9 @@
         });
 
         $scope.credits.push({
-            title: 'Couchbase Node.js SDK 2.0',
-            link: 'http://docs.couchbase.com/developer/node-2.0/introduction.html',
-            description: 'Couchbase Server is a NoSQL document database for interactive web applications. It has a flexible data model, is easily scalable, provides consistent high performance and is always on, meaning it is can serve application data 24 hours, 7 days a week.',
+            title: 'Couchbase Node.js SDK 2.1',
+            link: 'https://github.com/couchbase/couchnode',
+            description: 'Couchbase Server is a distributed NoSQL database engineered for performance, scalability, and availability. It enables developers to build applications easier and faster by leveraging the power of SQL with the flexibility of JSON.',
             license: 'https://github.com/couchbase/couchnode/blob/master/LICENSE'
         });
 

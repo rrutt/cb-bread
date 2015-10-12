@@ -507,7 +507,13 @@ Note the _back-ticks_ around the bucket name.
 These are required for any identifier that includes a hyphen to distinguish it from the subtraction operator.
 
 The default query will have already been submitted.
-If you have not yet defined any Global Secondary Indexes on the selected bucket, the page will show a **N1QL query error.** with a query result similar to this:
+
+If you are connected to a Couchbase 3 server, which does not include integrated N1QL support, you will receive a **N1QL query error.** with this query result:
+
+    {"message":"Operation not supported","code":19}
+
+If you are connected to a Couchbase 4 server,
+but have not yet defined any Global Secondary Indexes on the selected bucket, the page will show a **N1QL query error.** with a query result similar to this:
 
     {"code":4000,"otherErrors":[],"requestID":"1a3a31ba-08da-4d67-bec4-e01805325a06"}
 
