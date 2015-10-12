@@ -20,6 +20,9 @@ The application supports filtering documents using a _Key Prefix_ for any Couchb
 
 The application also supports additional document filtering using a Javascript expression.
 
+When used to query against Couchbase version 4, you can also perform N1QL (pronounced "nickel") queries against any bucket that has at least a primary key Global Secondary Index (GSI) defined.
+Note, however, that results from a N1QL query are treated as _read-only_ and do _not_ support editing.
+
 I wrote a blog article about my experience creating this application: [If You Build It, They Will Fork It](https://rickrutt.wordpress.com/2015/02/15/if-you-build-it-they-will-fork-it/).
 
 ### Pre-requisites:
@@ -481,7 +484,87 @@ If any documents on the current page satisfy the filter expression, they appear 
 The server continues to scan successive pages until the requested **Page Size** number of documents are found.
 If you click the **Next** button at that point, the server resumes scanning after the last already-scanned document, using its index # as the new **Skip Count**.
 
-Once the end of the view is reached, the message "**No more documents match the Key Prefix and Doc Filter criteria.**" appears above the document list. 
+Once the end of the view is reached, the message "**No more documents match the Key Prefix and Doc Filter criteria.**" appears above the document list.
+
+## Performing N1QL Queries using cb-bread
+
+Launch **cb-bread** and Connect to a Couchbase 4 server.
+
+Click the **Buckets** link in the top tool-bar or in the _breadcrumb_ line.
+
+Click the **beer-sample** bucket name.
+
+Click the **(N1QL Query)** link that appears at the top of the **Design Document/View Name** list.
+
+The N1QL Query page appears, with the following default query:
+
+    select *
+    from `beer-sample`
+    limit 10 
+    offset 0
+
+Note the _back-ticks_ around the bucket name.
+These are required for any identifier that includes a hyphen to distinguish it from the subtraction operator.
+
+The default query will have already been submitted.
+If you have not yet defined any Global Secondary Indexes on the selected bucket, the page will show a **N1QL query error.** with a query result similar to this:
+
+    {"code":4000,"otherErrors":[],"requestID":"1a3a31ba-08da-4d67-bec4-e01805325a06"}
+
+You need to define at least a _primary key_ index for each bucket you wish to query using N1QL.
+
+You can submit the N1QL command to create that index in the **N1QL Query:** multi-line field:
+
+    create primary index on `beer-sample`
+
+That should succeed with a message like the following:
+
+    Found 0 results in 0.043 seconds.
+
+Now you should be able to perform the default query, and receive a results message similar to this:
+
+    Found 10 results in 0.113 seconds.
+
+Up to the first 500 characters of each JSON query result are listed on the page.
+
+If a result contains more than 500 characters, then "*...*" appears after the first 500 characters.
+
+The full result, as multi-line formatted JSON text, can be viewed by clicking the **v** symbol next to a result line.
+
+Click the **^** symbol to collapse the expanded JSON text.
+
+Click the **Outline** button on a result line to view the JSON result using the outline viewer.
+
+In the JSON outline viewer, click the **Tree▼** control to change to a JSON text viewer.
+The text viewer mode supports convenient copy of the JSON text using _Control-A Control-C_.
+Click **Text▼** to change back to the outline tree viewer.
+
+### The N1QL Query Language
+
+The N1QL query language is summarized at [Couchbase Server/
+Version 4.0/
+Getting started/
+Running your first N1QL query
+](http://developer.couchbase.com/documentation/server/4.0/getting-started/first-n1ql-query.html).
+
+As described on that page:
+
+"N1QL (pronounced 'nickel') is the Couchbase Server query language.
+N1QL embraces the JSON document model and uses SQL-like syntax.
+In N1QL, you operate on JSON documents, and the result of your operation is another JSON document."
+
+Download a two-page PDF _cheat sheet_ from the Couchbase web site at [Querying With N1QL](http://docs.couchbase.com/files/Couchbase-N1QL-CheatSheet.pdf).
+
+The full N1QL query language reference is available at [N1QL Language Reference](http://developer.couchbase.com/documentation/server/4.0/n1ql/n1ql-language-reference/index.html).
+
+### Sample N1QL Queries
+
+The Couchbase web site contains some example N1QL queries against the **beer-sample** demonstration bucket:
+[Couchbase Server/
+Version 4.0/
+Getting started/
+Running your first N1QL query
+](http://developer.couchbase.com/documentation/server/4.0/getting-started/first-n1ql-query.html)
 
 ## Installing a local Couchbase Server for development and testing
 
@@ -498,8 +581,9 @@ The other operating systems require 64-bit.
 
 Download the appropriate installer for your workstation operating system from [http://www.couchbase.com/nosql-databases/downloads](http://www.couchbase.com/nosql-databases/downloads)
 
-Note that the latest version is legally restricted to Enterprise license customers.
-The free Community Edition is available for the prior point release by following the **"< VERSION 3.0.1"** link.
+Note that the Enterprise Edition is legally restricted to Enterprise license customers.
+Be sure to select the free Community Edition.
+(Typically this is one point release behind the Enterprise Edition.)
 
 ### Install the Couchbase Server:
 
