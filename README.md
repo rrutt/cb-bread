@@ -25,6 +25,29 @@ Note, however, that results from a N1QL query are treated as _read-only_ and do 
 
 I wrote a blog article about my experience creating this application: [If You Build It, They Will Fork It](https://rickrutt.wordpress.com/2015/02/15/if-you-build-it-they-will-fork-it/).
 
+### Screen Shots
+
+Bucket List:
+
+![Bucket List](./images/cb-bread-buckets.png "Bucket List")
+
+View List:
+
+![View List](./images/cb-bread-views.png "View List")
+
+Document List:
+
+![Document List](./images/cb-bread-documents.png "Document List")
+
+Expanded JSON Document:
+
+![Expanded JSON Document](./images/cb-bread-document-expanded.png "Expanded JSON Document")
+
+JSON Document Editor:
+
+![JSON Document Editor](./images/cb-bread-json-editor.png "JSON Document Editor")
+
+
 ### Pre-requisites:
 
 You need **Node.js**: [Node.js downloads](http://nodejs.org/download/).
