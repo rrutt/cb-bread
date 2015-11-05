@@ -47,6 +47,9 @@ JSON Document Editor:
 
 ![JSON Document Editor](./images/cb-bread-json-editor.png "JSON Document Editor")
 
+JSON Document Editor (Text Mode):
+
+![JSON Document Editor (Text Mode)](./images/cb-bread-json-editor-text-mode.png "JSON Document Editor (Text Mode)")
 
 ### Pre-requisites:
 
