@@ -62,6 +62,25 @@
         }
     };
 
+    var _purge = function (client, params, callback) {
+        var host = params.host;
+        var bucketName = params.bucketId;
+        var docIds = params.docIds;
+        if (docIds && docIds.length > 0) {
+            client.purgeDocuments(host, bucketName, docIds, function (error, result) {
+                if (error) {
+                    return callback(error, null);
+                }
+                else {
+                    return callback(null, result);
+                }
+            });
+        }
+        else {
+            return callback('Document list was null or empty.', null);
+        }
+    };
+
     module.exports = function (logger) {
         _logger = logger;
 
@@ -69,6 +88,7 @@
             list: _list,
             createOrReplace: _createOrReplace,
             delete: _delete,
+            purge: _purge,
             validate: function (params, callback) {
                 var validBucketParams =
                     (params.host && params.host.length > 0) &&
@@ -77,7 +97,7 @@
                 var validDocParams =
                     (params.host && params.host.length > 0) &&
                     (params.bucketId && params.bucketId.length > 0) &&
-                    (params.docId && params.docId.length > 0);
+                    ((params.docId && params.docId.length > 0) || (params.docIds && params.docIds.length > 0));
                     
                 if (validBucketParams || validDocParams) {
                     return callback(null);

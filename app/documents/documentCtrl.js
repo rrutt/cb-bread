@@ -117,6 +117,25 @@
             }, function () {});
         };
 
+        $scope.purge = function (docs) {
+            var modalInstance = $modal.open({
+                templateUrl: 'documents/document-purge.html',
+                controller: 'DocumentPurgeCtrl',
+                resolve: {
+                    view: function () {
+                        return $scope.view;
+                    },
+                    docIds: function () {
+                        var docIds = docs.map( function(doc) { return doc.id } );
+                        return docIds;
+                    }
+                }
+            });
+            modalInstance.result.then(function () {
+                refresh();
+            }, function () {});
+        };
+
         $scope.view = {
             bucketId: $stateParams.did,
             viewId: $stateParams.cid
@@ -209,6 +228,27 @@
                 $rootScope.$broadcast('loading-complete');
                 $alert('The confirmation Document ID you typed was incorrect.');
             }
+        };
+
+        $scope.cancel = function () {
+            $modalInstance.dismiss('cancel');
+        };
+    });
+
+    app.controller('DocumentPurgeCtrl', function ($scope, $alert, $modalInstance, credentials, api, view, docIds) {
+        $scope.view = view;
+        $scope.docIds = docIds;
+
+        $scope.ok = function () {
+            api.request(controllerName, 'purge', { host: credentials.host, bucketId: $scope.view.bucketId, docIds: docIds }, function (error) {
+                if (error) {
+                    $rootScope.$broadcast('loading-complete');
+                    $alert(JSON.stringify(error, null, 2));
+                }
+                else {
+                    $modalInstance.close();
+                }
+            });
         };
 
         $scope.cancel = function () {

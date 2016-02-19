@@ -592,4 +592,39 @@
             return callback(null, result);
         });
     };
+    
+    exports.purgeDocuments = function(host, bucketName, docIds, callback) {
+        var cachedHostInfo = cbHostInfoCache[host];
+        if (!cachedHostInfo) {
+            var errMsg = util.format("couchbaseWrapper.purgeDocuments could not locate host %s in cbHostInfoCache.", host);
+            cbLogger.error(errMsg)
+            throw new Error(errMsg);
+        }
+
+        var cluster = cachedHostInfo.cluster;
+        var bucketPasswords = cachedHostInfo.bucketPasswords;
+        var bucketPassword = bucketPasswords[bucketName];
+        
+        var cbBucket = cluster.openBucket(bucketName, bucketPassword, function(err) {
+            if (err) {
+                cbLogger.error("couchbaseWrapper.purgeDocuments cbCluster.openBucket for bucket '%s' threw error: ", bucketName, util.inspect(err));
+                throw err;
+            }
+        });
+        
+        cbLogger.warn(util.format("couchbaseWrapper.purgeDocuments would delete these Document Id's: %s", util.inspect(docIds)));
+        return callback(null, docIds.length);
+        
+        /*
+        cbBucket.remove(docId, function(err, result) {
+            if (err) {
+                cbLogger.error("couchbaseWrapper.deleteDocument cbBucket.remove for bucket '%s' and docId '%s' threw error: ", bucketName, docId, util.inspect(err));
+                throw err;
+            }
+            
+            cbLogger.debug("couchbaseWrapper.deleteDocument cbBucket.remove for bucket '%s' and docId '%s' result: ", bucketName, docId, util.inspect(result));
+            return callback(null, result);
+        });
+        */
+    };
 })();

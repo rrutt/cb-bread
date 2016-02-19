@@ -1,0 +1,28 @@
+<div class="modal-header">
+    <h3 class="modal-title">Purge {{docIds.length}} documents from bucket '{{view.bucketId}}'?</h3>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-danger" data-ng-click="ok()">Purge</button>
+    <button type="button" class="btn btn-default" data-ng-click="cancel()">Cancel</button>
+</div><div class="modal-body">
+    <div class="panel panel-danger">
+        <div class="panel-body">
+            <p>
+                This action <b><em>CANNOT</em></b> be undone.<br />
+                This will permanently delete these <b>{{docIds.length}}</b> documents.
+            </p>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Document Id</th>
+                    </tr>
+                </thead>
+                <tbody data-ng-repeat="docId in docIds">
+                    <tr>
+                        <td>{{docId}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
