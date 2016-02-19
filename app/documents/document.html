@@ -20,7 +20,10 @@
 <table class="table table-striped">
     <thead>
         <tr data-ng-show="resultSetMessage">
-            <th colspan="7">{{resultSetMessage}}</td>
+            <th colspan="6">{{resultSetMessage}}</td>
+            <th>
+                <button type="button" class="btn btn-danger btn-xs btn-block" data-ng-click="purge(documents)">Purge</button>
+            </th>
         </tr>
         <tr>
             <th>#</th>
