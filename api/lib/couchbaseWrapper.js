@@ -4,6 +4,7 @@
     var exprjs = require('exprjs');
     var exprjsParser = new exprjs();
 
+    var async = require('async');
     var moment = require('moment');
     var util = require('util');
 
@@ -612,19 +613,19 @@
             }
         });
         
-        cbLogger.warn(util.format("couchbaseWrapper.purgeDocuments would delete these Document Id's: %s", util.inspect(docIds)));
-        return callback(null, docIds.length);
-        
-        /*
-        cbBucket.remove(docId, function(err, result) {
-            if (err) {
-                cbLogger.error("couchbaseWrapper.deleteDocument cbBucket.remove for bucket '%s' and docId '%s' threw error: ", bucketName, docId, util.inspect(err));
-                throw err;
-            }
-            
-            cbLogger.debug("couchbaseWrapper.deleteDocument cbBucket.remove for bucket '%s' and docId '%s' result: ", bucketName, docId, util.inspect(result));
-            return callback(null, result);
+        async.eachSeries(docIds, function(docId, asyncCallback) {
+            cbBucket.remove(docId, function(err, result) {
+                if (err) {
+                    cbLogger.warn("Could not purge Document Id '%s': %s", docId, err.message);
+                    return asyncCallback(null);
+                } else {
+                    cbLogger.info("Purged Document Id '%s': %s", docId, util.format(result));
+                    return asyncCallback(null, result);
+                }
+            })
+        }, function(finalErr, finalResult) {
+            cbLogger.warn("Finished purging %d documents.", docIds.length);
+            return callback(finalErr, finalResult);
         });
-        */
     };
 })();

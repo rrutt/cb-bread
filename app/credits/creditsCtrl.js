@@ -95,10 +95,10 @@
         });
         
         $scope.credits.push({
-            title: 'jQuery',
-            link: 'http://jquery.com/',
-            description: 'jQuery is a fast, small, and feature-rich JavaScript library.',
-            license: 'https://jquery.org/license/'
+            title: 'caolan/async ',
+            link: 'https://github.com/caolan/async',
+            description: 'Async utilities for node and the browser.',
+            license: 'https://github.com/caolan/async/blob/master/LICENSE'
         });
 
         $scope.credits.push({
