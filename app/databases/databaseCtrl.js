@@ -8,7 +8,8 @@
             api.request(controllerName, 'list', { host: credentials.host }, function (error, buckets) {
                 if (error) {
                     $rootScope.$broadcast('loading-complete');
-                    $alert(JSON.stringify(error, null, 2));
+                    //$alert(JSON.stringify(error, null, 2));
+                    $alert("Could not list buckets.\nAre your credentials correct?");
                 }
                 else {
                     $scope.buckets = buckets;

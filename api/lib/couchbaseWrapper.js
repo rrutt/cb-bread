@@ -10,7 +10,6 @@
     // http://docs.couchbase.com/developer/node-2.0/introduction.html
     // http://docs.couchbase.com/developer/node-2.0/hello-couchbase.html
     var cb = require('couchbase');
-    var cbCustomClusterManager = require('./couchbaseCustomClusterManager');
 
     var cbLogger = null;
     var cbHostInfoCache = {};
@@ -42,8 +41,7 @@
                 cbLogger.info("couchbaseWrapper.initialize %s as user %s", host, user);
 
                 var cluster = new cb.Cluster(host);
-//                var clusterManager = cluster.manager(user, password);
-                var clusterManager = new cbCustomClusterManager(cluster, user, password)
+                var clusterManager = cluster.manager(user, password);
                 var hostInfo = {
                     cluster: cluster,
                     clusterManager: clusterManager,
@@ -73,7 +71,7 @@
 
         clusterManager.listBuckets(function(err, bucketInfoList) {
             if (err) {
-                cbLogger.error("couchbaseWrapper.listBuckets error: %s", util.inspect(err));
+                cbLogger.error("couchbaseWrapper.listBuckets error: %s", util.inspect(err));                
                 return callback(err);
             } else {
                 cbLogger.debug("clusterManager.listBuckets returned %s", util.inspect(bucketInfoList));
