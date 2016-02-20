@@ -20,8 +20,16 @@
 <table class="table table-striped">
     <thead>
         <tr data-ng-show="resultSetMessage">
-            <th colspan="6">{{resultSetMessage}}</td>
-            <th>
+            <th colspan="5">{{resultSetMessage}}</td>
+            <th colspan="2" data-ng-show="(documents.length === 0)">
+            </th>
+            <th colspan="2" data-ng-show="(documents.length > 0) && (!purgeEnabled)">
+                <button type="button" class="btn btn-warning btn-xs btn-block" data-ng-click="purgeEnable()">Enable Purge</button>
+            </th>
+            <th data-ng-show="(documents.length > 0) && purgeEnabled">
+                <button type="button" class="btn btn-warning btn-xs btn-block" data-ng-show="purgeEnabled" data-ng-click="purgeDisable()">Disable</button>
+            </th>
+            <th data-ng-show="(documents.length > 0) && purgeEnabled">
                 <button type="button" class="btn btn-danger btn-xs btn-block" data-ng-click="purge(documents)">Purge</button>
             </th>
         </tr>

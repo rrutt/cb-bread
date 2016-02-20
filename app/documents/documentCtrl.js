@@ -136,6 +136,14 @@
             }, function () {});
         };
 
+        $scope.purgeDisable = function () {
+                $scope.purgeEnabled = false;
+        };
+
+        $scope.purgeEnable = function () {
+                $scope.purgeEnabled = true;
+        };
+
         $scope.view = {
             bucketId: $stateParams.did,
             viewId: $stateParams.cid
@@ -167,6 +175,7 @@
                 $scope.prevSkipCount = $scope.skipCount;
                 $scope.pageSize = configPageSize;
                 $scope.queryTimeoutSeconds = config.argv.timeout;
+                $scope.purgeEnabled = false;
                 refresh();
             }
         });
