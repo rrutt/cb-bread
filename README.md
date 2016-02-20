@@ -18,12 +18,16 @@ This application can connect to any Couchbase server visible to your workstation
 
 The application supports filtering documents using a _Key Prefix_ for any Couchbase view defined on a bucket. (For Map/Reduce views, the _reduce_ operation is omitted from the query.)
 
-The application also supports additional document filtering using a Javascript expression.
-
-When used to query against Couchbase version 4, you can also perform N1QL (pronounced "nickel") queries against any bucket that has at least a primary key Global Secondary Index (GSI) defined.
-Note, however, that results from a N1QL query are treated as _read-only_ and do _not_ support editing.
+The application also supports additional document filtering using a JavaScript expression.
 
 I wrote a blog article about my experience creating this application: [If You Build It, They Will Fork It](https://rickrutt.wordpress.com/2015/02/15/if-you-build-it-they-will-fork-it/).
+
+**_Added in Release 1.1.0_**: When used to query against Couchbase version 4, you can also perform N1QL (pronounced "nickel") queries against any bucket that has at least a primary key Global Secondary Index (GSI) defined.
+Note that results from a N1QL query are treated as _read-only_ and do _not_ support editing or purging from within **cb-bread**.
+However, as of Couchbase 4.1, the N1QL language supports Select, Insert, Update, and Delete statements:
+[What's new in Couchbase Server 4.1](http://developer.couchbase.com/documentation/server/4.1/introduction/whats-new.html)
+
+**_Added in Release 1.2.0_**: The application allows purging the documents displayed on the current results page from a view query, as filtered by the optional **Doc Filter** JavaScript expression.
 
 ### Screen Shots
 
@@ -50,6 +54,14 @@ JSON Document Editor:
 JSON Document Editor (Text Mode):
 
 ![JSON Document Editor (Text Mode)](./images/cb-bread-json-editor-text-mode.png "JSON Document Editor (Text Mode)")
+
+Filtered Document List with Purge Enabled:
+
+![Purge Enabled](./images/cb-bread-purge-enabled.png "Purge Enabled")
+
+Purge Confirmation:
+
+![Purge Confirmation](./images/cb-bread-purge-confirmation.png "Purge Confirmation")
 
 ### Pre-requisites:
 
@@ -210,9 +222,9 @@ or:
 
 ### Viewing Log Messages in Standalone Mode
 
-Log messages will _not_ appear in the terminal window.
+Log messages will _not_ appear in the terminal window (except perhaps in Mac OSX).
 
-Instead, they will appear in the webkit Developer Tools Javascript console.
+Instead, they will appear in the webkit Developer Tools JavaScript console.
 This can be opened by clicking on the **≡** icon in the upper-right corner of the **cb-bread** window.
 (On Mac OSX, the **≡** icon is replaced by a _gear_ icon.)
 
@@ -396,7 +408,7 @@ Querying this view with **Key Prefix** set to **=3.22** returns just the one bee
 
 For these examples navigate to the **Home  / Buckets / beer-sample / beer/brewery_beers** document list page.
 
-The **Doc Filter** accepts Javascript expressions and filters the document listing results based on the _truthyness_ of the expression value.
+The **Doc Filter** accepts JavaScript expressions and filters the document listing results based on the _truthyness_ of the expression value.
 If the expression returns null, undefined, 0, or false for a given document, that document is _excluded_ from the query results.
 
 A document is also excluded if the expression throws a _null-reference exception_.
@@ -416,7 +428,7 @@ The **Doc Filter** expression has access to these object variables:
 The expression also has implicit access to several functions from the NodeJS **util** module, such as **inspect** and **format**.
 
 **_Special Note -- Negative numbers:_**
-The Javascript expression parser does _not_ properly handle unary minus for constants, such as **-123**.
+The JavaScript expression parser does _not_ properly handle unary minus for constants, such as **-123**.
 Instead, use _subtract from zero_ format for these values: **(0-123)**.
 
 ## Doc Filter expression applied to the View Key:
@@ -439,7 +451,7 @@ To find all the breweries in Michigan, use this expression:
 
 ### Filtering based on values inside array properties:
 
-The Array.filter or Array.map functions are _not allowed_ since the Javascript expression parser does not allow braces, so inline callback functions cannot be specified.
+The Array.filter or Array.map functions are _not allowed_ since the JavaScript expression parser does not allow braces, so inline callback functions cannot be specified.
 
 Instead, use the implicit **inspect** function from the NodeJS 'util' module to convert the entire array to a string and use string functions to check for specific values in the array elements.
 
@@ -511,6 +523,26 @@ The server continues to scan successive pages until the requested **Page Size** 
 If you click the **Next** button at that point, the server resumes scanning after the last already-scanned document, using its index # as the new **Skip Count**.
 
 Once the end of the view is reached, the message "**No more documents match the Key Prefix and Doc Filter criteria.**" appears above the document list.
+
+## Purging documents:
+
+If at least one document appears in the current page of query results, an **Enable Purge** button appears at the right of the results header:
+
+![Enable Purge button](./images/cb-bread-enable-purge-button.png "Enable Purge button")
+
+Click that button to display a **Purge** button:
+
+![Purge button](./images/cb-bread-purge-button.png "Purge button")
+
+Click the **Purge** button to open a confirmation dialog to complete the purge of the subset of documents that appear in the current query results page:
+
+![Purge confirmation dialog](./images/cb-bread-purge-confirmation-zoomed.png "Purge confirmation dialog")
+
+After clicking the **Purge** confirmation button, control returns to the query results page and the **Requery** action automatically occurs.
+You can proceed to purge addition results from the query by clicking the **Purge** button again.
+
+Click the **Disable** button that appears in front of the **Purge** button to turn off the purge feature.
+The **Enable Purge** button re-appears.
 
 ## Performing N1QL Queries using cb-bread
 
