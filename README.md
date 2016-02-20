@@ -130,7 +130,7 @@ You can also view the resulting usage text as [help.txt](https://github.com/rrut
 
 ## Installing and Running cb-bread as a Standalone Application
 
-The cb-bread application incorporates [NW.js](http://nwjs.io/) technology to allow running cb-bread as a standalone desktop application.
+The **cb-bread** application incorporates [NW.js](http://nwjs.io/) technology to allow running cb-bread as a standalone desktop application.
 The **NW.js** module (previously known as **node-webkit**) includes an embedded **webkit** browser based on Chromium (Google Chrome).
 
 Third-party **npm** modules that include compiled binary components must be recompiled for compatibility with the _binding_ interface used by **NW.js**.
@@ -169,6 +169,14 @@ _Note:_ After running either of these scripts, the **cb-bread** application stil
 You can run this file in a command prompt terminal or double-click on this file in File Explorer.
 (You may need to run this command in the **Windows SDK 7.1 Command Prompt** terminal window.)
 
+Once you use the **install.bat** script to install as a Standalone Application, **cb-bread** may no longer run as an HTTP server using **node server**.
+
+You can revert to HTTP server operation using these commands:
+
+    delete-node-modules.bat
+    npm install
+    node server
+
 #### _On Linux or Mac OSX:_
 
     bash ./install.sh
@@ -182,9 +190,7 @@ You may need to prefix this command with **sudo**:
 If any or all of these setups fail, you should still be able to run  **cb-bread** as an HTTP server via the **node server** command described above, using pre-compiled binaries.
 In that case simply run **npm install** and ignore any compiler errors for the **couchbase** module.
 
-### _Notes for Mac OSX:_
-
-Once you use the **install.sh** script to install as a Standalone Application, cb-bread will no longer run as an HTTP server using **node server**.
+Once you use the **install.sh** script to install as a Standalone Application, **cb-bread** may no longer run as an HTTP server using **node server**.
 
 You can revert to HTTP server operation using these commands:
 
