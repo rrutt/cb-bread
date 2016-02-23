@@ -131,8 +131,15 @@
                     }
                 }
             });
-            modalInstance.result.then(function () {
-                refresh();
+            modalInstance.result.then(function (docIds) {
+                $rootScope.$broadcast('loading-started');
+                api.request(controllerName, 'purge', { host: credentials.host, bucketId: $scope.view.bucketId, docIds: docIds }, function (error) {
+                    $rootScope.$broadcast('loading-complete');
+                    if (error) {
+                        $alert(JSON.stringify(error, null, 2));
+                    }
+                    refresh();
+                });
             }, function () {});
         };
 
@@ -249,15 +256,7 @@
         $scope.docIds = docIds;
 
         $scope.ok = function () {
-            api.request(controllerName, 'purge', { host: credentials.host, bucketId: $scope.view.bucketId, docIds: docIds }, function (error) {
-                if (error) {
-                    $rootScope.$broadcast('loading-complete');
-                    $alert(JSON.stringify(error, null, 2));
-                }
-                else {
-                    $modalInstance.close();
-                }
-            });
+            $modalInstance.close(docIds);
         };
 
         $scope.cancel = function () {

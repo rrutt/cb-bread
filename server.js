@@ -78,7 +78,7 @@
     // http://expressjs.com/guide/error-handling.html
     app.use(function(err, req, res, next){
         logger.error("app.use error\n" + util.inspect(err) + "\n=== Stack trace ===\n" + err.stack);
-        res.status(500).send("Server error. Are your credentials correct?");
+        res.status(500).send("Server error: " + JSON.stringify(err, null, 2));
     });
 
     // launch api
