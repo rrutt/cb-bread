@@ -41,15 +41,15 @@
         "url": "https://github.com/rrutt/cb-bread/issues"
     },
     "dependencies": {
-        "nw": "0.12.0",
+        "nw": "0.12.3",
         "async": "1.5.2",
-        "body-parser": "1.6.x",
-        "compression": "1.0.x",
+        "body-parser": "1.15.0",
+        "compression": "1.6.1",
         "couchbase": "2.1.3",
-        "express": "4.8.x",
-        "exprjs": "0.0.x",
-        "log4js": "0.6.x",
-        "moment": "2.9.0",
+        "express": "4.13.4",
+        "exprjs": "0.0.3",
+        "log4js": "0.6.31",
+        "moment": "2.11.2",
         "yargs": "3.0.x"
     }
 }

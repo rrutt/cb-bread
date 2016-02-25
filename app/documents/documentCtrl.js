@@ -72,7 +72,7 @@
             $scope.nextSkipCount = null;
             refresh();
         };
-        
+
         $scope.requeryServer = function () {
             preventZeroPageSize();
             if ($scope.skipCount === $scope.prevSkipCount) {
@@ -137,8 +137,10 @@
                     if (error) {
                         $rootScope.$broadcast('loading-complete');
                         $alert(JSON.stringify(error, null, 2));
+                    } else {
+                        $alert("Purged " + docIds.length + " documents.");
+                        refresh();
                     }
-                    refresh();
                 });
             }, function () {});
         };
