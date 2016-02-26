@@ -72,12 +72,13 @@
                     return callback(error, null);
                 }
                 else {
-                    return callback(null, result);
+                    // Perform a "Requery" action.
+                    _list(client, params, callback);
                 }
             });
         }
         else {
-            return callback('Document list was null or empty.', null);
+            return callback('Document Id list was null or empty.', null);
         }
     };
 

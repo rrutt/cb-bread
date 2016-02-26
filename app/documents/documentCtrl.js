@@ -12,36 +12,40 @@
             }
         };
 
+        var processApiListResult = function(error, resultSet) {
+            if (error) {
+                $rootScope.$broadcast('loading-complete');
+                $alert(JSON.stringify(error, null, 2));
+            }
+            else {
+                $scope.prevSkipCount = $scope.skipCount;
+                $scope.nextSkipCount = resultSet.nextSkipCount;
+                $scope.resultSetMessage = resultSet.message;
+                $scope.documents = [];
+                var resultRows = resultSet.resultRows;
+                resultRows.forEach(function (row) {
+                    var viewValue = '';
+                    if (row.value) {
+                        viewValue = JSON.stringify(row.value);
+                    }
+                    var model = {
+                        expanded: false,
+                        index: row.index,
+                        key: JSON.stringify(row.key),
+                        value: viewValue,
+                        id: row.id,
+                        cas: JSON.stringify(row.cas)
+                    };
+                    model.body = row.doc;
+                    model.bodyString = JSON.stringify(row.doc, null, 2);
+                    $scope.documents.push(model);
+                });
+            }
+        }
+
         var refresh = function () {
             api.request(controllerName, 'list', { host: credentials.host, bucketId: $scope.view.bucketId, viewId: $scope.view.viewId, keyPrefix: $scope.keyPrefix, skipCount: $scope.skipCount, pageSize: $scope.pageSize, docFilter: $scope.docFilter, queryTimeoutSeconds: $scope.queryTimeoutSeconds }, function (error, resultSet) {
-                if (error) {
-                    $rootScope.$broadcast('loading-complete');
-                    $alert(JSON.stringify(error, null, 2));
-                }
-                else {
-                    $scope.prevSkipCount = $scope.skipCount;
-                    $scope.nextSkipCount = resultSet.nextSkipCount;
-                    $scope.resultSetMessage = resultSet.message;
-                    $scope.documents = [];
-                    var resultRows = resultSet.resultRows;
-                    resultRows.forEach(function (row) {
-                        var viewValue = '';
-                        if (row.value) {
-                            viewValue = JSON.stringify(row.value);
-                        }
-                        var model = {
-                            expanded: false,
-                            index: row.index,
-                            key: JSON.stringify(row.key),
-                            value: viewValue,
-                            id: row.id,
-                            cas: JSON.stringify(row.cas)
-                        };
-                        model.body = row.doc;
-                        model.bodyString = JSON.stringify(row.doc, null, 2);
-                        $scope.documents.push(model);
-                    });
-                }
+                processApiListResult(error, resultSet);
             });
         };
         
@@ -133,13 +137,12 @@
             });
             modalInstance.result.then(function (docIds) {
                 $rootScope.$broadcast('loading-started');
-                api.request(controllerName, 'purge', { host: credentials.host, bucketId: $scope.view.bucketId, docIds: docIds }, function (error) {
+                api.request(controllerName, 'purge', { docIds: docIds, host: credentials.host, bucketId: $scope.view.bucketId, viewId: $scope.view.viewId, keyPrefix: $scope.keyPrefix, skipCount: $scope.skipCount, pageSize: $scope.pageSize, docFilter: $scope.docFilter, queryTimeoutSeconds: $scope.queryTimeoutSeconds }, function (error, resultSet) {
                     if (error) {
                         $rootScope.$broadcast('loading-complete');
                         $alert(JSON.stringify(error, null, 2));
                     } else {
-                        $alert("Purged " + docIds.length + " documents.");
-                        refresh();
+                        processApiListResult(error, resultSet);
                     }
                 });
             }, function () {});

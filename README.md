@@ -544,8 +544,7 @@ Click the **Purge** button to open a confirmation dialog to complete the purge o
 
 ![Purge confirmation dialog](./images/cb-bread-purge-confirmation-zoomed.png "Purge confirmation dialog")
 
-After clicking the **Purge** confirmation button, an alert displays the count of purged documents. 
-After dismissing the alert, control returns to the query results page and the **Requery** action automatically occurs.
+After clicking the **Purge** confirmation button, control returns to the query results page and the **Requery** action automatically occurs.
 You can proceed to purge addition results from the query by clicking the **Purge** button again.
 
 Click the **Disable** button that appears in front of the **Purge** button to turn off the purge feature.
