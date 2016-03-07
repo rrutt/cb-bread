@@ -1,7 +1,7 @@
 (function () {
     'use strict';
 
-    app.controller('ConnectionCtrl', function ($scope, $state, $alert, credentials, serverConfig) {
+    app.controller('ConnectionCtrl', function ($rootScope, $scope, $state, $alert, credentials, serverConfig) {
         var connect = function () {
             credentials.set($scope.host, $scope.user, $scope.password);
             if (credentials.isConnected() === true) {

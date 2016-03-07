@@ -68,15 +68,15 @@
                         });
                     }
                     else {
-                        _logAndSendErrorOrResult('Missing host, user, or password in request [' + req.path + ']', null);
+                        _logAndSendErrorOrResult('Missing host, user, or password in controller [' + controllerName + ']', null);
                     }
                 }
                 else {
-                    _logAndSendErrorOrResult('Cannot find action [' + actionName + '] in controller [' + controllerName + '] from request path [' + req.path + ']', null);
+                    _logAndSendErrorOrResult('Cannot find action [' + actionName + '] in controller [' + controllerName + ']', null);
                 }
             }
             else {
-                _logAndSendErrorOrResult('Cannot find controller [' + controllerName + '] from request path [' + req.path + ']', null);
+                _logAndSendErrorOrResult('Cannot find controller [' + controllerName + ']', null);
             }
         };
 
