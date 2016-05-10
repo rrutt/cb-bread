@@ -10,6 +10,7 @@
                 }
                 else {
                     $scope.packageJson = config.packageJson;
+                    $scope.processVersions = config.processVersions;
                 }
             });
         };

@@ -8,7 +8,7 @@
 
     var _config = function (client, params, callback) {
         var packageJson = require('../package.json');
-        var serverConfig = {argv: _argv, packageJson: packageJson};
+        var serverConfig = {argv: _argv, packageJson: packageJson, processVersions: process.versions};
         return callback(null, serverConfig);
     };
 
