@@ -206,6 +206,8 @@ Run this script, either in a command prompt terminal or by double-clicking it in
 
     cb-bread.bat
 
+_**Note:**_ If the standalone application fails to build and run correctly, it may be due to recent version updates to various supporting components, such as the Couchbase NPM module.  You can obtain a previously built standalone version from the **bin\cb-bread-nwjs-Windows7.zip** file within this Git workspace.  This binary version runs with **Node.js 0.12**
+
 #### _On Linux or Mac OSX:_
 
 Open a terminal window and run the following command:
