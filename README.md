@@ -29,7 +29,7 @@ However, as of Couchbase 4.1, the N1QL language supports Select, Insert, Update,
 
 **_Added in Release 1.2.0_**: The application allows purging the documents displayed on the current results page from a view query, as filtered by the optional **Doc Filter** JavaScript expression.
 
-**_Release 1.2.5_**: Has been tested on Windows 7 and Windows 10 using Node.js version 8 and the pre-compiled binary for the Couchbase NPM module.  This release has also been tested on Windows using Node.js version 10.10.0 with a Visual Studio compiler environment installed.
+**_Release 1.2.5_**: Has been tested on Windows 7 and Windows 10 using Node.js version 8 and the pre-compiled binary for the Couchbase NPM module.  This release has also been tested on Windows using Node.js version 10.10.0 with a Visual Studio compiler environment installed.  A pre-built standalone version of the application is included as a 7-Zip archive file for Windows users without a Visual Studio compiler installed.
 
 ### Screen Shots
 
