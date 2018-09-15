@@ -1,7 +1,7 @@
 {
     "name": "cb-bread",
-    "version": "1.2.4+20160510",
-    "copyright": "© 2015-2016 Rick Rutt (Portions © 2014 Shaun Xu)",
+    "version": "1.2.5+20180914",
+    "copyright": "© 2015-2018 Rick Rutt (Portions © 2014 Shaun Xu)",
     "description": "Couchbase Browse/Read/Edit/Add/Delete",
     "private": true,
     "main": "app/indexNW.html",
@@ -22,16 +22,26 @@
     },
     "keywords": [
         "angularjs",
-        "node-webkit", "nw.js",
+        "node-webkit",
+        "nw.js",
         "couchbase",
         "json",
-        "crud", "create", "read", "update", "delete",
-        "bread", "browse", "edit", "add"
+        "crud",
+        "create",
+        "read",
+        "update",
+        "delete",
+        "bread",
+        "browse",
+        "edit",
+        "add"
     ],
     "author": "Rick Rutt <RRutt@live.com>",
-    "contributors": [{
-        "name": "Shaun Xu"
-    }],
+    "contributors": [
+        {
+            "name": "Shaun Xu"
+        }
+    ],
     "license": "MIT",
     "repository": {
         "type": "git",
@@ -41,15 +51,15 @@
         "url": "https://github.com/rrutt/cb-bread/issues"
     },
     "dependencies": {
-        "nw": "0.12.3",
-        "async": "1.5.2",
-        "body-parser": "1.15.0",
-        "compression": "1.6.1",
-        "couchbase": "2.1.3",
-        "express": "4.13.4",
-        "exprjs": "0.0.3",
-        "log4js": "0.6.31",
-        "moment": "2.11.2",
-        "yargs": "3.0.x"
+        "nw": "0.33.2",
+        "async": "2.*",
+        "body-parser": "1.*",
+        "compression": "1.*",
+        "couchbase": "2.5.*",
+        "express": "4.*",
+        "exprjs": "0.*",
+        "log4js": "0.*",
+        "moment": "2.*",
+        "yargs": "3.*"
     }
 }

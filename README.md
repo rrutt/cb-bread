@@ -29,6 +29,8 @@ However, as of Couchbase 4.1, the N1QL language supports Select, Insert, Update,
 
 **_Added in Release 1.2.0_**: The application allows purging the documents displayed on the current results page from a view query, as filtered by the optional **Doc Filter** JavaScript expression.
 
+**_Release 1.2.5_**: Has been tested on Windows 7 and Windows 10 using Node.js version 8 and the pre-compiled binary for the Couchbase NPM module.  This release has also been tested on Windows using Node.js version 10.10.0 with a Visual Studio compiler environment installed.
+
 ### Screen Shots
 
 Bucket List:
@@ -78,10 +80,10 @@ You also need to have [Xcode](https://developer.apple.com/xcode/downloads/) inst
 
 #### _Notes for Windows:_ 
 
-If you want to run **cb-bread** as an HTTP server via Node.js, you can omit the installation of Python since the **Couchbase SDK for Node** includes some _fallback_ pre-compiled binaries compatible with standard **Node.js** on Windows; in that case simply run **npm install** and ignore compiler errors for the **couchbase** module.
+If you want to run **cb-bread** as an HTTP server via Node.js version 8, you can omit the installation of Python since the **Couchbase SDK for Node** NPM module includes a pre-compiled binary for Windows; in that case simply run **npm install**.
 
-If you choose to omit Python and use the pre-compiled binaries, you will _not_ be able to run **cb-bread** as a standalone desktop application;
-instead you will need to run it as an HTTP server. 
+If you choose to omit Python and use the pre-compiled binary, you will _not_ be able to run **cb-bread** as a standalone desktop application;
+instead you will need to run it as an HTTP server using Node.js version 8.  **_Exception:_** A pre-built installation of the **cb-bread** standalone application compatible with Node.js version 12 is available in this GitHub repository as a 7-Zip archive file **bin\\cb-bread-nwjs-Windows7.7z**
 
 ### To download cb-bread without Git:
 
@@ -139,6 +141,8 @@ Third-party **npm** modules that include compiled binary components must be reco
 
 In order to let the installation script rebind the Couchbase Node SDK binary modules, you _must_ have Python 2.7.x (where "x" is any point release): [Download Python](https://www.python.org/downloads/).
 
+You must also be using Node.js version 10. This release has been tested on Windows 7 and Windows 10 using Node.js version 10.10.0
+
 ### _Notes for Windows:_
 
 You will need to add **C:\Python27** to your **PATH** variable, and possibly logout and login again for this change to take effect.
@@ -173,9 +177,17 @@ Once you use the **install.bat** script to install as a Standalone Application, 
 
 You can revert to HTTP server operation using these commands:
 
-    delete-node-modules.bat
+    rm -rf node_modules
     npm install
     node server
+
+##### Pre-built standalone installation for Windows and Node.js version 0.12
+
+If you have no Visual Studio compiler environment installed, a pre-built installation of the **cb-bread** standalone application is available as the **bin\cb-bread-nwjs-Windows7.7z** file within this Git workspace.
+
+Expand this archive file using 7-Zip, which can be downloaded from **<https://www.7-zip.org/>** 
+
+This pre-built installation of cb-bread runs with **Node.js 0.12**, but might also run with newer versions of Node.js
 
 #### _On Linux or Mac OSX:_
 
@@ -205,8 +217,6 @@ You can revert to HTTP server operation using these commands:
 Run this script, either in a command prompt terminal or by double-clicking it in File Explorer:
 
     cb-bread.bat
-
-_**Note:**_ If the standalone application fails to build and run correctly, it may be due to recent version updates to various supporting components, such as the Couchbase NPM module.  You can obtain a previously built standalone version from the **bin\cb-bread-nwjs-Windows7.7z** file within this Git workspace.  Expand this archive file using 7-Zip, which can be downloaded from **<https://www.7-zip.org/>** This pre-built version of cb-bread runs with **Node.js 0.12**
 
 #### _On Linux or Mac OSX:_
 
