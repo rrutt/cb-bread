@@ -41,7 +41,17 @@
             if (needToInitialize) {
                 cbLogger.info("couchbaseWrapper.initialize %s as user %s", host, user);
 
-                var cluster = new cb.Cluster(host);
+                var actualHost = host;
+                var hostMappings = require('../../app/hostMappings.json');
+                if (hostMappings) {
+                    var mappedHost = hostMappings[host];
+                    if (mappedHost) {
+                        actualHost = mappedHost;
+                        cbLogger.info("couchbaseWrapper.initialize mapped host '%s' to '%s'", host, actualHost);
+                    }
+                }
+
+                var cluster = new cb.Cluster(actualHost);
                 var clusterManager = cluster.manager(user, password);
                 var hostInfo = {
                     cluster: cluster,
@@ -72,7 +82,7 @@
 
         clusterManager.listBuckets(function(err, bucketInfoList) {
             if (err) {
-                cbLogger.error("couchbaseWrapper.listBuckets error: %s", util.inspect(err));                
+                cbLogger.error("couchbaseWrapper.listBuckets error: %s", util.inspect(err));
                 return callback(err);
             } else {
                 cbLogger.debug("clusterManager.listBuckets returned %s", util.inspect(bucketInfoList));
@@ -101,7 +111,7 @@
         var cluster = cachedHostInfo.cluster;
         var bucketPasswords = cachedHostInfo.bucketPasswords;
         var bucketPassword = bucketPasswords[bucketName];
-        
+
         var cbBucket = cluster.openBucket(bucketName, bucketPassword, function(err) {
             if (err) {
                 cbLogger.error("couchbaseWrapper.listViews cbCluster.openBucket for bucket '%s' threw error: ", bucketName, util.inspect(err));
@@ -305,7 +315,7 @@
         } else {
             startNumberString = startValue.toString();
         }
-        
+
         if (startNumberString) {
             startValue = Number(startNumberString);
             if (isNaN(startValue)) {
@@ -374,7 +384,7 @@
 
         return null;  // Success.
     };
-    
+
     exports.listDocuments = function(host, bucketName, designDocViewName, keyPrefix, skipCount, pageSize, docFilter, queryTimeoutSeconds, callback) {
         var cachedHostInfo = cbHostInfoCache[host];
         if (!cachedHostInfo) {
@@ -470,7 +480,7 @@
             resultSet.message = util.format("Found %d results in %d seconds. ", docCount, duration);
         }
     };
-    
+
     exports.queryDocuments = function(host, bucketName, n1qlQuery, callback) {
         var cachedHostInfo = cbHostInfoCache[host];
         if (!cachedHostInfo) {
@@ -479,19 +489,19 @@
             throw new Error(errMsg);
         }
 
-        var cluster = cachedHostInfo.cluster;        
+        var cluster = cachedHostInfo.cluster;
         var bucketPasswords = cachedHostInfo.bucketPasswords;
         var bucketPassword = bucketPasswords[bucketName];
-        
+
         // http://developer.couchbase.com/documentation/server/4.0/sdks/node-2.0/n1ql-queries.html
         var cbBucket = cluster.openBucket(bucketName, bucketPassword, function(err) {
             if (err) {
                 cbLogger.error("couchbaseWrapper.listViews cbCluster.openBucket for bucket '%s' threw error: ", bucketName, util.inspect(err));
                 throw err;
             }
-        });        
+        });
         cbBucket.enableN1ql([host]);
-        
+
         var resultSet = { resultRows: [] };
         resultSet.startTime = moment();
         var queryResult = {
@@ -499,7 +509,7 @@
             shortForm: '',
             doc: { 'niqlQuery': n1qlQuery }
         };
-        
+
         var N1qlQuery = cb.N1qlQuery;
         var query = N1qlQuery.fromString(n1qlQuery);
         cbBucket.query(query, function(err, res) {
@@ -508,7 +518,7 @@
                 queryResult.shortForm = JSON.stringify(err);
                 queryResult.doc = err;
                 resultSet.resultRows = [ queryResult ];
-            } else {        
+            } else {
                 if (Array.isArray(res)) {
                     var arrayLength = res.length;
                     for (var i = 0; i < arrayLength; i++) {
@@ -531,9 +541,9 @@
                 formatN1qlResultSetMessage(resultSet);
             }
             return callback(null, resultSet);
-        });                
+        });
     };
-    
+
     exports.createOrReplaceDocument = function(host, bucketName, docId, docBody, callback) {
         var cachedHostInfo = cbHostInfoCache[host];
         if (!cachedHostInfo) {
@@ -545,25 +555,25 @@
         var cluster = cachedHostInfo.cluster;
         var bucketPasswords = cachedHostInfo.bucketPasswords;
         var bucketPassword = bucketPasswords[bucketName];
-        
+
         var cbBucket = cluster.openBucket(bucketName, bucketPassword, function(err) {
             if (err) {
                 cbLogger.error("couchbaseWrapper.createOrReplaceDocument cbCluster.openBucket for bucket '%s' threw error: ", bucketName, util.inspect(err));
                 throw err;
             }
         });
-        
+
         cbBucket.upsert(docId, docBody, function(err, result) {
             if (err) {
                 cbLogger.error("couchbaseWrapper.createOrReplaceDocument cbBucket.upsert for bucket '%s' and docId '%s' threw error: ", bucketName, docId, util.inspect(err));
                 throw err;
             }
-            
+
             cbLogger.debug("couchbaseWrapper.createOrReplaceDocument cbBucket.upsert for bucket '%s' and docId '%s' result: ", bucketName, docId, util.inspect(result));
             return callback(null, result);
         });
     };
-    
+
     exports.deleteDocument = function(host, bucketName, docId, callback) {
         var cachedHostInfo = cbHostInfoCache[host];
         if (!cachedHostInfo) {
@@ -575,25 +585,25 @@
         var cluster = cachedHostInfo.cluster;
         var bucketPasswords = cachedHostInfo.bucketPasswords;
         var bucketPassword = bucketPasswords[bucketName];
-        
+
         var cbBucket = cluster.openBucket(bucketName, bucketPassword, function(err) {
             if (err) {
                 cbLogger.error("couchbaseWrapper.deleteDocument cbCluster.openBucket for bucket '%s' threw error: ", bucketName, util.inspect(err));
                 throw err;
             }
         });
-        
+
         cbBucket.remove(docId, function(err, result) {
             if (err) {
                 cbLogger.error("couchbaseWrapper.deleteDocument cbBucket.remove for bucket '%s' and docId '%s' threw error: ", bucketName, docId, util.inspect(err));
                 throw err;
             }
-            
+
             cbLogger.debug("couchbaseWrapper.deleteDocument cbBucket.remove for bucket '%s' and docId '%s' result: ", bucketName, docId, util.inspect(result));
             return callback(null, result);
         });
     };
-    
+
     exports.purgeDocuments = function(host, bucketName, docIds, callback) {
         var cachedHostInfo = cbHostInfoCache[host];
         if (!cachedHostInfo) {
@@ -605,14 +615,14 @@
         var cluster = cachedHostInfo.cluster;
         var bucketPasswords = cachedHostInfo.bucketPasswords;
         var bucketPassword = bucketPasswords[bucketName];
-        
+
         var cbBucket = cluster.openBucket(bucketName, bucketPassword, function(err) {
             if (err) {
                 cbLogger.error("couchbaseWrapper.purgeDocuments cbCluster.openBucket for bucket '%s' threw error: ", bucketName, util.inspect(err));
                 throw err;
             }
         });
-        
+
         async.eachSeries(docIds, function(docId, asyncCallback) {
             cbBucket.remove(docId, function(err, result) {
                 if (err) {

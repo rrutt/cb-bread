@@ -60,12 +60,16 @@
         if (req.path.split('/')[1] === 'api') {
             // api request
             next();
-        }
-        else if (path.extname(req.path).length > 0) {
+        } else if (req.path.split('/')[1] === 'health') {
+            req.url = '/health.html';
+            next();
+        } else if (req.path.split('/')[1] === 'hosts') {
+            req.url = '/hostMappings.json';
+            next();
+        } else if (path.extname(req.path).length > 0) {
             // normal static file request
             next();
-        }
-        else {
+        } else {
             // should force return `index.html` for angular.js
             req.url = '/index.html';
             next();

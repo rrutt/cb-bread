@@ -34,6 +34,9 @@
                         <li>
                             <a ng-href="{{packageJson.repository.url}}/blob/{{packageJson.version}}/README.md" target="_blank">Read Me</a>
                         </li>
+                        <li data-ng-if="!isConnected">
+                            <a ng-href="/hosts" target="_blank">Hosts</a>
+                        </li>
                         <li data-ng-if="isConnected">
                             <a data-ui-sref="database">Buckets</a>
                         </li>
